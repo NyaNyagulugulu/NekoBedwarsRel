@@ -70,14 +70,7 @@ public class HologramAPIInteraction implements IHologramInteraction {
           return line;
         }
       });
-      /*
-       * holo.setTouchable(true); holo.addTouchHandler(new TouchHandler() {
-       *
-       * @Override public void onTouch(Hologram hologram, Player player, TouchAction action) {
-       * HologramAPIInteraction.this.onHologramTouch(player, hologram); }
-       *
-       * });
-       */
+
       holo.spawn();
       holograms.add(holo);
       currentLine++;

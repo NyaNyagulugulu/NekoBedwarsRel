@@ -618,7 +618,7 @@ public class BedwarsRel extends JavaPlugin {
     }
 
     this.getServer().getConsoleSender()
-        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "Initialize database ..."));
+        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "初始化数据库 ..."));
 
     String host = this.getStringConfig("database.host", null);
     int port = this.getIntConfig("database.port", 3306);
@@ -671,7 +671,7 @@ public class BedwarsRel extends JavaPlugin {
     } catch (Exception e) {
       BedwarsRel.getInstance().getBugsnag().notify(e);
       this.getServer().getConsoleSender().sendMessage(
-          ChatWriter.pluginMessage(ChatColor.RED + "Couldn't load shop! Error in parsing shop!"));
+          ChatWriter.pluginMessage(ChatColor.RED + "无法加载商店！解析商店时出错!"));
       e.printStackTrace();
     }
   }
@@ -794,7 +794,7 @@ public class BedwarsRel extends JavaPlugin {
       this.bugsnag.setReleaseStage(SupportData.getPluginVersionType());
     } catch (Exception e) {
       this.getServer().getConsoleSender().sendMessage(
-          ChatWriter.pluginMessage(ChatColor.GOLD + "Couldn't register Bugsnag."));
+          ChatWriter.pluginMessage(ChatColor.GOLD + "无法注册 Bugsnag。"));
     }
   }
 
@@ -908,7 +908,7 @@ public class BedwarsRel extends JavaPlugin {
       } catch (Exception ex) {
         BedwarsRel.getInstance().getBugsnag().notify(ex);
         this.getServer().getConsoleSender().sendMessage(ChatWriter
-            .pluginMessage(ChatColor.RED + "Metrics are enabled, but couldn't send data!"));
+            .pluginMessage(ChatColor.RED + "指标已启用，但无法发送数据!"));
       }
     }
   }
@@ -928,7 +928,7 @@ public class BedwarsRel extends JavaPlugin {
   }
 
   public boolean statisticsEnabled() {
-    return this.getBooleanConfig("statistics.enabled", false);
+    return this.getBooleanConfig("统计信息已启用", false);
   }
 
   private void stopTimeListener() {

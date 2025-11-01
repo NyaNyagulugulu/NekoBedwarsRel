@@ -635,10 +635,10 @@ public class BedwarsRel extends JavaPlugin {
     this.dbManager.initialize();
 
     this.getServer().getConsoleSender()
-        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "Update database ..."));
+        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "更新数据库 ..."));
 
     this.getServer().getConsoleSender()
-        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "Done."));
+        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "完成"));
   }
 
   private void loadLocalization(String locale) {

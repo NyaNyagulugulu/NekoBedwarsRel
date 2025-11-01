@@ -100,7 +100,7 @@ holographic-stats:
 # type: boolean
 # Adds the teamname before the player name 
 # in the tablist
-teamname-on-tab: false
+teamname-on-tab: true
 
 # Teamname after player name
 # type: boolean

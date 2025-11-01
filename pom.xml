@@ -50,8 +50,8 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <versionstring>${project.parent.version}-SNAPSHOT</versionstring>
-        <filename>${project.artifactId}-${project.parent.version}-SNAPSHOT</filename>
+        <versionstring>${project.parent.version}</versionstring>
+        <filename>${project.artifactId}-${project.parent.version}</filename>
       </properties>
     </profile>
     <profile>

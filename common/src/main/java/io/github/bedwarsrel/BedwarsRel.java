@@ -11,16 +11,7 @@ import io.github.bedwarsrel.game.GameManager;
 import io.github.bedwarsrel.game.GameState;
 import io.github.bedwarsrel.game.ResourceSpawner;
 import io.github.bedwarsrel.game.Team;
-import io.github.bedwarsrel.listener.BlockListener;
-import io.github.bedwarsrel.listener.ChunkListener;
-import io.github.bedwarsrel.listener.EntityListener;
-import io.github.bedwarsrel.listener.HangingListener;
-import io.github.bedwarsrel.listener.Player19Listener;
-import io.github.bedwarsrel.listener.PlayerListener;
-import io.github.bedwarsrel.listener.PlayerSpigotListener;
-import io.github.bedwarsrel.listener.ServerListener;
-import io.github.bedwarsrel.listener.SignListener;
-import io.github.bedwarsrel.listener.WeatherListener;
+import io.github.bedwarsrel.listener.*;
 import io.github.bedwarsrel.localization.LocalizationConfig;
 import io.github.bedwarsrel.shop.Specials.SpecialItem;
 import io.github.bedwarsrel.statistics.PlayerStatistic;
@@ -743,7 +734,7 @@ public class BedwarsRel extends JavaPlugin {
     this.saveConfiguration();
     this.loadConfigInUTF();
 
-    if (this.getBooleanConfig("send-error-data", true) && this.bugsnag != null) {
+    if (this.getBooleanConfig("发送错误数据", true) && this.bugsnag != null) {
       this.enableBugsnag();
     } else {
       this.disableBugsnag();
@@ -844,24 +835,28 @@ public class BedwarsRel extends JavaPlugin {
     ConfigurationSerialization.registerClass(PlayerStatistic.class, "PlayerStatistic");
   }
 
+  /**
+   * 注册所有监听器
+   */
   private void registerListener() {
-    new WeatherListener();
-    new BlockListener();
-    new PlayerListener();
+    new WeatherListener(); // 天气监听器
+    new BlockListener(); // 方块监听器
+    new PlayerListener(); // 玩家监听器
     if (!BedwarsRel.getInstance().getCurrentVersion().startsWith("v1_8")) {
-      new Player19Listener();
+      new Player19Listener(); // 1.9+版本玩家监听器
     }
-    new HangingListener();
-    new EntityListener();
-    new ServerListener();
-    new SignListener();
-    new ChunkListener();
+    new HangingListener(); // 悬挂物监听器
+    new EntityListener(); // 实体监听器
+    new ServerListener(); // 服务器监听器
+    new SignListener(); // 告示牌监听器
+    new ChunkListener(); // 区块监听器
+    new LobbyRegionListener(); // 注册大厅区域监听器
 
     if (this.isSpigot()) {
-      new PlayerSpigotListener();
+      new PlayerSpigotListener(); // Spigot版本玩家监听器
     }
 
-    SpecialItem.loadSpecials();
+    SpecialItem.loadSpecials(); // 加载特殊物品
   }
 
   public void reloadLocalization() {

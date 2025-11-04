@@ -97,6 +97,7 @@ public class Game {
   private HashMap<String, Team> teams = null;
   private int time = 1000;
   private int timeLeft = 0;
+  private LobbyRegion lobbyRegion = null;
 
   public Game(String name) {
     super();
@@ -1404,6 +1405,11 @@ public class Game {
     }
 
     this.region.reset(this);
+    
+    // Restore lobby region if it was active
+    if (this.lobbyRegion != null && this.lobbyRegion.isActive()) {
+      this.lobbyRegion.restore();
+    }
   }
 
   public void resetScoreboard() {
@@ -1655,6 +1661,17 @@ public class Game {
 
     if (startEvent.isCancelled()) {
       return false;
+    }
+
+    // Handle lobby region before starting the game
+    if (this.lobby != null && this.region != null && !this.lobby.getWorld().equals(this.region.getWorld())) {
+      // Create a lobby region around the lobby spawn point
+      // Using a 10x10x10 area centered on the lobby location
+      Location loc1 = this.lobby.clone().add(-5, -5, -5);
+      Location loc2 = this.lobby.clone().add(5, 5, 5);
+      
+      this.lobbyRegion = new LobbyRegion(loc1, loc2);
+      this.lobbyRegion.fillWithAir();
     }
 
     this.isOver = false;

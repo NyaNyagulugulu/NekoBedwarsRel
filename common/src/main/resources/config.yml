@@ -17,7 +17,7 @@
 # short: a int but limited between -32768 ... 32767
 # char: one character
 
-chat-prefix: "&7[&bBedWars&7]&f"
+chat-prefix: "&7[&b梦幻次元&7]&f"
 
 # Enabled Metrics
 # type: boolean

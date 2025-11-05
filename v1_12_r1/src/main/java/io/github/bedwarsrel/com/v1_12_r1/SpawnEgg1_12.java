@@ -1,26 +1,13 @@
-/*******************************************************************************
- * This file is part of ASkyBlock.
- *
- * ASkyBlock is free software: you can redistribute it and/or modify it under the terms of the GNU
- * General Public License as published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * ASkyBlock is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with ASkyBlock. If not,
- * see <http://www.gnu.org/licenses/>.
- *******************************************************************************/
 package io.github.bedwarsrel.com.v1_12_r1;
 
+import io.github.bedwarsrel.com.SpawnEggInterface;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-public class SpawnEgg1_12 {
+public class SpawnEgg1_12 implements SpawnEggInterface {
 
   private EntityType type;
 
@@ -29,10 +16,10 @@ public class SpawnEgg1_12 {
   }
 
   /**
-   * Converts from an item stack to a spawn egg 1.9
+   * Converts from an item stack to a spawn egg 1.12
    *
    * @param item - ItemStack, quantity is disregarded
-   * @return SpawnEgg 1.9
+   * @return SpawnEgg 1.12
    */
   public static SpawnEgg1_12 fromItemStack(ItemStack item) {
     if (item == null) {
@@ -56,45 +43,24 @@ public class SpawnEgg1_12 {
     }
   }
 
-  public SpawnEgg1_12 clone() {
-    return (SpawnEgg1_12) this.clone();
-  }
-
-  /**
-   * Get the type of entity this egg will spawn.
-   *
-   * @return The entity type.
-   */
+  @Override
   public EntityType getSpawnedType() {
     return type;
   }
 
-  /**
-   * Set the type of entity this egg will spawn.
-   *
-   * @param type The entity type.
-   */
+  @Override
   public void setSpawnedType(EntityType type) {
     if (type.isAlive()) {
       this.type = type;
     }
   }
 
-  /**
-   * Get an ItemStack of one spawn egg
-   *
-   * @return ItemStack
-   */
+  @Override
   public ItemStack toItemStack() {
     return toItemStack(1);
   }
 
-
-  /**
-   * Get an itemstack of spawn eggs
-   *
-   * @return ItemStack of spawn eggs
-   */
+  @Override
   @SuppressWarnings("deprecation")
   public ItemStack toItemStack(int amount) {
     ItemStack item = new ItemStack(Material.MONSTER_EGG, amount);
@@ -110,7 +76,13 @@ public class SpawnEgg1_12 {
     return CraftItemStack.asBukkitCopy(stack);
   }
 
-  public String toString() {
-    return "SPAWN EGG{" + getSpawnedType() + "}";
-  }
+  @Override
+  public String toString() {
+    return "SPAWN EGG{" + getSpawnedType() + "}";
+  }
+
+  @Override
+  public SpawnEgg1_12 clone() {
+    return new SpawnEgg1_12(this.type);
+  }
 }

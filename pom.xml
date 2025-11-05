@@ -38,7 +38,7 @@
   </properties>
 
   <modules>
-    <module>v1_8_R3</module>
+    <module>v1_8_r3</module>
     <module>v1_12_r1</module>
     <module>common</module>
     <module>plugin</module>

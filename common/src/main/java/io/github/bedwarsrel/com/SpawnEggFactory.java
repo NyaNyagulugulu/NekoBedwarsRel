@@ -2,7 +2,7 @@ package io.github.bedwarsrel.com;
 
 import io.github.bedwarsrel.BedwarsRel;
 import io.github.bedwarsrel.com.v1_12_r1.SpawnEgg1_12;
-import io.github.bedwarsrel.com.v1_8_R3.SpawnEgg;
+import io.github.bedwarsrel.com.v1_8_r3.SpawnEgg;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 

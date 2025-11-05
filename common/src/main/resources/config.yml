@@ -100,7 +100,7 @@ holographic-stats:
 # type: boolean
 # Adds the teamname before the player name 
 # in the tablist
-teamname-on-tab: true
+teamname-on-tab: false
 
 # Teamname after player name
 # type: boolean
@@ -451,7 +451,7 @@ statistics:
   # Set to yaml to store statistics in a Yaml-Configuration file or
   # set to database to store statistics in the defined database. If no database
   # configured, the statistics will be stored in Yaml-Files
-  storage: database
+  storage: yaml
   
   # Bed destroy kill
   # type: boolean

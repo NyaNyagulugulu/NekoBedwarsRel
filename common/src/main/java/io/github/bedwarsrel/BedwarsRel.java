@@ -11,7 +11,16 @@ import io.github.bedwarsrel.game.GameManager;
 import io.github.bedwarsrel.game.GameState;
 import io.github.bedwarsrel.game.ResourceSpawner;
 import io.github.bedwarsrel.game.Team;
-import io.github.bedwarsrel.listener.*;
+import io.github.bedwarsrel.listener.BlockListener;
+import io.github.bedwarsrel.listener.ChunkListener;
+import io.github.bedwarsrel.listener.EntityListener;
+import io.github.bedwarsrel.listener.HangingListener;
+import io.github.bedwarsrel.listener.Player19Listener;
+import io.github.bedwarsrel.listener.PlayerListener;
+import io.github.bedwarsrel.listener.PlayerSpigotListener;
+import io.github.bedwarsrel.listener.ServerListener;
+import io.github.bedwarsrel.listener.SignListener;
+import io.github.bedwarsrel.listener.WeatherListener;
 import io.github.bedwarsrel.localization.LocalizationConfig;
 import io.github.bedwarsrel.shop.Specials.SpecialItem;
 import io.github.bedwarsrel.statistics.PlayerStatistic;
@@ -609,7 +618,7 @@ public class BedwarsRel extends JavaPlugin {
     }
 
     this.getServer().getConsoleSender()
-        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "初始化数据库 ..."));
+        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "Initialize database ..."));
 
     String host = this.getStringConfig("database.host", null);
     int port = this.getIntConfig("database.port", 3306);
@@ -626,10 +635,10 @@ public class BedwarsRel extends JavaPlugin {
     this.dbManager.initialize();
 
     this.getServer().getConsoleSender()
-        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "更新数据库 ..."));
+        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "Update database ..."));
 
     this.getServer().getConsoleSender()
-        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "完成"));
+        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "Done."));
   }
 
   private void loadLocalization(String locale) {
@@ -662,7 +671,7 @@ public class BedwarsRel extends JavaPlugin {
     } catch (Exception e) {
       BedwarsRel.getInstance().getBugsnag().notify(e);
       this.getServer().getConsoleSender().sendMessage(
-          ChatWriter.pluginMessage(ChatColor.RED + "无法加载商店！解析商店时出错!"));
+          ChatWriter.pluginMessage(ChatColor.RED + "Couldn't load shop! Error in parsing shop!"));
       e.printStackTrace();
     }
   }
@@ -734,7 +743,7 @@ public class BedwarsRel extends JavaPlugin {
     this.saveConfiguration();
     this.loadConfigInUTF();
 
-    if (this.getBooleanConfig("发送错误数据", true) && this.bugsnag != null) {
+    if (this.getBooleanConfig("send-error-data", true) && this.bugsnag != null) {
       this.enableBugsnag();
     } else {
       this.disableBugsnag();
@@ -785,7 +794,7 @@ public class BedwarsRel extends JavaPlugin {
       this.bugsnag.setReleaseStage(SupportData.getPluginVersionType());
     } catch (Exception e) {
       this.getServer().getConsoleSender().sendMessage(
-          ChatWriter.pluginMessage(ChatColor.GOLD + "无法注册 Bugsnag。"));
+          ChatWriter.pluginMessage(ChatColor.GOLD + "Couldn't register Bugsnag."));
     }
   }
 
@@ -835,28 +844,24 @@ public class BedwarsRel extends JavaPlugin {
     ConfigurationSerialization.registerClass(PlayerStatistic.class, "PlayerStatistic");
   }
 
-  /**
-   * 注册所有监听器
-   */
   private void registerListener() {
-    new WeatherListener(); // 天气监听器
-    new BlockListener(); // 方块监听器
-    new PlayerListener(); // 玩家监听器
+    new WeatherListener();
+    new BlockListener();
+    new PlayerListener();
     if (!BedwarsRel.getInstance().getCurrentVersion().startsWith("v1_8")) {
-      new Player19Listener(); // 1.9+版本玩家监听器
+      new Player19Listener();
     }
-    new HangingListener(); // 悬挂物监听器
-    new EntityListener(); // 实体监听器
-    new ServerListener(); // 服务器监听器
-    new SignListener(); // 告示牌监听器
-    new ChunkListener(); // 区块监听器
-    new LobbyRegionListener(); // 注册大厅区域监听器
+    new HangingListener();
+    new EntityListener();
+    new ServerListener();
+    new SignListener();
+    new ChunkListener();
 
     if (this.isSpigot()) {
-      new PlayerSpigotListener(); // Spigot版本玩家监听器
+      new PlayerSpigotListener();
     }
 
-    SpecialItem.loadSpecials(); // 加载特殊物品
+    SpecialItem.loadSpecials();
   }
 
   public void reloadLocalization() {
@@ -903,7 +908,7 @@ public class BedwarsRel extends JavaPlugin {
       } catch (Exception ex) {
         BedwarsRel.getInstance().getBugsnag().notify(ex);
         this.getServer().getConsoleSender().sendMessage(ChatWriter
-            .pluginMessage(ChatColor.RED + "指标已启用，但无法发送数据!"));
+            .pluginMessage(ChatColor.RED + "Metrics are enabled, but couldn't send data!"));
       }
     }
   }
@@ -923,7 +928,7 @@ public class BedwarsRel extends JavaPlugin {
   }
 
   public boolean statisticsEnabled() {
-    return this.getBooleanConfig("统计信息已启用", false);
+    return this.getBooleanConfig("statistics.enabled", false);
   }
 
   private void stopTimeListener() {

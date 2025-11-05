@@ -96,9 +96,8 @@ public class Team implements ConfigurationSerializable {
     }
 
     if (BedwarsRel.getInstance().getBooleanConfig("teamname-on-tab", true)) {
-      playerListName = "§d♡ §b梦幻次元 §d♡ " + ChatColor.WHITE + "» "
-          + this.getChatColor() + this.getName() + ChatColor.WHITE + " | "
-          + this.getChatColor() + ChatColor.stripColor(player.getDisplayName()) + " §d«";
+      playerListName = this.getChatColor() + this.getName() + ChatColor.WHITE + " | "
+          + this.getChatColor() + ChatColor.stripColor(player.getDisplayName());
     }
 
     BedwarsPlayerSetNameEvent playerSetNameEvent =

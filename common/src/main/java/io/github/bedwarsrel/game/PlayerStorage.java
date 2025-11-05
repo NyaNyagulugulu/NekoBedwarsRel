@@ -97,12 +97,10 @@ public class PlayerStorage {
 
         if (teamnameOnTab) {
           if (team != null) {
-            playerListName = "§d♡ §b梦幻次元 §d♡ " + ChatColor.WHITE + "» "
-                + team.getChatColor() + team.getName() + ChatColor.WHITE + " | "
-                + team.getChatColor() + ChatColor.stripColor(this.player.getDisplayName()) + " §d«";
+            playerListName = team.getChatColor() + team.getName() + ChatColor.WHITE + " | "
+                + team.getChatColor() + ChatColor.stripColor(this.player.getDisplayName());
           } else {
-            playerListName = "§d♡ §b梦幻次元 §d♡ " + ChatColor.WHITE + "» " 
-                + ChatColor.stripColor(this.player.getDisplayName()) + " §d«";
+            playerListName = ChatColor.stripColor(this.player.getDisplayName());
           }
         }
 

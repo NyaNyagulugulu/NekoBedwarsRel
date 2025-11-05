@@ -16,9 +16,9 @@ public class SpawnEgg1_12 implements SpawnEggInterface {
   }
 
   /**
-   * Converts from an item stack to a spawn egg 1.12
+   * 从物品堆栈转换为1.12版本的生成蛋
    *
-   * @param item - ItemStack, quantity is disregarded
+   * @param item - ItemStack，数量被忽略
    * @return SpawnEgg 1.12
    */
   public static SpawnEgg1_12 fromItemStack(ItemStack item) {

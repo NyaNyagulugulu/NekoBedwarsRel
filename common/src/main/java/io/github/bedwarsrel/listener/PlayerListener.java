@@ -968,19 +968,13 @@ public class PlayerListener extends BaseListener {
 
       switch (interactingMaterial) {
         case BED:
-        case BED_BLOCK:
           pie.setCancelled(true);
-          // 屏蔽原版右键床显示内容
-          // 如果需要恢复原功能，可以取消下面的return语句
-          return;
-
-          /* 
           if (!g.isAutobalanceEnabled()) {
             g.getPlayerStorage(player).openTeamSelection(g);
           }
-          */
 
-          case DIAMOND:
+          break;
+        case DIAMOND:
           pie.setCancelled(true);
           if (player.isOp() || player.hasPermission("bw.setup")) {
             g.start(player);

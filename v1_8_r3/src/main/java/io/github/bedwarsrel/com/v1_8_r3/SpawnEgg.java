@@ -16,9 +16,9 @@ public class SpawnEgg implements SpawnEggInterface {
   }
 
   /**
-   * Converts from an item stack to a spawn egg
+   * 从物品堆栈转换为生成蛋
    *
-   * @param item - ItemStack, quantity is disregarded
+   * @param item - ItemStack，数量被忽略
    * @return SpawnEgg
    */
   public static SpawnEgg fromItemStack(ItemStack item) {

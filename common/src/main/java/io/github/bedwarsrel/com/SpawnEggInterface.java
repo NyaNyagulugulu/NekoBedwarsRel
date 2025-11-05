@@ -6,48 +6,37 @@ import org.bukkit.inventory.ItemStack;
 public interface SpawnEggInterface {
   
   /**
-   * Get the type of entity this egg will spawn.
+   * 获取这个蛋将生成的实体类型
    *
-   * @return The entity type.
+   * @return 实体类型
    */
   EntityType getSpawnedType();
   
   /**
-   * Set the type of entity this egg will spawn.
+   * 设置这个蛋将生成的实体类型
    *
-   * @param type The entity type.
+   * @param type 实体类型
    */
   void setSpawnedType(EntityType type);
   
   /**
-   * Get an ItemStack of one spawn egg
+   * 获取一个生成蛋的ItemStack
    *
    * @return ItemStack
    */
   ItemStack toItemStack();
   
   /**
-   * Get an itemstack of spawn eggs
+   * 获取多个生成蛋的ItemStack
    *
-   * @return ItemStack of spawn eggs
+   * @return 生成蛋的ItemStack
    */
   ItemStack toItemStack(int amount);
   
   /**
-   * Clone this spawn egg
+   * 克隆这个生成蛋
    *
-   * @return A clone of this spawn egg
+   * @return 这个生成蛋的克隆
    */
   SpawnEggInterface clone();
-  
-  /**
-   * Converts from an item stack to a spawn egg
-   *
-   * @param item - ItemStack, quantity is disregarded
-   * @return SpawnEggInterface
-   */
-  static SpawnEggInterface fromItemStack(ItemStack item) {
-    // This method should be implemented in each version-specific class
-    throw new UnsupportedOperationException("This method should be implemented in version-specific classes");
-  }
 }

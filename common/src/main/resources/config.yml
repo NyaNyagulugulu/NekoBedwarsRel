@@ -1,212 +1,241 @@
 # ###############################
-# ####### BEDWARS CONFIG ########
-# ##### CREATED BY YANNICI ######
+# ####### 护床战争配置 #########
+# ##### 由 YANNICI 创建 ########
 # ###############################
-# ###### EXPLANATION ABOUT ######
-# ##### EVERY CONFIGURATION #####
-# ### YOU CAN FIND ON GITHUB ####
-# ############ WIKI #############
+# ######## 配置说明 #############
+# ##### 每个配置项解释 ##########
+# ### 你可以在GitHub上找到 #####
+# ############ 帮助 ############
 # ###############################
 
-# # TYPE HELP # #
-# int: number (not decimal)
-# string: a normal text (in most cases you can use colorcodes with a beginning §)
-# boolean: true or false (IMPORTANT: true OR false ONLY)
-# list<?>: a list of type ? (? is the type of the list items)
-# byte: a int but limited between -128 ... 127
-# short: a int but limited between -32768 ... 32767
-# char: one character
+# # 类型帮助 # #
+# int: 数字 (非小数)
+# string: 普通文本 (在大多数情况下你可以使用颜色代码，以§开头)
+# boolean: true 或 false (重要: 只能是 true 或 false)
+# list<?>: ?类型列表 (? 是列表项的类型)
+# byte: 整数，范围在 -128 ... 127
+# short: 整数，范围在 -32768 ... 32767
+# char: 单个字符
 
 chat-prefix: "&7[&b梦幻次元&7]&f"
 
-# Enabled Metrics
-# type: boolean
-# Plugin Metrics sending anonymous data about your server
-# to store statistics about the bedwars plugin. This is really
-# helpful for the developers of this plugin. You can
-# disable it anyway, that won't be a disadvantage
+# 启用统计
+# 类型: boolean
+# 插件统计会发送关于服务器的匿名数据
+# 以存储护床战争插件的统计数据。这对插件的
+# 开发者非常有帮助。你也可以
+# 禁用它，这不会有什么不利影响
 plugin-metrics: true
 
-# Send Error Data
-# type: boolean
-# If enabled, the plugin will automatically send error reports to "BugSnag".
-# This is really helpful for fixing issues with the plugin. You can
-# disable it anyway, that won't be a disadvantage
+# 发送错误数据
+# 类型: boolean
+# 如果启用，插件将自动发送错误报告到"BugSnag"。
+# 这对修复插件问题非常有帮助。你也可以
+# 禁用它，这不会有什么不利影响
 send-error-data: true
 
-# Global send messages
-# type: boolean
-# Send messages (like game started messages)
-# in global chat
+# 全局发送消息
+# 类型: boolean
+# 在全局聊天中发送消息(如游戏开始消息)
 global-messages: true
 
-# Global autobalance
-# type: boolean
-# Enables autobalancing in every game
+# 全局自动平衡
+# 类型: boolean
+# 在每个游戏中启用自动平衡
 global-autobalance: false
 
-# Global chat after end
-# type: boolean
-# When true, after game ends all players + spectators can chat
+# 游戏结束后全局聊天
+# 类型: boolean
+# 当为true时，游戏结束后所有玩家+旁观者可以聊天
 global-chat-after-end: true
 
-# game length
-# Type: int
-# The time the game should maximum run (in minutes). When the countdown expires
-# the game will end without a winner.
+# 游戏时长
+# 类型: int
+# 游戏最大运行时间(分钟)。当倒计时结束时
+# 游戏将无获胜者结束。
 gamelength: 60
 
-# Allow crafting
-# type: boolean
-# When true, crafting is allowed ingame
+# 允许合成
+# 类型: boolean
+# 当为true时，游戏中允许合成
 allow-crafting: false
 
-# Override player name
-# type: boolean
-# If true, all player display names will be overwritten (prefix etc. will be removed)
-# If false, it'll try to change the name color only, but will leave prefix which maybe causes
-# wrong colors in tablist or chat
+# 覆盖玩家名称
+# 类型: boolean
+# 如果为true，所有玩家显示名称将被覆盖(前缀等将被移除)
+# 如果为false，它只会尝试更改名称颜色，但会保留前缀，这可能导致
+# 选项卡列表或聊天中的颜色错误
 overwrite-names: false
 
-# Gamemode in lobby
-# type: int
-# The gamemode which should the players have in lobby
+# 大厅游戏模式
+# 类型: int
+# 玩家在大厅中应具有的游戏模式
 lobby-gamemode: 0
 
-# Holographic Stats configs
+# 全息统计配置
 holographic-stats:
-  # Show prefx
-  # type: boolean
-  # If true, the bedwars prefix will be shown on the bedwars
-  # holographic stats.
+  # 显示前缀
+  # 类型: boolean
+  # 如果为true，护床战争前缀将显示在护床战争
+  # 全息统计上。
   show-prefix: false
   
-  # Statistic names color
-  # type: string
-  # The color of the statistic names (like "Kills", "Deaths" ...)
+  # 统计名称颜色
+  # 类型: string
+  # 统计名称的颜色(如"击杀","死亡"...)
   name-color: "&7"
   
-  # Statstic value color
-  # type: string
-  # The color of the statistic values
+  # 统计值颜色
+  # 类型: string
+  # 统计值的颜色
   value-color: "&e"
   
-  # statistics headline
-  # type: string
-  # Leave the headline empty to remove the headline
-  head-line: "Your &eBEDWARS&f stats"
+  # 统计标题
+  # 类型: string
+  # 留空标题以移除标题
+  head-line: "你的 &e护床战争&f 统计"
 
-# Add teamname in tablist
-# type: boolean
-# Adds the teamname before the player name 
-# in the tablist
+# 在选项卡列表中添加队伍名称
+# 类型: boolean
+# 在选项卡列表中的玩家名称前
+# 添加队伍名称
 teamname-on-tab: false
 
-# Teamname after player name
-# type: boolean
-# If true, the teamname will be added behind the player name
-# in chat messages. If false, teamname won't be visible
+# 玩家名称后的队伍名称
+# 类型: boolean
+# 如果为true，队伍名称将添加在聊天消息中
+# 玩家名称之后。如果为false，队伍名称将不可见
 teamname-in-chat: false
 
-# Show hearts on death
-# type: boolean
-# If true the remaining hearts of the killing player
-# will be displayed in the chat. If false, it is not visible
+# 死亡时显示生命值
+# 类型: boolean
+# 如果为true，击杀玩家的剩余生命值
+# 将在聊天中显示。如果为false，则不可见
 hearts-on-death: true
 
-# Die on void damage
-# type: boolean
-# If true, player will die directly when get damage from void
+# 虚空伤害致死
+# 类型: boolean
+# 如果为true，玩家受到虚空伤害时将直接死亡
 die-on-void: false
 
-# type: boolean
-# If true the Ressourcespawner spawns items inside a chest if it is on top of a ressource spawner
-# If the chest is full, the items will drop naturally
+# 类型: boolean
+# 如果为true，资源生成器会在资源生成点上方有箱子时将物品生成在箱子内
+# 如果箱子已满，物品将自然掉落
 spawn-ressources-in-chest: true
 
-# Lobby Time
-# Type: int
-# The lobby time defines how long you have to
-# wait in the lobby until the game starts (when enough players) in seconds.
+# 大厅时间
+# 类型: int
+# 大厅时间定义了在大厅中等待游戏开始的时间(当有足够的玩家时)，以秒为单位。
 lobbytime: 60
 
-# Chat format (waiting)
-# type: string
-# The chat format for messages in lobby (waiting mode) when
-# player is not in a team
+# 聊天格式(等待)
+# 类型: string
+# 大厅中(等待模式)的消息聊天格式，当
+# 玩家不在队伍中时
 lobby-chatformat: "$player$: $msg$"
 
-# Chat format (all)
-# type: string
-# The chat format for messages which will be sent to all ingame players
-# if player is spectator $team$ will be "Spectator" (translated, of course!)
+# 聊天格式(全部)
+# 类型: string
+# 发送给所有游戏中玩家的消息格式
+# 如果玩家是旁观者，$team$ 将是"旁观者"(当然会翻译!)
 ingame-chatformat-all: "[$all$] <$team$>$player$: $msg$"
 
-# Chat format
-# type: string
-# The chat format for the normal ingame chat between team-players
+# 聊天格式
+# 类型: string
+# 队伍玩家之间普通游戏内聊天的格式
 ingame-chatformat: "<$team$>$player$: $msg$"
 
-# The main game block
-# type: string or int
-# The block which should be the main block for the game (respawn block)
+# 主游戏方块
+# 类型: string 或 int
+# 应该作为游戏主方块的方块(重生方块)
 game-block: BED_BLOCK
 
-# Save game records
-# type: boolean
-# If true, the time records for every game will be stored.
+# 保存游戏记录
+# 类型: boolean
+# 如果为true，每个游戏的时间记录将被保存。
 store-game-records: true
 
-# Save game records holder
-# type: boolean
-# If true, the record holders will be saved and displayed
+# 保存游戏记录保持者
+# 类型: boolean
+# 如果为true，记录保持者将被保存和显示
 store-game-records-holder: true
 
-# Bed sound
-# type: string
-# The sound which should be played when a bed will be destroyed
-# Which sound are available you can find here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
-# (in the Enum Constant Summery)
+# 床的声音
+# 类型: string
+# 床被破坏时应播放的声音
+# 哪些声音可用你可以在这里找到: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+# (在枚举常量摘要中)
 bed-sound: ENDERDRAGON_GROWL
 
-# Player drops
-# type: boolean
-# If true, player will drop his items
+# 玩家掉落
+# 类型: boolean
+# 如果为true，玩家将掉落他的物品
 player-drops: false
 
-# KeepInventory
-# type: boolean
-# If true, player will keep his inventory on death
+# 死亡时保留物品栏
+# 类型: boolean
+# 如果为true，玩家死亡时将保留物品栏
 keep-inventory-on-death: false
 
-# Place in liquid
-# type: boolean
-# If true, it's possible to set blocks in liquid (like water, lava ...)
-# If false, it will be prevented to set blocks in liquid
+# 在液体中放置方块
+# 类型: boolean
+# 如果为true，可以在液体中放置方块(如水、岩浆...)
+# 如果为false，将阻止在液体中放置方块
 place-in-liquid: true
 
-# Breakable blocks
+# 可破坏方块
 breakable-blocks:
-  # Use as blacklist
-  # type: boolean
-  # If true, it's possible to break all blocks except the blocks on the list below
-  # If false, it's only possible to break the blocks on the list below
+  # 用作黑名单
+  # 类型: boolean
+  # 如果为true，可以破坏除以下列表中方块外的所有方块
+  # 如果为false，只能破坏以下列表中的方块
   use-as-blacklist: false
 
-  # type: list<int> or list<string>
-  # Defines the block types which are allowed to be broken
+  # 类型: list<int> 或 list<string>
+  # 定义允许破坏的方块类型
   list:
     - 'none'
 
-# Join team with entity config
+# 通过实体加入队伍配置
 jointeam-entity:
-  # Team name visible
-  # type: boolean
-  # Should the name of the team be displayed above
-  # the entity? If so: true, if not: false
+  # 队伍名称可见
+  # 类型: boolean
+  # 是否应在实体上方显示队伍名称?
+  # 如果是:true，如果不是:false
   show-name: true
 
-# Lobby Scoreboard settings
+# 大厅记分板设置
+# 仅限1.8或更高版本
+lobby-scoreboard:
+  # 启用大厅记分板
+  # 类型: boolean
+  # 如果为true，将使用大厅记分板(可在本节配置)
+  # 如果为false，将使用普通记分板(带队伍显示)
+  enabled: true
+
+  # 大厅记分板标题
+  # 类型: string
+  # 大厅记分板的标题
+  # 占位符:
+  #  $regionname$ = 区域名称(或地图名称)
+  #  $gamename$  = 游戏名称
+  #  $players$  = 当前玩家数量
+  #  $maxplayers$ = 本游戏的最大玩家数
+  title: "&e护床战争"
+  
+  # 大厅记分板内容
+  # 类型: List<string>
+  # 大厅记分板的内容(文本列表)
+  # 使用" "(见示例)表示空行
+  # 占位符:
+  #  $regionname$ = 区域名称(或地图名称)
+  #  $gamename$  = 游戏名称
+  #  $players$  = 当前玩家数量
+  #  $maxplayers$ = 本游戏的最大玩家数
+  content:
+    - " "
+    - "&f地图: &2$regionname$"
+    - "&f玩家: &2$players# Lobby Scoreboard settings
 # ONLY 1.8 OR HIGHER
 lobby-scoreboard:
   # Enable lobby scoreboard
@@ -240,9 +269,37 @@ lobby-scoreboard:
     - "&fPlayers: &2$players$&f/&2$maxplayers$"
     - " "
     - "&fWaiting ..."
+    - " "f/&2$maxplayers$"
+    - " "
+    - "&f等待中 ..."
     - " "
   
-# Scoreboard settings
+# 记分板设置
+scoreboard:
+  # 记分板队伍格式(床被破坏)
+  # 类型: string
+  # 记分板上队伍的显示格式
+  # 可用占位符:
+  # - $status$ (床状态 => 已破坏/未破坏)
+  # - $team$ (彩色队伍名称)
+  format-bed-destroyed: "&c$status$ $team$"
+  
+  # 记分板队伍格式(床未被破坏)
+  # 类型: string
+  # 记分板上队伍的显示格式
+  # 可用占位符:
+  # - $status$ (床状态 => 已破坏/未破坏)
+  # - $team$ (彩色队伍名称)
+  format-bed-alive: "&a$status$ $team$"
+  
+  # 记分板标题格式
+  # 类型: string
+  # 记分板标题的格式(队伍上方)
+  # 可用占位符:
+  # - $game$ (游戏名称)
+  # - $region$ (游戏区域或世界名称)
+  # - $time$ (倒计时计时器)
+  format-title: "&e$region# Scoreboard settings
 scoreboard:
   # Format for scoreboard teams (bed destroyed)
   # type: string
@@ -267,300 +324,337 @@ scoreboard:
   # - $game$ (game name)
   # - $region$ (game's region- or worldname)
   # - $time$ (the countdown-timer)
-  format-title: "&e$region$&f - $time$"
+  format-title: "&e$region$&f - $time$"f - $time$"
 
-# Titles configuration (only compatible with >= 1.8)
+# 标题配置(仅兼容 >= 1.8)
 titles:
-  # Win title
+  # 胜利标题
   win:
-    # Enable win title (default: true)
-    # type: boolean
-    # If true, the title configured in this section will be displayed
+    # 启用胜利标题(默认:true)
+    # 类型: boolean
+    # 如果为true，将显示本节配置的标题
     enabled: true
     
-    # io.github.bedwarsrel.com.v1_8_r1.Title Fade-In time
-    # type: double
-    # The time how long the title fade-in should take in seconds
+    # 标题淡入时间
+    # 类型: double
+    # 标题淡入所需的时间(秒)
     title-fade-in: 1.5
     
-    # io.github.bedwarsrel.com.v1_8_r1.Title Stay time
-    # type: double
-    # The time how long the title will stay in seconds
+    # 标题停留时间
+    # 类型: double
+    # 标题停留的时间(秒)
     title-stay: 5.0
     
-    # io.github.bedwarsrel.com.v1_8_r1.Title Fade-Out time
-    # type: double
-    # The time how long the title fade-out should take in seconds
+    # 标题淡出时间
+    # 类型: double
+    # 标题淡出所需的时间(秒)
     title-fade-out: 2.0
     
-    # SubTitle Fade-In time
-    # type: double
-    # The time how long the subtitle fade-in should take in seconds
+    # 副标题淡入时间
+    # 类型: double
+    # 副标题淡入所需的时间(秒)
     subtitle-fade-in: 1.5
     
-    # SubTitle Stay time
-    # type: double
-    # The time how long the subtitle will stay in seconds
+    # 副标题停留时间
+    # 类型: double
+    # 副标题停留的时间(秒)
     subtitle-stay: 5.0
     
-    # SubTitle Fade-Out time
-    # type: double
-    # The time how long the subtitle fade-out should take in seconds
+    # 副标题淡出时间
+    # 类型: double
+    # 副标题淡出所需的时间(秒)
     subtitle-fade-out: 2.0
   
-  # Map title with builder  
+  # 带建造者的地图标题  
   map:
-    # Enable map title (default: false)
-    # type: boolean
-    # If true, a title will be displayed on start
-    # with the region name displayed and if set, the builder
-    # as subtitle. (/bw setbuilder {game})
+    # 启用地图标题(默认:false)
+    # 类型: boolean
+    # 如果为true，开始时将显示一个标题
+    # 显示区域名称，如果设置了建造者，
+    # 则作为副标题显示。(/bw setbuilder {game})
     enabled: false
     
-    # io.github.bedwarsrel.com.v1_8_r1.Title Fade-In time
-    # type: double
-    # The time how long the title fade-in should take in seconds
+    # 标题淡入时间
+    # 类型: double
+    # 标题淡入所需的时间(秒)
     title-fade-in: 1.5
     
-    # io.github.bedwarsrel.com.v1_8_r1.Title Stay time
-    # type: double
-    # The time how long the title will stay in seconds
+    # 标题停留时间
+    # 类型: double
+    # 标题停留的时间(秒)
     title-stay: 2.0
     
-    # io.github.bedwarsrel.com.v1_8_r1.Title Fade-Out time
-    # type: double
-    # The time how long the title fade-out should take in seconds
+    # 标题淡出时间
+    # 类型: double
+    # 标题淡出所需的时间(秒)
     title-fade-out: 1.5
     
-    # SubTitle Fade-In time
-    # type: double
-    # The time how long the subtitle fade-in should take in seconds
+    # 副标题淡入时间
+    # 类型: double
+    # 副标题淡入所需的时间(秒)
     subtitle-fade-in: 1.5
     
-    # SubTitle Stay time
-    # type: double
-    # The time how long the subtitle will stay in seconds
+    # 副标题停留时间
+    # 类型: double
+    # 副标题停留的时间(秒)
     subtitle-stay: 2.0
     
-    # SubTitle Fade-Out time
-    # type: double
-    # The time how long the subtitle fade-out should take in seconds
+    # 副标题淡出时间
+    # 类型: double
+    # 副标题淡出所需的时间(秒)
     subtitle-fade-out: 1.5
   
-  # Countdown title
+  # 倒计时标题
   countdown:
-    # Enabled countdown title
-    # type: boolean
-    # If true, the countdown will be displayed as title when game is
-    # in countdown (from 10) in lobby
+    # 启用倒计时标题
+    # 类型: boolean
+    # 如果为true，当游戏在大厅中倒计时(从10开始)时，
+    # 倒计时将作为标题显示
     enabled: true
     
-    # io.github.bedwarsrel.com.v1_8_r1.Title format
-    # type: string
-    # The format of the countdown (colors addable)
+    # 标题格式
+    # 类型: string
+    # 倒计时的格式(可添加颜色)
     format: "&3{countdown}"
 
-# Explode Behaviour
+# 爆炸行为
 explodes:
-  # Destroy world blocks
-  # type: boolean
-  # Set to true to allow destroying region blocks
-  # Set to false to prevent block destroying in region
+  # 破坏世界方块
+  # 类型: boolean
+  # 设置为true允许破坏区域方块
+  # 设置为false阻止在区域中破坏方块
   destroy-worldblocks: false
   
-  # Destroy beds
-  # type: boolean
-  # Set to true, to allow players to destroy beds with tnt
+  # 破坏床
+  # 类型: boolean
+  # 设置为true，允许玩家用TNT破坏床
   destroy-beds: false
   
-  # Block drops
-  # type: boolean
-  # If set to true, blocks will be dropping on explosions
-  # on false, exploded blocks won't drop anything
+  # 方块掉落
+  # 类型: boolean
+  # 如果设置为true，方块将在爆炸时掉落
+  # 设置为false，爆炸的方块不会掉落任何物品
   drop-blocking: false
 
-# Friendly Fire
-# Type: boolean (true or false)
-# Sets if friendlyfire is enabled (damage team mates)
+# 友军伤害
+# 类型: boolean (true 或 false)
+# 设置是否启用友军伤害(伤害队友)
 friendlyfire: false
 
-# Prevent breaking under team mate
-# type: boolean
-# If true, you can break the block right under a team-member
-# If false, it will be prevented to break block under team-member
+# 防止破坏队友下方方块
+# 类型: boolean
+# 如果为true，你可以破坏队友正下方的方块
+# 如果为false，将阻止破坏队友下方的方块
 friendlybreak: true
 
-# game over delay
-# Type: int
-# How much time (in seconds) should be waited until all players
-# will be teleported after a game ends.
+# 游戏结束延迟
+# 类型: int
+# 游戏结束后应等待多长时间(秒)直到所有玩家
+# 被传送。
 gameoverdelay: 10
 
-# Use the Bedwars shopvillager
-# Type: boolean
-# Decide if you want to use the internal bedwars shop
+# 使用护床战争商店村民
+# 类型: boolean
+# 决定是否使用内置的护床战争商店
 use-internal-shop: true
 
-# Restore inventory after game ends
-# type boolean
-# If true the inventory gets restore after the game ends
+# 游戏结束后恢复物品栏
+# 类型: boolean
+# 如果为true，游戏结束后将恢复物品栏
 save-inventory: true
 
-# Show team in io.github.bedwarsrel.com.v1_8_r1.ActionBar
-# Type: boolean
-# Sets if the name of a player's team should be displayed
-# in the io.github.bedwarsrel.com.v1_8_r1.ActionBar
+# 在ActionBar中显示队伍
+# 类型: boolean
+# 设置是否应在ActionBar中显示玩家队伍的名称
 show-team-in-actionbar: false
 
-# Chat to all prefix
-# type: list
-# The prefix character which indicates to chat
-# to all ingame players (not only team)
+# 全体聊天前缀
+# 类型: list
+# 表示向所有游戏中玩家(不仅是队伍)聊天的
+# 前缀字符
 chat-to-all-prefix:
 - '@'
 - '@a'
 - '@all'
 
-# Seperate game chat
-# type: boolean
-# Configure to false if players in games can read all messages of server
-# Configure to true if players receive only game messages
+# 分离游戏聊天
+# 类型: boolean
+# 如果游戏中玩家可以读取服务器的所有消息，则配置为false
+# 如果玩家只接收游戏消息，则配置为true
 seperate-game-chat: true
 
-# Seperate spectator chat
-# type: boolean
-# If set to true, spectators and game-players are seperated
-# and players don't see spectators chat
+# 分离旁观者聊天
+# 类型: boolean
+# 如果设置为true，旁观者和游戏参与者将被分离
+# 玩家看不到旁观者的聊天
 seperate-spectator-chat: false
 
-# Statistic-Configuration
+# 统计配置
 statistics:
-  # statistics enable
-  # type: boolean
-  # Set to true to enable statistics. Otherwise set to false
+  # 启用统计
+  # 类型: boolean
+  # 设置为true启用统计。否则设置为false
   enabled: false
   
-  # Show on game end
-  # type: boolean
-  # If true, the stats will be displayed after the game ends
+  # 游戏结束时显示
+  # 类型: boolean
+  # 如果为true，游戏结束后将显示统计数据
   show-on-game-end: true
   
-  # Achievements storage type
-  # type: string
-  # yaml or database
-  # Set to yaml to store statistics in a Yaml-Configuration file or
-  # set to database to store statistics in the defined database. If no database
-  # configured, the statistics will be stored in Yaml-Files
+  # 成就存储类型
+  # 类型: string
+  # yaml 或 database
+  # 设置为yaml将统计数据存储在Yaml配置文件中或
+  # 设置为database将统计数据存储在定义的数据库中。如果没有配置数据库
+  # 统计数据将存储在Yaml文件中
   storage: yaml
   
-  # Bed destroy kill
-  # type: boolean
-  # If true, kills will only count if the bed is destroyed
-  # If false, every kill will count as a kill
+  # 床破坏击杀
+  # 类型: boolean
+  # 如果为true，只有在床被破坏时击杀才算数
+  # 如果为false，每次击杀都计算为击杀
   bed-destroyed-kills: false
   
-  # Scores configuration
+  # 分数配置
   scores:
-    # Score per kill
-    # type: int
-    # Sets the score which a player gets when he kills someone
+    # 每次击杀得分
+    # 类型: int
+    # 设置玩家击杀某人时获得的分数
     kill: 10
     
-    # Score per death
-    # type: int
-    # Sets the score which a player gets when he dies
+    # 每次死亡得分
+    # 类型: int
+    # 设置玩家死亡时获得的分数
     die: 0
     
-    # Score per win
-    # type: int
-    # Sets the score which all team-players gets when a team wins
+    # 每次胜利得分
+    # 类型: int
+    # 设置队伍获胜时所有队友获得的分数
     win: 50
     
-    # Score per bed destroy
-    # type: int
-    # Sets the score which a player gets when he destroys a bed
+    # 每次破坏床得分
+    # 类型: int
+    # 设置玩家破坏床时获得的分数
     bed-destroy: 25
     
-    # Score per lose
-    # type: int
-    # Sets the score which all team-players gets when a lose
+    # 每次失败得分
+    # 类型: int
+    # 设置失败时所有队友获得的分数
     lose: 0
     
-    # New record set
-    # type: int
-    # Sets the score which all team-players gets when they made a new record
+    # 新记录设置
+    # 类型: int
+    # 设置队伍创造新记录时所有队友获得的分数
     record: 100
   
-# database (currently only mysql) configuration
+# 数据库(目前仅支持mysql)配置
 database:
 
-  # database host
-  # type: string
-  # Hostname of your database
+  # 数据库主机
+  # 类型: string
+  # 数据库的主机名
   host: localhost
   
-  # database port
-  # type: int
-  # Port of your database. Default mysql port: 3306
+  # 数据库端口
+  # 类型: int
+  # 数据库的端口。默认mysql端口: 3306
   port: 3306
   
-  # database name
-  # type: string
-  # The name of your database
+  # 数据库名称
+  # 类型: string
+  # 数据库的名称
   db: database
   
-  # database user
-  # type: string
-  # User for database authentication
+  # 数据库用户
+  # 类型: string
+  # 数据库认证用户
   user: root
   
-  # database password
-  # type: string
-  # Password of database user for authentication
+  # 数据库密码
+  # 类型: string
+  # 数据库用户的认证密码
   password: secret
 
-  # Table prefix
-  # type: string
-  # A prefix for the database tables
+  # 表前缀
+  # 类型: string
+  # 数据库表的前缀
   table-prefix: bw_
     
-# Spectation enabled
-# Type: boolean
-# Defines if spectators are allowed
+# 启用旁观
+# 类型: boolean
+# 定义是否允许旁观者
 spectation-enabled: false
 
-# Respawn protection
-# Type: int
-# The time which players are protected after respawn in seconds
-# Set it to 0 to disable respawn protection.
+# 重生保护
+# 类型: int
+# 玩家重生后受到保护的时间(秒)
+# 设置为0以禁用重生保护。
 respawn-protection: 0
 
-# Allowed ingame commands
-# type: List<String>
-# Defines a list of commands which are allowed for all for default.
-# Can be set with an starting / or without
+# 允许的游戏内命令
+# 类型: List<String>
+# 定义默认情况下所有人都允许使用的命令列表。
+# 可以以/开头设置或不以/开头设置
 allowed-commands:
   - /help
 
 endgame:
-### Main lobby enabled
-### Type: boolean
-### Not available with bungeecord!
-### If you want, that all players will be teleported to a specific
-### location (you can set with /bw setmainlobby {game}) after a game or when a player
-### uses /bw leave. If this is set to false, the players will be teleported to the location
-### where they joined the game!
+### 启用主大厅
+### 类型: boolean
+### 不适用于bungeecord!
+### 如果你希望所有玩家在游戏结束后或玩家使用/bw leave时
+### 被传送到特定位置(你可以用/bw setmainlobby {game}设置)。
+### 如果设置为false，玩家将被传送到他们加入游戏的位置!
   mainlobby-enabled: false
   
-### All players to mainlobby
-### Type: boolean
-### Not available with bungeecord!
-### Configures if all players will be teleported to mainlobby after game.
-### If false, all players will be teleported back to lobby to restart
-### a new game. This is only recognized if mainlobby-enabled set to true
+### 所有玩家到主大厅
+### 类型: boolean
+### 不适用于bungeecord!
+### 配置游戏结束后是否所有玩家都将被传送到主大厅。
+### 如果为false，所有玩家将被传送回大厅以重新开始
+### 新游戏。只有当mainlobby-enabled设置为true时才生效
   all-players-to-mainlobby: false 
 
-# Bungeecord configurations
+# Bungeecord配置
+bungeecord:
+ # 启用Bungeecord
+ # 类型: boolean
+ # 设置为true启用bungeecord兼容性。当你有
+ # 单个服务器且不使用bungeecord时设置为false。
+  enabled: false
+
+ # Bungeecord主服务器
+ # 类型: string
+ # bungeecord服务器集群的中心/主服务器名称。这将是
+ # 玩家离开时将被传送到的服务器。
+  hubserver: hub
+  
+ # 游戏结束大厅
+ # 类型: boolean
+ # 如果为true，在游戏结束被踢出之前会将玩家发送到你的大厅。
+  endgame-in-lobby: true
+  
+ # 完整服务器重启
+ # 类型: boolean
+ # 如果为true，服务器将进行完整重启，为false时
+ # 它只会尝试重启游戏
+  full-restart: true
+  
+ # 使用spigot重启
+ # 类型: boolean
+ # 如果为true，它会尝试使用spigot的/restart命令(仅当full-restart为true时)
+ # 如果spigot未运行，它将只停止服务器
+  spigot-restart: true
+
+ # 每日消息配置
+ # 类型: string (使用&的颜色代码)
+ # 在这里你可以指定应该在你的bungeecord服务器集群的
+ # 这个护床战争服务器上使用的MOTD。
+ # 对于大厅中的护床战争加入告示牌很有用
+  motds:
+    lobby: |
+      $regionname$
+      &7[&b$currentplayers# Bungeecord configurations
 bungeecord:
  # Enable Bungeecord
  # Type: boolean
@@ -608,28 +702,277 @@ bungeecord:
       &c[Stopped]
     full: |
       $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]7/&b$maxplayers# Bungeecord configurations
+bungeecord:
+ # Enable Bungeecord
+ # Type: boolean
+ # Set to true to enable bungeecord compatibility. Set to false when you have
+ # a single server and don't use bungeecord.
+  enabled: false
+
+ # Bungeecord Hubserver
+ # Type: string
+ # The name of the hub/main server of the bungeecord server-farm. This will be
+ # the server where the player will be teleported when they leave.
+  hubserver: hub
+  
+ # Endgame Lobby
+ # type: boolean
+ # If true, it sends players to your lobby during the endgame before getting kicked.
+  endgame-in-lobby: true
+  
+ # Full server restart
+ # Type: boolean
+ # If true, the server will do a full restart, with false
+ # it tries just to restart the game
+  full-restart: true
+  
+ # Use spigot restart
+ # type: boolean
+ # If true, it tries to use spigot's /restart command (ONLY WHEN full-restart IS true)
+ # If spigot isn't running, it will just stop the server
+  spigot-restart: true
+
+ # Message of the Day configuration
+ # Type: string (colorcodes with &)
+ # Here you can specify the MOTDs which should be used
+ # at this bedwars server of your bungeecord server-farm.
+ # Useful for bedwars join signs in your lobby
+  motds:
+    lobby: |
+      $regionname$
       &7[&b$currentplayers$&7/&b$maxplayers$&7]
+    running: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]
+    stopped: |
+      $regionname$
+      &c[Stopped]
+    full: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]7]
+    running: |
+      $regionname$
+      &7[&b$currentplayers# Bungeecord configurations
+bungeecord:
+ # Enable Bungeecord
+ # Type: boolean
+ # Set to true to enable bungeecord compatibility. Set to false when you have
+ # a single server and don't use bungeecord.
+  enabled: false
+
+ # Bungeecord Hubserver
+ # Type: string
+ # The name of the hub/main server of the bungeecord server-farm. This will be
+ # the server where the player will be teleported when they leave.
+  hubserver: hub
+  
+ # Endgame Lobby
+ # type: boolean
+ # If true, it sends players to your lobby during the endgame before getting kicked.
+  endgame-in-lobby: true
+  
+ # Full server restart
+ # Type: boolean
+ # If true, the server will do a full restart, with false
+ # it tries just to restart the game
+  full-restart: true
+  
+ # Use spigot restart
+ # type: boolean
+ # If true, it tries to use spigot's /restart command (ONLY WHEN full-restart IS true)
+ # If spigot isn't running, it will just stop the server
+  spigot-restart: true
+
+ # Message of the Day configuration
+ # Type: string (colorcodes with &)
+ # Here you can specify the MOTDs which should be used
+ # at this bedwars server of your bungeecord server-farm.
+ # Useful for bedwars join signs in your lobby
+  motds:
+    lobby: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]
+    running: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]
+    stopped: |
+      $regionname$
+      &c[Stopped]
+    full: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]7/&b$maxplayers# Bungeecord configurations
+bungeecord:
+ # Enable Bungeecord
+ # Type: boolean
+ # Set to true to enable bungeecord compatibility. Set to false when you have
+ # a single server and don't use bungeecord.
+  enabled: false
+
+ # Bungeecord Hubserver
+ # Type: string
+ # The name of the hub/main server of the bungeecord server-farm. This will be
+ # the server where the player will be teleported when they leave.
+  hubserver: hub
+  
+ # Endgame Lobby
+ # type: boolean
+ # If true, it sends players to your lobby during the endgame before getting kicked.
+  endgame-in-lobby: true
+  
+ # Full server restart
+ # Type: boolean
+ # If true, the server will do a full restart, with false
+ # it tries just to restart the game
+  full-restart: true
+  
+ # Use spigot restart
+ # type: boolean
+ # If true, it tries to use spigot's /restart command (ONLY WHEN full-restart IS true)
+ # If spigot isn't running, it will just stop the server
+  spigot-restart: true
+
+ # Message of the Day configuration
+ # Type: string (colorcodes with &)
+ # Here you can specify the MOTDs which should be used
+ # at this bedwars server of your bungeecord server-farm.
+ # Useful for bedwars join signs in your lobby
+  motds:
+    lobby: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]
+    running: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]
+    stopped: |
+      $regionname$
+      &c[Stopped]
+    full: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]7]
+    stopped: |
+      $regionname$
+      &c[已停止]
+    full: |
+      $regionname$
+      &7[&b$currentplayers# Bungeecord configurations
+bungeecord:
+ # Enable Bungeecord
+ # Type: boolean
+ # Set to true to enable bungeecord compatibility. Set to false when you have
+ # a single server and don't use bungeecord.
+  enabled: false
+
+ # Bungeecord Hubserver
+ # Type: string
+ # The name of the hub/main server of the bungeecord server-farm. This will be
+ # the server where the player will be teleported when they leave.
+  hubserver: hub
+  
+ # Endgame Lobby
+ # type: boolean
+ # If true, it sends players to your lobby during the endgame before getting kicked.
+  endgame-in-lobby: true
+  
+ # Full server restart
+ # Type: boolean
+ # If true, the server will do a full restart, with false
+ # it tries just to restart the game
+  full-restart: true
+  
+ # Use spigot restart
+ # type: boolean
+ # If true, it tries to use spigot's /restart command (ONLY WHEN full-restart IS true)
+ # If spigot isn't running, it will just stop the server
+  spigot-restart: true
+
+ # Message of the Day configuration
+ # Type: string (colorcodes with &)
+ # Here you can specify the MOTDs which should be used
+ # at this bedwars server of your bungeecord server-farm.
+ # Useful for bedwars join signs in your lobby
+  motds:
+    lobby: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]
+    running: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]
+    stopped: |
+      $regionname$
+      &c[Stopped]
+    full: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]7/&b$maxplayers# Bungeecord configurations
+bungeecord:
+ # Enable Bungeecord
+ # Type: boolean
+ # Set to true to enable bungeecord compatibility. Set to false when you have
+ # a single server and don't use bungeecord.
+  enabled: false
+
+ # Bungeecord Hubserver
+ # Type: string
+ # The name of the hub/main server of the bungeecord server-farm. This will be
+ # the server where the player will be teleported when they leave.
+  hubserver: hub
+  
+ # Endgame Lobby
+ # type: boolean
+ # If true, it sends players to your lobby during the endgame before getting kicked.
+  endgame-in-lobby: true
+  
+ # Full server restart
+ # Type: boolean
+ # If true, the server will do a full restart, with false
+ # it tries just to restart the game
+  full-restart: true
+  
+ # Use spigot restart
+ # type: boolean
+ # If true, it tries to use spigot's /restart command (ONLY WHEN full-restart IS true)
+ # If spigot isn't running, it will just stop the server
+  spigot-restart: true
+
+ # Message of the Day configuration
+ # Type: string (colorcodes with &)
+ # Here you can specify the MOTDs which should be used
+ # at this bedwars server of your bungeecord server-farm.
+ # Useful for bedwars join signs in your lobby
+  motds:
+    lobby: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]
+    running: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]
+    stopped: |
+      $regionname$
+      &c[Stopped]
+    full: |
+      $regionname$
+      &7[&b$currentplayers$&7/&b$maxplayers$&7]7]
     
-### localization (language)
-### Type: string (length: 2)
-### Sets the localization which should be used. 
-### Check the plugin description for possible languages!
-### Currently available languages: https://github.com/BedwarsRel/BedwarsRel/tree/master/src/main/resources/locale
-### The fallback language is en_US (english).
+### 本地化(语言)
+### 类型: string (长度: 2)
+### 设置应使用的本地化语言。
+### 查看插件描述了解可用语言!
+### 目前可用语言: https://github.com/BedwarsRel/BedwarsRel/tree/master/src/main/resources/locale
+### 备用语言是en_US (英语)。
 locale: en_US
 
-# Resources config
+# 资源配置
 resource:
-## Custom spawners list
-### Spawners (unique key!):
+## 自定义生成器列表
+### 生成器 (唯一键!):
 ### item: 
-###  type: List of ItemStack (same as shop)
+###  类型: ItemStack列表 (与商店相同)
 ### spawn-interval:
-###  type: int
-###  The interval in milliseconds the ressource should spawn
+###  类型: int
+###  资源生成的间隔(毫秒)
 ### spread:
-###  type: double
-###  How far the items should spread on drop
+###  类型: double
+###  物品掉落时的散布距离
   bronze:
     item:
     - type: CLAY_BRICK
@@ -637,7 +980,7 @@ resource:
       meta:
         ==: ItemMeta
         meta-type: UNSPECIFIC
-        display-name: "§4Bronze"
+        display-name: "§4青铜"
     spawn-interval: 1000
     spread: 1.0
   iron:
@@ -647,7 +990,7 @@ resource:
       meta:
         ==: ItemMeta
         meta-type: UNSPECIFIC
-        display-name: "§7Iron"
+        display-name: "§7铁"
     spawn-interval: 10000
     spread: 1.0
   gold:
@@ -657,229 +1000,222 @@ resource:
       meta:
         ==: ItemMeta
         meta-type: UNSPECIFIC
-        display-name: "§6Gold"
+        display-name: "§6金"
     spawn-interval: 20000
     spread: 1.0
 
-# Check Updates
-# type: boolean
-# Allow check for updates and automatically download the new update
-# and save it to the update folder of your server
+# 检查更新
+# 类型: boolean
+# 允许检查更新并自动下载新更新
+# 并将其保存到服务器的更新文件夹中
 check-updates: true
 
-# Update infos
-# type: boolean
-# If true, you will get information when a new update will be downloaded
-# If false, you won't get noticed when a update was downloaded
+# 更新信息
+# 类型: boolean
+# 如果为true，当新更新被下载时你会收到通知
+# 如果为false，更新被下载时你不会收到通知
 update-infos: true
 
-# Reward commands
-# It is prerequisite that every command can be executed from the console (sender).
-# These placeholder can be used in every command:
-# {player} - the player for which the command will be executed
-# {score} - the score of the player in the current game (ONLY WHEN STATISTICS ENABLED!)
+# 奖励命令
+# 前提是每个命令都可以从控制台(发送者)执行。
+# 这些占位符可以在每个命令中使用:
+# {player} - 将执行命令的玩家
+# {score} - 玩家在当前游戏中的得分 (仅当统计数据启用时!)
 rewards:
-  # Enable rewards
-  # type: boolean
-  # Enables reward commands
+  # 启用奖励
+  # 类型: boolean
+  # 启用奖励命令
   enabled: false
   
-  # game win
-  # type: List<string>
-  # commands which will be executed for every player which wins
-  # possible placeholders: {player}, {score}
-  # set the first command to "none", no commands will be executed
+  # 游戏胜利
+  # 类型: List<string>
+  # 将为每个获胜玩家执行的命令
+  # 可能的占位符: {player}, {score}
+  # 将第一个命令设置为"none"，不会执行任何命令
   player-win:
     - /example {player} 200
   
-  # game end (every player in game)
-  # type: List<string>
-  # commands which will be execute for every player in game
-  # after the game has end
-  # possible placeholders: {player}, {score}
-  # set the first command to "none", no commands will be executed
+  # 游戏结束 (游戏中每个玩家)
+  # 类型: List<string>
+  # 游戏结束后将为游戏中每个玩家执行的命令
+  # 可能的占位符: {player}, {score}
+  # 将第一个命令设置为"none"，不会执行任何命令
   player-end-game:
     - /example {player} {score}
     
-  # Player destroy bed
-  # type: List<string>
-  # commands which will be executed for the player which
-  # destroys a bed of a enemy team
-  # possible placeholders: {player}, {score}
-  # {score} here is the score how much is configured 
-  # at "statistics => scores => bed-destroy"
-  # set the first command to "none", no commands will be executed
+  # 玩家破坏床
+  # 类型: List<string>
+  # 将为破坏敌方队伍床的玩家执行的命令
+  # 可能的占位符: {player}, {score}
+  # {score} 是配置在"statistics => scores => bed-destroy"中的得分
+  # 将第一个命令设置为"none"，不会执行任何命令
   player-destroy-bed:
     - /example {player} {score}
     
-  # Player kill
-  # type: List<string>
-  # commands which will be executed for the player which
-  # kills a enemy player
-  # possible placeholders: {player}, {score}
-  # {score} here is the score how much is configured 
-  # at "statistics => scores => kill"
-  # set the first command to "none", no commands will be executed
+  # 玩家击杀
+  # 类型: List<string>
+  # 将为击杀敌方玩家的玩家执行的命令
+  # 可能的占位符: {player}, {score}
+  # {score} 是配置在"statistics => scores => kill"中的得分
+  # 将第一个命令设置为"none"，不会执行任何命令
   player-kill:
     - /example {player} 10
 
-# Special items
+# 特殊物品
 specials:
-  # Rescue platform settings
+  # 救援平台设置
   rescue-platform:
-    # Remove platform time
-    # type: int
-    # The time in seconds when the platform will be break after using
-    # the rescue platform
+    # 移除平台时间
+    # 类型: int
+    # 使用救援平台后平台将在多少秒后消失
     break-time: 10
     
-    # Using wait time
-    # type: int
-    # The seconds how long a player has to wait until he can 
-    # use a rescue platform again
+    # 使用等待时间
+    # 类型: int
+    # 玩家需要等待多少秒才能再次
+    # 使用救援平台
     using-wait-time: 20
     
-    # Item
-    # type: int or string
-    # The name or id of the item which should be used for the rescue platform
+    # 物品
+    # 类型: int 或 string
+    # 用于救援平台的物品名称或ID
     item: BLAZE_ROD
     
-    # Can break
-    # type: boolean
-    # If true, the rescue platform can be breaked by other players.
+    # 可以破坏
+    # 类型: boolean
+    # 如果为true，救援平台可以被其他玩家破坏。
     can-break: false
     
-    # Block
-    # type: int or string
-    # The block-type which should be used for the rescue platform
+    # 方块
+    # 类型: int 或 string
+    # 用于救援平台的方块类型
     block: STAINED_GLASS
     
-  # Protection wall settings
+  # 保护墙设置
   protection-wall:
-    # Break time
-    # type: int
-    # The time in seconds when the wall should be removed again or
-    # 0 when the wall shouldn't be breaked again
+    # 消失时间
+    # 类型: int
+    # 墙将在多少秒后再次移除或
+    # 0表示墙不应再次消失
     break-time: 0
   
-    # Wait time 
-    # type: int
-    # The wait time in seconds a player has to wait until he can
-    # use a protection wall again or 0 if protection walls can be activated anytime
+    # 等待时间 
+    # 类型: int
+    # 玩家需要等待多少秒才能再次
+    # 使用保护墙，或0表示保护墙可以随时激活
     wait-time: 20
     
-    # Can break wall
-    # type: boolean
-    # If true, the wall can be breaked by other players or
-    # false if it shouldn't be breakable
+    # 可以破坏墙
+    # 类型: boolean
+    # 如果为true，墙可以被其他玩家破坏或
+    # false表示不应可破坏
     can-break: true
     
-    # Interact item
-    # type: int or string
-    # The item id or string which indicates which item should be in the
-    # hand to execute the protection wall on interaction
+    # 交互物品
+    # 类型: int 或 string
+    # 交互时手握物品的ID或字符串，用于执行保护墙
     item: BRICK
     
-    # Wall type
-    # type: int or string
-    # The item-type which should be used for the wall. Should be 
-    # a real block!
+    # 墙类型
+    # 类型: int 或 string
+    # 用于墙的物品类型。应该是
+    # 真实的方块!
     block: SANDSTONE
     
-    # Wall width
-    # type: int
-    # The width in blocks the wall should be
-    # !! ODD ONLY !!
+    # 墙宽度
+    # 类型: int
+    # 墙应该有多宽的方块数量
+    # !! 只能是奇数 !!
     width: 5
     
-    # Wall height
-    # type: int
-    # The height in blocks the wall should be
+    # 墙高度
+    # 类型: int
+    # 墙应该有多高的方块数量
     height: 3
     
-    # Distance to player
-    # type: int
-    # The distance in blocks the wall should be away from the player
+    # 到玩家的距离
+    # 类型: int
+    # 墙应该距离玩家多远的方块数量
     distance: 2
     
-  # Magnetshoe settings
+  # 磁性鞋设置
   magnetshoe:
-    # Knockback probability
-    # type: int
-    # The probability in percent the knockback will be prevented
+    # 击退概率
+    # 类型: int
+    # 击退被阻止的概率百分比
     probability: 75
     
-    # Knockback boots
-    # type: item (boots only!!!)
-    # The boots which are used as magnetshoe
+    # 击退靴子
+    # 类型: item (仅限靴子!!!)
+    # 用作磁性鞋的靴子
     boots: IRON_BOOTS
     
-  # Warp-Powder settings
+  # 传送粉设置
   warp-powder:
-    # Show particles
-    # type: boolean
-    # If true, particles will be shown
+    # 显示粒子
+    # 类型: boolean
+    # 如果为true，将显示粒子
     show-particles: true
     
-    # Particles type
-    # type: string
-    # Decide which particles should be used at teleport.
+    # 粒子类型
+    # 类型: string
+    # 决定传送时应使用哪些粒子。
     particle: fireworksSpark
     
-    # Teleport time
-    # type: int
-    # The time in seconds a teleportation should need
+    # 传送时间
+    # 类型: int
+    # 传送需要多少秒
     teleport-time: 6
     
-  # Trap settings
+  # 陷阱设置
   trap:
 
-    # Trap play sound
-    # type: boolean
-    # Set to true, to play sound when someone step into a trap (sound only to players
-    # of the team, which placed the trap)
+    # 陷阱播放声音
+    # 类型: boolean
+    # 设置为true，在有人踩到陷阱时播放声音(仅对
+    # 放置陷阱的队伍玩家播放声音)
     play-sound: true
 
-    # List of effects the player gets after stepping on a trap
+    # 玩家踩到陷阱后获得的效果列表
     effects:
 
-    # Now the custom PotionEffect
-    # It is a list of effects
+    # 现在是自定义药水效果
+    # 这是一个效果列表
     - ==: PotionEffect
       
-      # Potion id
-      # type: int
-      # The id 15 means the PotionEffect Blindness
-      # You can find a list of possible effect ids you can use on http://minecraft-helpandinfo.weebly.com/potion-effects-ids.html
+      # 药水ID
+      # 类型: int
+      # ID 15表示药水效果失明
+      # 你可以在 http://minecraft-helpandinfo.weebly.com/potion-effects-ids.html 上找到可用效果ID列表
       effect: 15
       
       
-      # Effect duration in ticks (20 ticks = 1 second)
-      # type: int
-      # The duration the trapeffect will have effects on the player in ticks
-      # 100 ticks is default (5 seconds)
+      # 效果持续时间(刻)(20刻 = 1秒)
+      # 类型: int
+      # 陷阱效果对玩家产生影响的持续时间(刻)
+      # 100刻是默认值(5秒)
       duration: 100
     
-      # Effect amplifier
-      # type: int
-      # The higher the value, the heavier the effect.
+      # 效果放大器
+      # 类型: int
+      # 值越高，效果越强。
       amplifier: 2
       
-      # Effect ambient
-      # type: boolean
-      # Makes potion effect produce more, translucent, particles.
+      # 效果环境
+      # 类型: boolean
+      # 使药水效果产生更多半透明粒子。
       ambient: true
       
-      # Effect has particles
-      # type: boolean
-      # Set to true, if trap effect should generate particles around the player
+      # 效果有粒子
+      # 类型: boolean
+      # 设置为true，如果陷阱效果应在玩家周围生成粒子
       has-particles: true
     
-    # Two more examples
-    # Feel free to customize and add more effects
+    # 两个更多示例
+    # 随意自定义和添加更多效果
     - ==: PotionEffect
       
-      # PotionEffect Weakness
+      # 药水效果虚弱
       effect: 18
       
       duration: 100
@@ -889,7 +1225,7 @@ specials:
       
     - ==: PotionEffect
     
-      # PotionEffect Slowness
+      # 药水效果缓慢
       effect: 2
        
       duration: 100
@@ -897,44 +1233,86 @@ specials:
       ambient: true
       has-particles: true
   
-  # TNT-Creature settings
+  # TNT生物设置
   tntsheep:
-    # TNT fuse time
-    # type: double
-    # The time in seconds when the TNT will explode
+    # TNT引信时间
+    # 类型: double
+    # TNT将在多少秒后爆炸
     fuse-time: 8.0
     
-    # Sheep movement speed
-    # type: double
-    # The movement speed of the sheep
-    # Prefered 0.4! Do not set higher than 0.8!!!
+    # 羊移动速度
+    # 类型: double
+    # 羊的移动速度
+    # 推荐0.4! 不要设置高于0.8!!!
     speed: 0.4
     
-    # Explosion factor
-    # type: double
-    # The factor for the explosive! 1.0 is default tnt-explosion.
-    # Its not recommended to use values above 1.0
+    # 爆炸因子
+    # 类型: double
+    # 爆炸的倍数! 1.0是默认TNT爆炸。
+    # 不建议使用高于1.0的值
     explosion-factor: 1.0
   
-  # arrow-blocker settings
+  # 箭矢阻挡器设置
   arrow-blocker:
-    # Protection time
-    # type: int
-    # The time to protect the player from projectils
+    # 保护时间
+    # 类型: int
+    # 保护玩家免受投射物的时间
     protection-time: 10
     
-    # Protection time
-    # type: int
-    # Time to wait for the next useage
+    # 保护时间
+    # 类型: int
+    # 等待下次使用的时间
     using-wait-time: 5
     
-    # Interact item
-    # type: int or string
-    # The item id or string which indicates which item should be in the
-    # hand to execute the arrow-blocker on interaction
+    # 交互物品
+    # 类型: int 或 string
+    # 交互时手握物品的ID或字符串，用于执行箭矢阻挡器
     item: ender_eye
   
-# Sign configuration
+# 告示牌配置
+# 你可以使用以下占位符(使用&的颜色):
+# $gamename$ - 显示游戏名称
+# $regionname$ - 显示区域名称
+# $maxplayers$ - 显示最大玩家数量(满时颜色覆盖)
+# $currentplayers$ - 显示游戏中当前玩家数(满时颜色覆盖)
+# $status$ - 显示当前游戏状态(大厅、运行中或等待中)
+# $title$ - 显示护床战争标题(locale文件的sign.firstline)
+sign:
+  first-line: '$title
+
+# Configure player default settings  
+player-settings:
+
+  # shop: One Stack on shift click
+  # type: boolean
+  # Only one full stack when doing a shift click to buy items.
+  # Player can change that in shop, this is just a default
+  one-stack-on-shift: false
+  
+  # shop: Default shop on game start
+  # type: boolean
+  # Set the default shop on game start.
+  # Player can change that in shop, this is just a default
+  old-shop-as-default: false
+
+  second-line: '$regionname
+
+# Configure player default settings  
+player-settings:
+
+  # shop: One Stack on shift click
+  # type: boolean
+  # Only one full stack when doing a shift click to buy items.
+  # Player can change that in shop, this is just a default
+  one-stack-on-shift: false
+  
+  # shop: Default shop on game start
+  # type: boolean
+  # Set the default shop on game start.
+  # Player can change that in shop, this is just a default
+  old-shop-as-default: false
+
+  third-line: '玩家 &7[&b$currentplayers# Sign configuration
 # You can use following placeholder (colors with &):
 # $gamename$ - display game name
 # $regionname$ - display region name
@@ -946,7 +1324,36 @@ sign:
   first-line: '$title$'
   second-line: '$regionname$'
   third-line: 'Players &7[&b$currentplayers$&7/&b$maxplayers$&7]'
-  fourth-line: '$status$'
+  fourth-line: '$status$'7/&b$maxplayers# Sign configuration
+# You can use following placeholder (colors with &):
+# $gamename$ - display game name
+# $regionname$ - display region name
+# $maxplayers$ - display max players amount (color overwrite when full)
+# $currentplayers$ - display current players in game (color overwrite when full)
+# $status$ - display current game status (lobby, running or waiting)
+# $title$ - display bedwars title (sign.firstline of locale file)
+sign:
+  first-line: '$title$'
+  second-line: '$regionname$'
+  third-line: 'Players &7[&b$currentplayers$&7/&b$maxplayers$&7]'
+  fourth-line: '$status$'7]'
+  fourth-line: '$status
+
+# Configure player default settings  
+player-settings:
+
+  # shop: One Stack on shift click
+  # type: boolean
+  # Only one full stack when doing a shift click to buy items.
+  # Player can change that in shop, this is just a default
+  one-stack-on-shift: false
+  
+  # shop: Default shop on game start
+  # type: boolean
+  # Set the default shop on game start.
+  # Player can change that in shop, this is just a default
+  old-shop-as-default: false
+
 
 # Configure player default settings  
 player-settings:

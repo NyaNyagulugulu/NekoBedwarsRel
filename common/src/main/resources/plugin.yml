@@ -1,7 +1,7 @@
 name: "BedwarsRel"
 description: |
-  §aBedwars Reloaded - The Minecraft Bedwars Plugin!
-  §7Bedwars is a Minecraft minigame where teams (max. 15) try to destroy the other teams' beds. But there is more: On the whole map there are ressource spawners spawning items. Some items are more worth than others and with these you can buy different things in the so called "Villager Shop". You will find powerful weapons or potions or simple blocks to get to the other bases. Get to the others bases? Yes, every team starts on an island and you have to get to the others with blocks which you can buy in the "Villager Shop". When you meet a enemy you have to try to kill him so he'll lose all the equipment which he had in his inventory. As soon as a team's bed is destroyed they cannot respawn again and last team standing wins.
+  §aBedwars Reloaded - Minecraft护床战争插件!
+  §7护床战争是一个Minecraft小游戏，队伍(最多15个)试图摧毁其他队伍的床。但还有更多内容：在整个地图上都有资源生成器生成物品。有些物品比其他物品更有价值，你可以用这些物品在所谓的"村民商店"中购买不同的东西。你会发现强大的武器或药水或简单的方块来到达其他基地。到达其他基地？是的，每个队伍都从一个岛屿开始，你必须用在"村民商店"中购买的方块到达其他队伍。当你遇到敌人时，你必须尝试杀死他，这样他就会失去库存中的所有装备。一旦一个队伍的床被摧毁，他们就无法再次重生，最后存活的队伍获胜。
 author: "不穿胖次の小奶猫"
 website: "https://github.com/NyaNyagulugulu/NekoBedwarsRel"
 
@@ -16,133 +16,133 @@ softdepend: [Multiverse-Core, Multiworld, MultiWorld, HolographicDisplays, Holog
 
 commands:
     bw:
-        description: Base command for all Test-Plugin commands
+        description: 所有测试插件命令的基础命令
         usage: /<command> help
         permission: bw.base
     bw setspawner:
-        description: Sets a ressource spawn point of a specific type
-        usage: /<command> [game] [Ressource]
+        description: 设置特定类型的资源生成点
+        usage: /<command> [游戏] [资源]
         permission: bw.setup
     bw addgame:
-        description: Add a new game
-        usage: /<command> [Name]
+        description: 添加一个新游戏
+        usage: /<command> [名称]
         permission: bw.setup
     bw start:
-        description: Starts a game
-        usage: /<command> [game]
+        description: 开始一个游戏
+        usage: /<command> [游戏]
         permission: bw.setup
     bw addteam:
-        description: Adds a team to a game
-        usage: /<command> [Name] [Color]
+        description: 向游戏中添加一个队伍
+        usage: /<command> [名称] [颜色]
         permission: bw.setup
     bw save:
-        description: Saves a game to config files
-        usage: /<command> [Name]
+        description: 将游戏保存到配置文件
+        usage: /<command> [名称]
         permission: bw.setup
     bw setregion:
-        description: Sets one of the two possible region of the game
-        usage: /<command> [Name] [loc1;loc2]
+        description: 设置游戏的两个可能区域之一
+        usage: /<command> [名称] [loc1;loc2]
         permission: bw.setup
     bw join:
-        description: Joins a specific team in a game
-        usage: /<command> [game] [Team]
+        description: 加入游戏中的特定队伍
+        usage: /<command> [游戏] [队伍]
         permission: bw.base
     bw setspawn:
-        description: Sets the spawn of a team
-        usage: /<command> [game] [Team]
+        description: 设置队伍的出生点
+        usage: /<command> [游戏] [队伍]
         permission: bw.setup
     bw setlobby:
-        description: Sets the lobby location of a game
-        usage: /<command> [game]
+        description: 设置游戏的大厅位置
+        usage: /<command> [游戏]
         permission: bw.setup
     bw settarget:
-        description: Sets the bed of a team in a game
-        usage: /<command> [game] [Team]
+        description: 设置游戏中队伍的床
+        usage: /<command> [游戏] [队伍]
         permission: bw.setup
     bw setbed:
-        description: Sets the bed of a team in a game
-        usage: /<command> [game] [Team]
+        description: 设置游戏中队伍的床
+        usage: /<command> [游戏] [队伍]
         permission: bw.setup
     bw leave:
-        description: Leaves the current game
+        description: 离开当前游戏
         usage: /<command>
         permission: bw.base
     bw reload:
-        description: Reloads the configurations and translations
+        description: 重新加载配置和翻译
         usage: /<command>
         permission: bw.setup
     bw list:
-        description: List all availabe games
+        description: 列出所有可用游戏
         usage: /<command>
         permission: bw.base
     bw regionname:
-        description: Sets a region name
+        description: 设置区域名称
         usage: /<command>
         permission: bw.setup
     bw removeteam:
-        description: Removes a team of the game
+        description: 从游戏中移除一个队伍
         usage: /<command>
         permission: bw.setup
     bw removegame:
-        description: Removes a game
+        description: 移除一个游戏
         usage: /<command>
         permission: bw.setup
     bw clearspawner:
-        description: Removes all ressource spawners from the game
+        description: 从游戏中移除所有资源生成器
         usage: /<command>
         permission: bw.setup
     bw gametime:
-        description: Sets the time for the game used in the world
+        description: 设置游戏中使用的世界时间
         usage: /<command>
         permission: bw.setup
     bw stats:
-        description: Shows the stats of bedwars
+        description: 显示护床战争统计数据
         usage: /<command>
         permission: bw.base
     bw setminplayers:
-        description: Sets the min player amount for a game
+        description: 设置游戏的最小玩家数量
         usage: /<command>
         permission: bw.setup
     bw setgameblock:
-        description: Sets the target block for a specific game
+        description: 为特定游戏设置目标方块
         usage: /<command>
         permission: bw.setup
     bw setbuilder:
-        description: Sets the map-builder of the map for displaying title when game starts
+        description: 设置地图的地图建造者，用于游戏开始时显示标题
         usage: /<command>
         permission: bw.setup
     bw setautobalance:
-        description: Turn the autobalance for this game on or off when global-autobalance is false
+        description: 当全局自动平衡关闭时，开启或关闭此游戏的自动平衡
         usage: /<command>
         permission: bw.setup
     bw kick:
-        description: Kicks a player from the game
+        description: 从游戏中踢出玩家
         usage: /<command>
         permission: bw.kick
     bw addteamjoin:
-        description: Mark a creature which can be used to join a specific team
+        description: 标记可用于加入特定队伍的生物
         usage: /<command>
         permission: bw.setup
     bw addholo:
-        description: Adds a location of the hologram stats
+        description: 添加全息统计数据的位置
         usage: /<command>
         permission: bw.setup
     bw removeholo:
-        description: Removes a hologram statistic location
+        description: 移除全息统计位置
         usage: /<command>
         permission: bw.setup
 permissions:
     bw.base:
-        description: Allows you to show to play games
+        description: 允许你显示游戏
         default: true
     bw.setup:
-        description: Allows you to set up new or existing games
+        description: 允许你设置新游戏或现有游戏
         default: op
     bw.kick:
-        description: Allows a player to kick other players from the game
+        description: 允许玩家从游戏中踢出其他玩家
         default: op
     bw.vip.*:
-        description: Allows special user permissions
+        description: 允许特殊用户权限
         default: op
         children:
             bw.vip.joinfull: true
@@ -150,8 +150,8 @@ permissions:
             bw.vip.reducecountdown: true
             bw.vip.skipbalance: true
     bw.cmd:
-        description: Allows to execute non-bedwars commands ingame
+        description: 允许在游戏中执行非护床战争命令
         default: op
     bw.otherstats:
-        description: Allows to show stats of other players
+        description: 允许显示其他玩家的统计数据
         default: op

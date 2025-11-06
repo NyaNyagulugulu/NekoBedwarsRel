@@ -90,7 +90,7 @@ gamecheck:
   TEAM_NO_WRONG_BED: "有队伍没有设置床!"
   TEAM_NO_WRONG_TARGET: "有队伍没有设置重生点!"
 ingame:
-  team: "Team"
+  team: "队伍"
   teams: "队伍"
   all: "全部"
   record: "&e$record$&a 是这个地图的记录!"
@@ -214,8 +214,8 @@ commands:
     name: "设置陷进"
     desc: "设置一个目标陷进"
   setbed:
-    name: "设置床 (synonym for settarget)"
-    desc: "为队伍设置床 (Synonym for settarget)"
+    name: "设置床 (settarget的同义词)"
+    desc: "为队伍设置床 (settarget的同义词)"
   setlobby:
     name: "设置大厅"
     desc: "设置一个游戏大厅"
@@ -242,56 +242,56 @@ commands:
     desc: "重新载入配置文件和语言文件"
   setmainlobby:
     name: "设置主大厅"
-    desc: "设置游戏主大厅 (is needed when mainlobby-enabled is set to true)"
+    desc: "设置游戏主大厅 (当mainlobby-enabled设置为true时需要)"
   list:
     name: "游戏列表"
     desc: "列出可用的游戏"
   regionname:
     name: "设置区域名字"
-    desc: "给区域设置单独的名字 (instead of world name)"
+    desc: "给区域设置单独的名字 (而不是世界名称)"
   removeteam:
-    name: "移除多雾"
-    desc: "从游戏移除一个队伍 (only in stopped mode)"
+    name: "移除队伍"
+    desc: "从游戏移除一个队伍 (仅在停止模式下)"
   removegame:
     name: "移除游戏"
-    desc: "从配置文件删除游戏"
+    desc: "从配置文件中删除游戏"
   clearspawner:
     name: "清除资源刷新点"
-    desc: "移除所有刷新点，需要保存."
+    desc: "移除所有刷新点，需要保存。"
   gametime:
     name: "设置游戏时间"
     desc: "设置游戏时间"
   stats:
     name: "统计"
-    desc: "显示你的统计"
+    desc: "显示你的统计数据"
   setbuilder:
     name: "设置地图作者"
-    desc: "设置地图作者，将会在游戏结束的时候显示."
+    desc: "设置地图作者，将会在游戏结束时显示。"
   setgameblock:
     name: "设置游戏方块"
-    desc: "设置游戏的方块类型将会替代配置文件里面的 'game-block' . 输入'DEFAULT' 使用默认设置"
+    desc: "设置游戏的方块类型，将会替代配置文件中的 'game-block'。输入'DEFAULT' 使用默认设置"
   setautobalance:
-    name: "设置自动排行"
-    desc: "如果'global-autobalance'设置为'false', 使用这个指令将会设置为'true'!"
+    name: "设置自动平衡"
+    desc: "如果'global-autobalance'设置为'false'，使用这个指令将会设置为'true'！"
   setminplayers:
     name: "设置最小玩家数"
     desc: "设置游戏开始时需要的玩家数量"
   kick:
     name: "踢出玩家"
-    desc: "将指定玩家从当前游戏踢出!"
+    desc: "将指定玩家从当前游戏中踢出！"
   addteamjoin:
     name: "添加队伍选择"
-    desc: "在当前位置加入指定队伍的标记!"
+    desc: "在当前位置添加指定队伍的标记！"
   addholo:
     name: "添加全息显示"
-    desc: "在当前位置将增加全息图统计!"
+    desc: "在当前位置将增加全息图统计！"
   removeholo:
-    name: "删除权限显示"
-    desc: "使用这个命令后玩家right-click即可移除全息图."
+    name: "移除全息显示"
+    desc: "使用这个命令后玩家右键点击即可移除全息图。"
     explain: "10秒只可执行一次"
   debugpaste:
-    name: "Paste debug data"
-    desc: "这将向 hastebin 计划发送一些调试数据，并返回一个连接以提供给开发人员"
+    name: "粘贴调试数据"
+    desc: "这将向 hastebin 发送一些调试数据，并返回一个连接以提供给开发人员"
   itemspaste:
-    name: "Paste your inventory to a file"
-    desc: "This will return a link where you can see your current inventory being serialized as an example for your shop.yml"
+    name: "将你的物品栏粘贴到文件"
+    desc: "这将返回一个链接，你可以在其中看到你的当前物品栏被序列化为shop.yml的示例"

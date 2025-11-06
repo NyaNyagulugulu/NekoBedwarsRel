@@ -372,18 +372,18 @@ public class BedwarsRel extends JavaPlugin {
     return false;
   }
 
-  /**
-   * Returns the max length of a game in seconds
-   *
-   * @return The length of the game in seconds
-   */
-  public int getMaxLength() {
-    if (this.getConfig().contains("gamelength") && this.getConfig().isInt("gamelength")) {
-      return this.getConfig().getInt("gamelength") * 60;
-    }
-
-    // fallback time is 60 minutes
-    return 60 * 60;
+  /**
+   * 返回游戏的最大时长（以秒为单位）
+   *
+   * @return 游戏的时长（以秒为单位）
+   */
+  public int getMaxLength() {
+    if (this.getConfig().contains("gamelength") && this.getConfig().isInt("gamelength")) {
+      return this.getConfig().getInt("gamelength") * 60;
+    }
+
+    // 后备时间是60分钟
+    return 60 * 60;
   }
 
   public Package getMinecraftPackage() {
@@ -711,14 +711,14 @@ public class BedwarsRel extends JavaPlugin {
 
     if (this.getDescription().getVersion().contains("-SNAPSHOT")
         && System.getProperty("IReallyKnowWhatIAmDoingISwear") == null) {
-      this.getServer().getConsoleSender().sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "*** Warning, you are using a development build ***"));
-      this.getServer().getConsoleSender().sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "*** You will get NO support regarding this build ***"));
-      this.getServer().getConsoleSender().sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "*** Please download a stable build from https://github.com/BedwarsRel/BedwarsRel/releases ***"));
-      this.getServer().getConsoleSender().sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "*** Server will start in 10 seconds ***"));
-      try {
-        Thread.sleep(TimeUnit.SECONDS.toMillis(10));
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+      this.getServer().getConsoleSender().sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "*** 警告，您正在使用开发版本 ***"));
+      this.getServer().getConsoleSender().sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "*** 您将无法获得关于此版本的支持 ***"));
+      this.getServer().getConsoleSender().sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "*** 请从 https://github.com/BedwarsRel/BedwarsRel/releases 下载稳定版本 ***"));
+      this.getServer().getConsoleSender().sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "*** 服务器将在10秒后启动 ***"));
+      try {
+        Thread.sleep(TimeUnit.SECONDS.toMillis(10));
+      } catch (InterruptedException e) {
+        e.printStackTrace();
       }
     }
 
@@ -792,9 +792,9 @@ public class BedwarsRel extends JavaPlugin {
       this.bugsnag.setAppVersion(SupportData.getPluginVersion());
       this.bugsnag.setProjectPackages("io.github.bedwarsrel");
       this.bugsnag.setReleaseStage(SupportData.getPluginVersionType());
-    } catch (Exception e) {
-      this.getServer().getConsoleSender().sendMessage(
-          ChatWriter.pluginMessage(ChatColor.GOLD + "Couldn't register Bugsnag."));
+    } catch (Exception e) {
+      this.getServer().getConsoleSender().sendMessage(
+          ChatWriter.pluginMessage(ChatColor.GOLD + "无法注册 Bugsnag。"));
     }
   }
 
@@ -905,10 +905,10 @@ public class BedwarsRel extends JavaPlugin {
       try {
         McStatsMetrics mcStatsMetrics = new McStatsMetrics(this);
         mcStatsMetrics.start();
-      } catch (Exception ex) {
-        BedwarsRel.getInstance().getBugsnag().notify(ex);
-        this.getServer().getConsoleSender().sendMessage(ChatWriter
-            .pluginMessage(ChatColor.RED + "Metrics are enabled, but couldn't send data!"));
+      } catch (Exception ex) {
+        BedwarsRel.getInstance().getBugsnag().notify(ex);
+        this.getServer().getConsoleSender().sendMessage(ChatWriter
+            .pluginMessage(ChatColor.RED + "统计已启用，但无法发送数据！"));
       }
     }
   }

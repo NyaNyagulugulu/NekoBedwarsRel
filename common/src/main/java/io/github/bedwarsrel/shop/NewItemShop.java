@@ -390,20 +390,13 @@ public class NewItemShop {
 
 
 
-      if (item.getType().equals(this.currentCategory.getMaterial())) {
-
-        // back to default category view
-
-        this.currentCategory = null;
-
-        this.openCategoryInventory(player);
-
-      } else {
-
-        // open the clicked buy inventory
-
-        this.handleCategoryInventoryClick(ice, game, player);
-
+      if (item.getType().equals(this.currentCategory.getMaterial())) {
+        // 不返回分类选择界面，保持当前分类打开
+        // this.currentCategory = null;
+        // this.openCategoryInventory(player);
+      } else {
+        // 打开点击的分类购买界面
+        this.handleCategoryInventoryClick(ice, game, player);
       }
 
     } else if (ice.getRawSlot() < totalSize) {

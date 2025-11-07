@@ -263,9 +263,9 @@ public class NewItemShop {
 
   }
 
-  private void changeToOldShop(Game game, Player player) {
-    player.sendMessage("旧版商店已被移除");
-    player.closeInventory();
+  private void changeToOldShop(Game game, Player player) {
+    player.sendMessage("旧版商店已被移除");
+    player.closeInventory();
   }
 
   private int getBuyInventorySize(int sizeCategories, int sizeOffers) {
@@ -412,8 +412,16 @@ public class NewItemShop {
         return;
       }
 
-      if (ice.getRawSlot() < totalSize) {
-        // its a buying item
+      // 在新的布局中，物品区域在灰色分隔行之后，需要重新判断物品槽位
+      // 计算分类区域所占的行数
+      int categoryRowsCal = (sizeCategories + 8) / 9; // 分类占用的行数（向上取整）
+      int separatorStartCal = categoryRowsCal * 9; // 分隔行开始位置
+      int itemStartSlot = separatorStartCal + 9; // 物品区域开始位置（跳过分隔行）
+      
+      // 检查点击是否在物品区域内且该槽位确实有物品
+      if (ice.getRawSlot() >= itemStartSlot && ice.getRawSlot() < 54 // 54是固定6行界面大小
+          && item != null && item.getType() != Material.AIR) {
+        // 这是一个购买物品的点击
 
         ice.setCancelled(true);
 
@@ -487,17 +495,8 @@ public class NewItemShop {
 
       } else {
 
-        if (ice.isShiftClick()) {
-
-          ice.setCancelled(true);
-
-        } else {
-
-          ice.setCancelled(false);
-
-        }
-
-
+        // 对于不属于分类、分隔符或物品区域的点击（如空槽位），也需要取消操作
+        ice.setCancelled(true);
 
         return;
 
@@ -600,58 +599,58 @@ public class NewItemShop {
     return (this.currentCategory.equals(category));
   }
 
-  public void openBuyInventory(MerchantCategory category, Player player, Game game) {
-
-    List<VillagerTrade> offers = category.getOffers();
-    int sizeCategories = this.getCategoriesSize(player);
-
-    // 固定使用6行界面 (54个槽位)
-    int invSize = 54;
-
-    player.playSound(player.getLocation(), SoundMachine.get("CLICK", "UI_BUTTON_CLICK"),
-        Float.valueOf("1.0"), Float.valueOf("1.0"));
-
-    this.currentCategory = category;
-    Inventory buyInventory = Bukkit
-        .createInventory(player, invSize, BedwarsRel._l(player, "ingame.shop.name"));
-    this.addCategoriesToInventory(buyInventory, player, game);
-
-    // 计算分类占用的行数（向上取整）
-    int categoryRows = (sizeCategories + 8) / 9; // 每行最多9个
-    // 分类区域结束位置
-    int categoryEndSlot = categoryRows * 9;
-
-    // 在类别和物品之间添加一排灰色玻璃作为分隔符
-    int separatorRowStart = categoryEndSlot; // 分隔符行的起始槽位
-    for (int i = 0; i < 9; i++) {
-      ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
-      ItemMeta meta = glassPane.getItemMeta();
-      meta.setDisplayName(" "); // 空白名称
-      glassPane.setItemMeta(meta);
-      buyInventory.setItem(separatorRowStart + i, glassPane);
+  public void openBuyInventory(MerchantCategory category, Player player, Game game) {
+
+    List<VillagerTrade> offers = category.getOffers();
+    int sizeCategories = this.getCategoriesSize(player);
+
+    // 固定使用6行界面 (54个槽位)
+    int invSize = 54;
+
+    player.playSound(player.getLocation(), SoundMachine.get("CLICK", "UI_BUTTON_CLICK"),
+        Float.valueOf("1.0"), Float.valueOf("1.0"));
+
+    this.currentCategory = category;
+    Inventory buyInventory = Bukkit
+        .createInventory(player, invSize, BedwarsRel._l(player, "ingame.shop.name"));
+    this.addCategoriesToInventory(buyInventory, player, game);
+
+    // 计算分类占用的行数（向上取整）
+    int categoryRows = (sizeCategories + 8) / 9; // 每行最多9个
+    // 分类区域结束位置
+    int categoryEndSlot = categoryRows * 9;
+
+    // 在类别和物品之间添加一排灰色玻璃作为分隔符
+    int separatorRowStart = categoryEndSlot; // 分隔符行的起始槽位
+    for (int i = 0; i < 9; i++) {
+      ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
+      ItemMeta meta = glassPane.getItemMeta();
+      meta.setDisplayName(" "); // 空白名称
+      glassPane.setItemMeta(meta);
+      buyInventory.setItem(separatorRowStart + i, glassPane);
     }
 
 
 
-    // 添加物品到剩余空间（在分隔符之后）
-    for (int i = 0; i < offers.size(); i++) {
-      VillagerTrade trade = offers.get(i);
-      if (trade.getItem1().getType() == Material.AIR
-          && trade.getRewardItem().getType() == Material.AIR) {
-        continue;
-      }
-
-      // 计算物品槽位：从分隔符行之后开始
-      int itemSlot = separatorRowStart + 9 + i; // +9 是跳过分隔符行
-
-      // 确保物品不会覆盖分隔符或超出界面范围
-      if (itemSlot < invSize) {
-        ItemStack tradeStack = this.toItemStack(trade, player, game);
-        buyInventory.setItem(itemSlot, tradeStack);
-      }
-    }
-
-    player.openInventory(buyInventory);
+    // 添加物品到剩余空间（在分隔符之后）
+    for (int i = 0; i < offers.size(); i++) {
+      VillagerTrade trade = offers.get(i);
+      if (trade.getItem1().getType() == Material.AIR
+          && trade.getRewardItem().getType() == Material.AIR) {
+        continue;
+      }
+
+      // 计算物品槽位：从分隔符行之后开始
+      int itemSlot = separatorRowStart + 9 + i; // +9 是跳过分隔符行
+
+      // 确保物品不会覆盖分隔符或超出界面范围
+      if (itemSlot < invSize) {
+        ItemStack tradeStack = this.toItemStack(trade, player, game);
+        buyInventory.setItem(itemSlot, tradeStack);
+      }
+    }
+
+    player.openInventory(buyInventory);
   }
 
   public void openCategoryInventory(Player player) {

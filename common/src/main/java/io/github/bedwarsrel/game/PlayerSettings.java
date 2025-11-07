@@ -6,6 +6,7 @@ import io.github.bedwarsrel.villager.VillagerTrade;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import org.bukkit.entity.Player;
 
 public class PlayerSettings {
@@ -15,10 +16,17 @@ public class PlayerSettings {
   private Player player = null;
   private boolean useOldShop = false;
   // 快捷购买设置，存储物品的标识符
-  private List<String> quickBuySettings = new ArrayList<String>();
+  private List<String> quickBuySettings = new ArrayList<String>();
+  // 用于追踪是否需要保存到数据库
+  private boolean quickBuySettingsModified = false;
+  private QuickBuySettingsManager qbManager = null;
 
   public PlayerSettings(Player player) {
     this.player = player;
+    // 初始化快捷购买管理器
+    if (BedwarsRel.getInstance().getDatabaseManager() != null) {
+      this.qbManager = new QuickBuySettingsManager(BedwarsRel.getInstance().getDatabaseManager());
+    }
     // 旧版商店已被移除，始终使用新版商店
     this.useOldShop = false;
     // 初始化快捷购买设置（从数据库加载，如果不存在则使用默认值）
@@ -64,7 +72,9 @@ public class PlayerSettings {
    */
   public void setQuickBuySettings(List<String> quickBuySettings) {
     this.quickBuySettings = quickBuySettings;
-    saveQuickBuySettingsToDatabase(); // 保存到数据库
+    this.quickBuySettingsModified = true;
+    // 延迟保存到数据库，避免频繁写入
+    scheduleSaveToDatabase();
   }
 
   /**
@@ -81,7 +91,9 @@ public class PlayerSettings {
         }
       }
       this.quickBuySettings.set(slot, itemIdentifier);
-      saveQuickBuySettingsToDatabase(); // 保存到数据库
+      this.quickBuySettingsModified = true;
+      // 延迟保存到数据库，避免频繁写入
+      scheduleSaveToDatabase();
     }
   }
 
@@ -101,9 +113,8 @@ public class PlayerSettings {
    * 从数据库加载快捷购买设置
    */
   private void loadQuickBuySettingsFromDatabase() {
-    if (BedwarsRel.getInstance().getDatabaseManager() != null) {
-      QuickBuySettingsManager qbManager = new QuickBuySettingsManager(BedwarsRel.getInstance().getDatabaseManager());
-      this.quickBuySettings = qbManager.loadQuickBuySettings(this.player.getUniqueId());
+    if (this.qbManager != null) {
+      this.quickBuySettings = this.qbManager.loadQuickBuySettings(this.player.getUniqueId());
     } else {
       // 如果数据库未启用，初始化默认设置
       for (int i = 0; i < 9; i++) {
@@ -113,12 +124,33 @@ public class PlayerSettings {
   }
 
   /**
-   * 保存快捷购买设置到数据库
+   * 异步延迟保存快捷购买设置到数据库
    */
-  private void saveQuickBuySettingsToDatabase() {
-    if (BedwarsRel.getInstance().getDatabaseManager() != null) {
-      QuickBuySettingsManager qbManager = new QuickBuySettingsManager(BedwarsRel.getInstance().getDatabaseManager());
-      qbManager.saveQuickBuySettings(this.player.getUniqueId(), this.quickBuySettings);
+  private void scheduleSaveToDatabase() {
+    if (this.qbManager != null && this.quickBuySettingsModified) {
+      // 使用异步任务延迟保存，避免频繁写入
+      CompletableFuture.runAsync(() -> {
+        try {
+          Thread.sleep(1000); // 延迟1秒，避免频繁写入
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        }
+        // 检查在此期间是否再次修改
+        if (this.quickBuySettingsModified) {
+          this.qbManager.saveQuickBuySettings(this.player.getUniqueId(), this.quickBuySettings);
+          this.quickBuySettingsModified = false;
+        }
+      });
+    }
+  }
+
+  /**
+   * 立即保存快捷购买设置到数据库（在特殊情况下使用，如玩家退出游戏时）
+   */
+  public void saveQuickBuySettingsImmediately() {
+    if (this.qbManager != null && this.quickBuySettingsModified) {
+      this.qbManager.saveQuickBuySettings(this.player.getUniqueId(), this.quickBuySettings);
+      this.quickBuySettingsModified = false;
     }
   }
 }

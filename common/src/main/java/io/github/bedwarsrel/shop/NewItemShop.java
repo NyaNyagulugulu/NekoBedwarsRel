@@ -411,63 +411,79 @@ public class NewItemShop {
         return;
       }
 
-      // 检查是否点击了快捷购买区域（第4行，槽位36-44）
-      int quickBuyStartSlot = 36; // 第4行开始
-      int quickBuyEndSlot = 44;   // 第4行结束
-      if (ice.getRawSlot() >= quickBuyStartSlot && ice.getRawSlot() <= quickBuyEndSlot) {
-        // 点击了快捷购买区域
-        int slotIndex = ice.getRawSlot() - quickBuyStartSlot; // 获取槽位索引 (0-8)
-        PlayerSettings playerSettings = game.getPlayerSettings(player);
-        String itemIdentifier = playerSettings.getQuickBuyItem(slotIndex);
-        if (itemIdentifier != null && !itemIdentifier.isEmpty()) {
-          // 如果该槽位有设置的物品，尝试购买该物品
-          ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
-          if (quickBuyItem != null) {
-            // 找到对应的分类和交易
-            String[] parts = itemIdentifier.split("_");
-            if (parts.length == 2) {
-              String categoryName = parts[0];
-              int tradeIndex;
-              try {
-                tradeIndex = Integer.parseInt(parts[1]);
-              } catch (NumberFormatException e) {
-                return;
-              }
-
-              // 查找分类
-              MerchantCategory category = null;
-              for (MerchantCategory cat : this.categories) {
-                if (cat.getName().equals(categoryName)) {
-                  category = cat;
-                  break;
-                }
-              }
-
-              if (category != null && tradeIndex >= 0 && tradeIndex < category.getOffers().size()) {
-                VillagerTrade trade = category.getOffers().get(tradeIndex);
-                if (trade != null && this.hasEnoughRessource(player, trade)) {
-                  boolean success = this.buyItem(trade, quickBuyItem, player);
-                  if (success) {
-                    // 发送购买成功消息
-                    ItemMeta meta = quickBuyItem.getItemMeta();
-                    String itemName;
-                    if (meta.hasDisplayName()) {
-                      itemName = meta.getDisplayName();
-                    } else {
-                      // 如果没有自定义名称，使用物品类型名称并格式化
-                      itemName = this.getItemDisplayName(quickBuyItem.getType());
-                    }
-                    player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
-                  }
-                } else {
-                  player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "你没有足够的资源购买这个物品!"));
-                }
-              }
-            }
-          }
-        }
-        ice.setCancelled(true);
-        return;
+      // 检查是否点击了快捷购买区域（第4行，槽位36-44）
+      int quickBuyStartSlot = 36; // 第4行开始
+      int quickBuyEndSlot = 44;   // 第4行结束
+      if (ice.getRawSlot() >= quickBuyStartSlot && ice.getRawSlot() <= quickBuyEndSlot) {
+        // 点击了快捷购买区域
+        int slotIndex = ice.getRawSlot() - quickBuyStartSlot; // 获取槽位索引 (0-8)
+        PlayerSettings playerSettings = game.getPlayerSettings(player);
+        String itemIdentifier = playerSettings.getQuickBuyItem(slotIndex);
+        if (ice.isShiftClick()) {
+          // Shift点击快捷购买槽位，移除该槽位设置
+          playerSettings.setQuickBuyItem(slotIndex, null); // 清空该槽位
+          // 更新界面显示为灰色玻璃
+          ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
+          ItemMeta meta = glassPane.getItemMeta();
+          List<String> lore = new ArrayList<String>();
+          lore.add(ChatColor.GRAY + "按住Shift点击物品设置");
+          meta.setLore(lore);
+          meta.setDisplayName(" ");
+          glassPane.setItemMeta(meta);
+          ice.getInventory().setItem(ice.getRawSlot(), glassPane);
+          player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "已移除快捷购买栏第" + (slotIndex + 1) + "个位置的物品"));
+        } else if (itemIdentifier != null && !itemIdentifier.isEmpty()) {
+          // 如果该槽位有设置的物品，尝试购买该物品
+          ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
+          if (quickBuyItem != null) {
+            // 找到对应的分类和交易
+            String[] parts = itemIdentifier.split("_");
+            if (parts.length == 2) {
+              String categoryName = parts[0];
+              int tradeIndex;
+              try {
+                tradeIndex = Integer.parseInt(parts[1]);
+              } catch (NumberFormatException e) {
+                return;
+              }
+
+              // 查找分类
+              MerchantCategory category = null;
+              for (MerchantCategory cat : this.categories) {
+                if (cat.getName().equals(categoryName)) {
+                  category = cat;
+                  break;
+                }
+              }
+
+              if (category != null && tradeIndex >= 0 && tradeIndex < category.getOffers().size()) {
+                VillagerTrade trade = category.getOffers().get(tradeIndex);
+                if (trade != null && this.hasEnoughRessource(player, trade)) {
+                  boolean success = this.buyItem(trade, quickBuyItem, player);
+                  if (success) {
+                    // 发送购买成功消息
+                    ItemMeta meta = quickBuyItem.getItemMeta();
+                    String itemName;
+                    if (meta.hasDisplayName()) {
+                      itemName = meta.getDisplayName();
+                    } else {
+                      // 如果没有自定义名称，使用物品类型名称并格式化
+                      itemName = this.getItemDisplayName(quickBuyItem.getType());
+                    }
+                    player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
+                  }
+                } else {
+                  player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "你没有足够的资源购买这个物品!"));
+                }
+              }
+            }
+          }
+        } else {
+          // 点击了空的快捷购买槽位，不执行任何操作，但也不显示错误消息
+          // 这允许玩家以后通过Shift点击商店物品来设置这个槽位
+        }
+        ice.setCancelled(true);
+        return;
       }
 
       // 在新的布局中，物品区域在灰色分隔行之后和快捷购买行之后，需要重新判断物品槽位
@@ -510,42 +526,43 @@ public class NewItemShop {
             Float.valueOf("1.0"), Float.valueOf("1.0"));
 
 
-        // 如果按住shift键，设置为快捷购买
-        if (ice.isShiftClick()) {
-          // 计算该交易在分类中的索引
-          int tradeIndex = -1;
-          for (int i = 0; i < category.getOffers().size(); i++) {
-            if (category.getOffers().get(i).equals(trade)) {
-              tradeIndex = i;
-              break;
-            }
-          }
-
-          if (tradeIndex != -1) {
-            // 生成物品标识符
-            String itemIdentifier = this.generateItemIdentifier(category, tradeIndex);
-            // 获取玩家未设置快捷购买的第一个槽位
-            PlayerSettings playerSettings = game.getPlayerSettings(player);
-            int emptySlot = -1;
-            for (int i = 0; i < 9; i++) {
-              if (playerSettings.getQuickBuyItem(i) == null || playerSettings.getQuickBuyItem(i).isEmpty()) {
-                emptySlot = i;
-                break;
-              }
-            }
-
-            if (emptySlot != -1) {
-              // 设置快捷购买
-              playerSettings.setQuickBuyItem(emptySlot, itemIdentifier);
-              // 更新界面显示
-              ItemStack quickBuyItem = this.toItemStack(trade, player, game);
-              int quickBuySlot = 36 + emptySlot; // 快捷购买行的槽位
-              ice.getInventory().setItem(quickBuySlot, quickBuyItem);
-              player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "已将物品设置到快捷购买栏第" + (emptySlot + 1) + "个位置"));
-            } else {
-              player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "所有快捷购买栏位都已占用，请先清理一个位置"));
-            }
-          }
+        // 如果按住shift键，设置为快捷购买
+        if (ice.isShiftClick()) {
+          // 计算该交易在分类中的索引
+          int tradeIndex = -1;
+          for (int i = 0; i < category.getOffers().size(); i++) {
+            if (category.getOffers().get(i).equals(trade)) {
+              tradeIndex = i;
+              break;
+            }
+          }
+
+          if (tradeIndex != -1) {
+            // 生成物品标识符
+            String itemIdentifier = this.generateItemIdentifier(category, tradeIndex);
+            // 获取玩家未设置快捷购买的第一个槽位
+            PlayerSettings playerSettings = game.getPlayerSettings(player);
+            int emptySlot = -1;
+            for (int i = 0; i < 9; i++) {
+              if (playerSettings.getQuickBuyItem(i) == null || playerSettings.getQuickBuyItem(i).isEmpty()) {
+                emptySlot = i;
+                break;
+              }
+            }
+
+            if (emptySlot != -1) {
+              // 设置快捷购买
+              playerSettings.setQuickBuyItem(emptySlot, itemIdentifier);
+              // 更新界面显示
+              ItemStack quickBuyItem = this.toItemStack(trade, player, game);
+              int quickBuySlot = 36 + emptySlot; // 快捷购买行的槽位
+              ice.getInventory().setItem(quickBuySlot, quickBuyItem);
+              player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "已将物品设置到快捷购买栏第" + (emptySlot + 1) + "个位置"));
+            } else {
+              // 如果所有槽位都已占用，询问玩家是否替换某个槽位
+              player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "所有快捷购买栏位都已占用，请Shift点击一个快捷购买槽位来替换"));
+            }
+          }
         } else {
           // 购买物品
           // enough ressources?
@@ -709,38 +726,38 @@ public class NewItemShop {
     // 分类区域结束位置
     int categoryEndSlot = categoryRows * 9;
 
-    // 添加快捷购买区域（第4行，槽位36-44）
-    int quickBuyRowStart = 36; // 第4行开始位置
-    PlayerSettings playerSettings = game.getPlayerSettings(player);
-    for (int i = 0; i < 9; i++) {
-      String itemIdentifier = playerSettings.getQuickBuyItem(i);
-      if (itemIdentifier != null && !itemIdentifier.isEmpty()) {
-        // 如果有设置的物品，显示该物品
-        ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
-        if (quickBuyItem != null) {
-          buyInventory.setItem(quickBuyRowStart + i, quickBuyItem);
-        } else {
-          // 如果物品不存在，显示灰色玻璃
-          ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
-          ItemMeta meta = glassPane.getItemMeta();
-          List<String> lore = new ArrayList<String>();
-          lore.add(ChatColor.RED + "物品不存在");
-          meta.setLore(lore);
-          meta.setDisplayName(" ");
-          glassPane.setItemMeta(meta);
-          buyInventory.setItem(quickBuyRowStart + i, glassPane);
-        }
-      } else {
-        // 如果没有设置物品，显示灰色玻璃并添加提示Lore
-        ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
-        ItemMeta meta = glassPane.getItemMeta();
-        List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.GRAY + "按住Shift点击物品设置");
-        meta.setLore(lore);
-        meta.setDisplayName(" ");
-        glassPane.setItemMeta(meta);
-        buyInventory.setItem(quickBuyRowStart + i, glassPane);
-      }
+    // 添加快捷购买区域（第4行，槽位36-44）
+    int quickBuyRowStart = 36; // 第4行开始位置
+    PlayerSettings playerSettings = game.getPlayerSettings(player);
+    for (int i = 0; i < 9; i++) {
+      String itemIdentifier = playerSettings.getQuickBuyItem(i);
+      if (itemIdentifier != null && !itemIdentifier.isEmpty()) {
+        // 如果有设置的物品，显示该物品
+        ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
+        if (quickBuyItem != null) {
+          buyInventory.setItem(quickBuyRowStart + i, quickBuyItem);
+        } else {
+          // 如果物品不存在，显示灰色玻璃
+          ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
+          ItemMeta meta = glassPane.getItemMeta();
+          List<String> lore = new ArrayList<String>();
+          lore.add(ChatColor.RED + "物品不存在");
+          meta.setLore(lore);
+          meta.setDisplayName(" ");
+          glassPane.setItemMeta(meta);
+          buyInventory.setItem(quickBuyRowStart + i, glassPane);
+        }
+      } else {
+        // 如果没有设置物品，显示灰色玻璃并添加提示Lore
+        ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
+        ItemMeta meta = glassPane.getItemMeta();
+        List<String> lore = new ArrayList<String>();
+        lore.add(ChatColor.GRAY + "按住Shift点击物品设置");
+        meta.setLore(lore);
+        meta.setDisplayName(" ");
+        glassPane.setItemMeta(meta);
+        buyInventory.setItem(quickBuyRowStart + i, glassPane);
+      }
     }
 
     // 在类别和物品之间添加一排玻璃作为分隔符

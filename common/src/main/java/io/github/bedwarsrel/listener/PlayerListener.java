@@ -133,35 +133,19 @@ public class PlayerListener extends BaseListener {
       return;
     }
 
-    if (game.getPlayerSettings(player).useOldShop()) {
-      player.sendMessage("旧版商店已被移除");
-      NewItemShop itemShop = game.getNewItemShop(player);
-      if (itemShop == null) {
-        itemShop = game.openNewItemShop(player);
-      }
-      
-      // 默认打开第一个分类的购买界面
-      if (itemShop.getCategories().size() > 0) {
-        itemShop.setCurrentCategory(itemShop.getCategories().get(0));
-        itemShop.openBuyInventory(itemShop.getCategories().get(0), player, game);
-      } else {
-        player.sendMessage("没有可用的商店分类");
-        player.closeInventory();
-      }
-    } else {
-      NewItemShop itemShop = game.getNewItemShop(player);
-      if (itemShop == null) {
-        itemShop = game.openNewItemShop(player);
-      }
+    // 直接打开新版商店，不再检查旧版商店设置
+    NewItemShop itemShop = game.getNewItemShop(player);
+    if (itemShop == null) {
+      itemShop = game.openNewItemShop(player);
+    }
 
-      // 默认打开第一个分类的购买界面
-      if (itemShop.getCategories().size() > 0) {
-        itemShop.setCurrentCategory(itemShop.getCategories().get(0));
-        itemShop.openBuyInventory(itemShop.getCategories().get(0), player, game);
-      } else {
-        player.sendMessage("没有可用的商店分类");
-        player.closeInventory();
-      }
+    // 默认打开第一个分类的购买界面
+    if (itemShop.getCategories().size() > 0) {
+      itemShop.setCurrentCategory(itemShop.getCategories().get(0));
+      itemShop.openBuyInventory(itemShop.getCategories().get(0), player, game);
+    } else {
+      player.sendMessage("没有可用的商店分类");
+      player.closeInventory();
     }
   }
 
@@ -452,28 +436,81 @@ public class PlayerListener extends BaseListener {
       }
 
       if (ede instanceof EntityDamageByEntityEvent) {
+
         EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent) ede;
 
+
+
         if (edbee.getDamager() instanceof Player) {
+
           Player damager = (Player) edbee.getDamager();
+
           if (g.isSpectator(damager)) {
+
             ede.setCancelled(true);
+
             return;
+
+          }
+
+          // 检查是否攻击的是村民（商店），如果是则打开商店界面而不是攻击
+
+          if (ede.getEntity().getType() == EntityType.VILLAGER && !g.isSpectator(damager)) {
+
+            ede.setCancelled(true);
+
+            // 直接执行与右键相同的商店打开逻辑，确保完全一致
+            BedwarsOpenShopEvent openShopEvent =
+                new BedwarsOpenShopEvent(g, damager, g.getItemShopCategories(), ede.getEntity());
+            BedwarsRel.getInstance().getServer().getPluginManager().callEvent(openShopEvent);
+
+            if (!openShopEvent.isCancelled()) {
+              // 直接打开新版商店，不再检查旧版商店设置
+              NewItemShop itemShop = g.getNewItemShop(damager);
+              if (itemShop == null) {
+                itemShop = g.openNewItemShop(damager);
+              }
+
+              // 默认打开第一个分类的购买界面
+              if (itemShop.getCategories().size() > 0) {
+                itemShop.setCurrentCategory(itemShop.getCategories().get(0));
+                itemShop.openBuyInventory(itemShop.getCategories().get(0), damager, g);
+              } else {
+                damager.sendMessage("没有可用的商店分类");
+                damager.closeInventory();
+              }
+            }
+
+            return;
+
           }
 
           g.setPlayerDamager(p, damager);
+
         } else if (edbee.getDamager().getType().equals(EntityType.ARROW)) {
+
           Arrow arrow = (Arrow) edbee.getDamager();
+
           if (arrow.getShooter() instanceof Player) {
+
             Player shooter = (Player) arrow.getShooter();
+
             if (g.isSpectator(shooter)) {
+
               ede.setCancelled(true);
+
               return;
+
             }
 
+
+
             g.setPlayerDamager(p, (Player) arrow.getShooter());
+
           }
+
         }
+
       }
 
       if (!g.getCycle().isEndGameRunning()) {
@@ -608,13 +645,20 @@ public class PlayerListener extends BaseListener {
     }
 
     if (game.getPlayerSettings(player).useOldShop()) {
-      try {
-        if (clickedStack.getType() == Material.SNOW_BALL) {
-          // 旧版商店已被移除，直接打开新版商店
-          NewItemShop itemShop = game.openNewItemShop(player);
-          itemShop.setCurrentCategory(null);
-          itemShop.openCategoryInventory(player);
-          return;
+      try {
+
+        if (clickedStack.getType() == Material.SNOW_BALL) {
+
+          // 旧版商店已被移除，直接打开新版商店
+
+          NewItemShop itemShop = game.openNewItemShop(player);
+
+          itemShop.setCurrentCategory(null);
+
+          itemShop.openCategoryInventory(player);
+
+          return;
+
         }
 
         MerchantCategory cat = game.getItemShopCategories().get(clickedStack.getType());

@@ -1,472 +1,515 @@
-### SHOP ###
-### NOT ALLOWED CATEGORY MATERIAL: SLIME_BALL, SNOW_BALL, BUCKET, LAVA_BUCKET
 shop:
-  armor:
-    item: DIAMOND_CHESTPLATE
-    name: "Armour"
+  quick:
+    item: NETHER_STAR
+    name: "&a快捷购买"
+    lore:
+      - "&e点击查看！"
+    order: 0
+    permission: bw.base
+    offers:
+      - price:
+          - type: IRON_INGOT
+            amount: 4
+        reward:
+          - type: WOOL
+            amount: 16
+      - price:
+          - type: IRON_INGOT
+            amount: 10
+        reward:
+          - type: STONE_SWORD
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              lore:
+                - "§s§w§o§r§d"
+      - price:
+          - type: EMERALD
+            amount: 6
+        reward:
+          - type: DIAMOND_BOOTS
+            meta:
+              display-name: "§f永久的钻石护甲"
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              lore:
+                - "§a§r§m§o§r§0§0§3"
+      - price:
+          - type: GOLD_INGOT
+            amount: 6
+        reward:
+          - type: IRON_AXE
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              enchants:
+                DIG_SPEED: 1
+      - reward:
+          - type: BOW
+        price:
+          - type: IRON_INGOT
+            amount: 24
+      - reward:
+          - type: POTION
+            damage: 8203
+            meta:
+              ==: ItemMeta
+              meta-type: POTION
+              custom-effects:
+                - ==: PotionEffect
+                  effect: 8
+                  duration: 900
+                  amplifier: 4
+                  ambient: false
+                  has-particles: true
+        price:
+          - type: EMERALD
+            amount: 1
+      - reward:
+          - type: TNT
+        price:
+          - type: GOLD_INGOT
+            amount: 8
+      - price:
+          - type: GOLD_INGOT
+            amount: 4
+        reward:
+          - type: WOOD
+            amount: 16
+      - price:
+          - type: GOLD_INGOT
+            amount: 7
+        reward:
+          - type: IRON_SWORD
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              lore:
+                - "§s§w§o§r§d"
+      - price:
+          - type: GOLD_INGOT
+            amount: 12
+        reward:
+          - type: IRON_BOOTS
+            meta:
+              display-name: "§f永久的铁护甲"
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              lore:
+                - "§a§r§m§o§r§0§0§2"
+      - price:
+          - type: IRON_INGOT
+            amount: 20
+        reward:
+          - type: SHEARS
+      - reward:
+          - type: ARROW
+            amount: 8
+        price:
+          - type: GOLD_INGOT
+            amount: 2
+      - reward:
+          - type: POTION
+            damage: 8238
+            meta:
+              ==: ItemMeta
+              meta-type: POTION
+              custom-effects:
+                - ==: PotionEffect
+                  effect: 14
+                  duration: 600
+                  amplifier: 0
+                  ambient: true
+                  has-particles: false
+        price:
+          - type: EMERALD
+            amount: 2
+      - reward:
+          - type: WATER_BUCKET
+        price:
+          - type: EMERALD
+            amount: 1
+  blocks:
+    item: HARD_CLAY
+    name: "&a方块"
+    lore:
+      - "&e点击查看！"
     order: 10
     permission: bw.base
-    lore:
-    - "Protect yourself with armor! Click here."
     offers:
-    - price:
-      - type: CLAY_BRICK
-      reward:
-      - type: LEATHER_HELMET
-        meta:
-          ==: ItemMeta
-          meta-type: LEATHER_ARMOR
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 1
-    - price:
-      - type: CLAY_BRICK
-      reward:
-      - type: LEATHER_LEGGINGS
-        meta:
-          ==: ItemMeta
-          meta-type: LEATHER_ARMOR
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 1
-    - price:
-      - type: CLAY_BRICK
-      reward:
-      - type: LEATHER_BOOTS
-        meta:
-          ==: ItemMeta
-          meta-type: LEATHER_ARMOR
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 1
-    - price:
-      - type: IRON_INGOT
-        amount: 6
-      - type: GOLD_INGOT
-      reward:
-      - type: IRON_BOOTS
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          display-name: "Magnet-Shoes"
-          lore:
-          - "Wear those shoes and have a 75%"
-          - "chance of getting no knockback!"
-    - price:
-      - type: IRON_INGOT
-      reward:
-      - type: CHAINMAIL_CHESTPLATE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 1
-    - price:
-      - type: IRON_INGOT
-        amount: 3
-      reward:
-      - type: CHAINMAIL_CHESTPLATE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 2
-    - price:
-      - type: IRON_INGOT
-        amount: 7
-      reward:
-      - type: CHAINMAIL_CHESTPLATE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 3
-    - price:
-      - type: GOLD_INGOT
-        amount: 10
-      reward:
-      - type: IRON_HELMET
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          display-name: Helm
-          enchants:
-            PROTECTION_ENVIRONMENTAL: 2
-  swords:
-    item: DIAMOND_SWORD
-    name: "Swords"
+      - price:
+          - type: IRON_INGOT
+            amount: 4
+        reward:
+          - type: WOOL
+            amount: 16
+      - price:
+          - type: IRON_INGOT
+            amount: 12
+        reward:
+          - type: STAINED_CLAY
+            amount: 16
+      - price:
+          - type: IRON_INGOT
+            amount: 12
+        reward:
+          - type: STAINED_GLASS
+            amount: 4
+      - price:
+          - type: GOLD_INGOT
+            amount: 24
+        reward:
+          - type: ENDER_STONE
+            amount: 4
+      - price:
+          - type: IRON_INGOT
+            amount: 4
+        reward:
+          - type: LADDER
+            amount: 16
+      - price:
+          - type: GOLD_INGOT
+            amount: 8
+        reward:
+          - type: WOOD
+            amount: 4
+      - price:
+          - type: EMERALD
+            amount: 4
+        reward:
+          - type: OBSIDIAN
+            amount: 4
+  sword:
+    item: GOLD_SWORD
+    name: "&a近战武器"
+    lore:
+      - "&e点击查看！"
     order: 20
     permission: bw.base
-    lore:
-    - "Click here to get sword for attacking your enemies"
     offers:
-    - price:
-      - type: CLAY_BRICK
-        amount: 8
-      reward:
-      - type: STICK
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            KNOCKBACK: 1
-    - price:
-      - type: IRON_INGOT
-      reward:
-      - type: GOLD_SWORD
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            DAMAGE_ALL: 1
-    - price:
-      - type: IRON_INGOT
-        amount: 3
-      reward:
-      - type: GOLD_SWORD
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            DAMAGE_ALL: 2
-    - price:
-      - type: IRON_INGOT
-        amount: 7
-      reward:
-      - type: GOLD_SWORD
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            DAMAGE_ALL: 3
-    - price:
-      - type: GOLD_INGOT
-        amount: 3
-      reward:
-      - type: IRON_SWORD
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            DAMAGE_ALL: 2
-            KNOCKBACK: 1
-    - price:
-      - type: GOLD_INGOT
-        amount: 15
-      reward:
-      - type: GOLD_AXE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          display-name: "Axe of Infinity"
-          enchants:
-            DAMAGE_ALL: 1
-            DURABILITY: 1
-            KNOCKBACK: 1
-  bows:
-    item: 261
-    name: "Bows"
+      - price:
+          - type: IRON_INGOT
+            amount: 10
+        reward:
+          - type: STONE_SWORD
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              lore:
+                - "§s§w§o§r§d"
+      - price:
+          - type: GOLD_INGOT
+            amount: 7
+        reward:
+          - type: IRON_SWORD
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              lore:
+                - "§s§w§o§r§d"
+      - price:
+          - type: EMERALD
+            amount: 6
+        reward:
+          - type: DIAMOND_SWORD
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              lore:
+                - "§s§w§o§r§d"
+      - price:
+          - type: GOLD_INGOT
+            amount: 5
+        reward:
+          - type: STICK
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              enchants:
+                KNOCKBACK: 1
+  armor:
+    item: CHAINMAIL_BOOTS
+    name: "&a盔甲"
+    lore:
+      - "&e点击查看！"
     order: 30
     permission: bw.base
-    lore:
-    - "Prove yourself as a marksman with these wonderful bows"
     offers:
-    - price:
-      - type: GOLD_INGOT
-        amount: 3
-      reward:
-      - type: BOW
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            ARROW_INFINITE: 1
-    - price:
-      - type: GOLD_INGOT
-        amount: 7
-      reward:
-      - type: BOW
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            ARROW_DAMAGE: 1
-            ARROW_INFINITE: 1
-    - price:
-      - type: GOLD_INGOT
-        amount: 13
-      reward:
-      - type: BOW
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            ARROW_DAMAGE: 2
-            ARROW_INFINITE: 1
-    - price:
-      - type: GOLD_INGOT
-        amount: 16
-      reward:
-      - type: BOW
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            ARROW_FIRE: 1
-            ARROW_INFINITE: 1
-    - price:
-      - type: GOLD_INGOT
-        amount: 15
-      reward:
-      - type: BOW
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            ARROW_KNOCKBACK: 1
-            ARROW_FIRE: 1
-            ARROW_INFINITE: 1
-    - price:
-      - type: GOLD_INGOT
-      reward:
-      - type: ARROW
-  eat:
-    item: GRILLED_PORK
-    name: Eat
+      - price:
+          - type: IRON_INGOT
+            amount: 40
+        reward:
+          - type: CHAINMAIL_BOOTS
+            meta:
+              display-name: "§f永久的锁链护甲"
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              lore:
+                - "§a§r§m§o§r§0§0§1"
+      - price:
+          - type: GOLD_INGOT
+            amount: 12
+        reward:
+          - type: IRON_BOOTS
+            meta:
+              display-name: "§f永久的铁护甲"
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              lore:
+                - "§a§r§m§o§r§0§0§2"
+      - price:
+          - type: EMERALD
+            amount: 6
+        reward:
+          - type: DIAMOND_BOOTS
+            meta:
+              display-name: "§f永久的钻石护甲"
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              lore:
+                - "§a§r§m§o§r§0§0§3"
+  tool:
+    item: STONE_PICKAXE
+    name: "&a工具"
+    lore:
+      - "&e点击查看！"
     order: 40
     permission: bw.base
-    lore:
-    - "Are you hungry? Get something to eat."
     offers:
-    - price:
-      - type: CLAY_BRICK
-        amount: 4
-      reward:
-      - type: GRILLED_PORK
-        amount: 2
-    - price:
-      - type: IRON_INGOT
-        amount: 2
-      reward:
-      - type: GOLDEN_APPLE
-    - price:
-      - type: GOLD_INGOT
-        amount: 5
-      reward:
-      - type: BREAD
-        amount: 10
-  pickaxes:
-    item: DIAMOND_PICKAXE
-    name: "Pickaxes"
+      - price:
+          - type: IRON_INGOT
+            amount: 20
+        reward:
+          - type: SHEARS
+      - price:
+          - type: IRON_INGOT
+            amount: 10
+        reward:
+          - type: WOOD_PICKAXE
+      - price:
+          - type: IRON_INGOT
+            amount: 10
+        reward:
+          - type: WOOD_AXE
+      - price:
+          - type: IRON_INGOT
+            amount: 20
+        reward:
+          - type: STONE_PICKAXE
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              enchants:
+                DIG_SPEED: 1
+      - price:
+          - type: IRON_INGOT
+            amount: 20
+        reward:
+          - type: STONE_AXE
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              enchants:
+                DIG_SPEED: 1
+      - price:
+          - type: GOLD_INGOT
+            amount: 5
+        reward:
+          - type: IRON_PICKAXE
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              enchants:
+                DIG_SPEED: 1
+      - price:
+          - type: GOLD_INGOT
+            amount: 6
+        reward:
+          - type: IRON_AXE
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              enchants:
+                DIG_SPEED: 1
+      - price:
+          - type: EMERALD
+            amount: 3
+        reward:
+          - type: DIAMOND_PICKAXE
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              enchants:
+                DIG_SPEED: 2
+      - price:
+          - type: EMERALD
+            amount: 3
+        reward:
+          - type: DIAMOND_AXE
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              enchants:
+                DIG_SPEED: 2
+  bows:
+    item: 261
+    name: "§a远程武器"
+    lore:
+      - "&e点击查看！"
     order: 50
     permission: bw.base
-    lore:
-    - "Destroy others blocks? Use these pickaxes."
     offers:
-    - price:
-      - type: CLAY_BRICK
-        amount: 4
-      reward:
-      - type: IRON_PICKAXE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            LOOT_BONUS_BLOCKS: 1
-    - price:
-      - type: IRON_INGOT
-        amount: 2
-      reward:
-      - type: IRON_PICKAXE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            LOOT_BONUS_BLOCKS: 2
-    - price:
-      - type: GOLD_INGOT
-      reward:
-      - type: IRON_PICKAXE
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          enchants:
-            LOOT_BONUS_BLOCKS: 3
-  blocks:
-    item: SANDSTONE
-    name: "Blocks"
+      - reward:
+          - type: ARROW
+            amount: 8
+        price:
+          - type: GOLD_INGOT
+            amount: 2
+      - reward:
+          - type: BOW
+        price:
+          - type: GOLD_INGOT
+            amount: 12
+      - reward:
+          - type: BOW
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              enchants:
+                ARROW_DAMAGE: 1
+        price:
+          - type: GOLD_INGOT
+            amount: 24
+      - reward:
+          - type: BOW
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              enchants:
+                ARROW_DAMAGE: 1
+                ARROW_KNOCKBACK: 1
+        price:
+          - type: EMERALD
+            amount: 6
+  potion:
+    item: BREWING_STAND_ITEM
+    name: "§a药水"
+    lore:
+      - "&e点击查看！"
     order: 60
     permission: bw.base
-    lore:
-    - "Get to the others! Possible with blocks."
     offers:
-    - price:
-      - type: CLAY_BRICK
-      reward:
-      - type: SANDSTONE
-        damage: 2
-        amount: 2
-    - price:
-      - type: CLAY_BRICK
-        amount: 7
-      reward:
-      - type: ENDER_STONE
-    - price:
-      - type: IRON_INGOT
-        amount: 3
-      reward:
-      - type: IRON_BLOCK
-    - price:
-      - type: CLAY_BRICK
-        amount: 15
-      reward:
-      - type: GLOWSTONE
-        amount: 4
-    - price:
-      - type: CLAY_BRICK
-        amount: 4
-      reward:
-      - type: GLASS
-  usefulstuff:
+      - reward:
+          - type: POTION
+            damage: 8194
+            meta:
+              ==: ItemMeta
+              meta-type: POTION
+              custom-effects:
+                - ==: PotionEffect
+                  effect: 1
+                  duration: 900
+                  amplifier: 1
+                  ambient: false
+                  has-particles: true
+        price:
+          - type: EMERALD
+            amount: 1
+      - reward:
+          - type: POTION
+            damage: 8203
+            meta:
+              ==: ItemMeta
+              meta-type: POTION
+              custom-effects:
+                - ==: PotionEffect
+                  effect: 8
+                  duration: 900
+                  amplifier: 4
+                  ambient: false
+                  has-particles: true
+        price:
+          - type: EMERALD
+            amount: 1
+      - reward:
+          - type: POTION
+            damage: 8238
+            meta:
+              ==: ItemMeta
+              meta-type: POTION
+              custom-effects:
+                - ==: PotionEffect
+                  effect: 14
+                  duration: 600
+                  amplifier: 0
+                  ambient: true
+                  has-particles: false
+        price:
+          - type: EMERALD
+            amount: 2
+  utility:
     item: TNT
-    name: "Useful Stuff"
+    name: "§a实用道具"
+    lore:
+      - "&e点击查看！"
     order: 70
     permission: bw.base
-    lore:
-    - "Looking for useful stuff? Here are some!"
     offers:
-    - price:
-      - type: IRON_INGOT
-        amount: 3
-      reward:
-      - type: TNT
-    - price:
-      - type: GOLD_INGOT
-      reward:
-      - type: FLINT_AND_STEEL
-    - price:
-      - type: IRON_INGOT
-      reward:
-      - type: CHEST
-    - price:
-      - type: GOLD_INGOT
-      reward:
-      - type: ENDER_CHEST
-    - price:
-      - type: IRON_INGOT
-        amount: 15
-      reward:
-      - type: BLAZE_ROD
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          display-name: "Rescue Platform"
-          lore:
-          - "Protect yourself from falling into"
-          - "void with a rescue platform"
-    - price:
-      - type: IRON_INGOT
-        amount: 3
-      reward:
-      - type: STRING
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          display-name: "Trap"
-          lore:
-          - "Get informed if an enemy steps on your trap"
-          - "and your enemy won't be able to move properly."
-    - price:
-      - type: CLAY_BRICK
-        amount: 64
-      reward:
-      - type: BRICK
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          display-name: "Protection Wall"
-          lore:
-          - "Use a protection wall to instantely"
-          - "create a wall in front of you!"
-    - price:
-      - type: IRON_INGOT
-        amount: 7
-      reward:
-      - type: SULPHUR
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          display-name: "Warp Powder"
-          lore:
-          - "When using this powder you'll get"
-          - "teleported to you spawn point within 6 seconds"
-          - "Warning: Any movement will stop the process"
-    - price:
-      - type: GOLD_INGOT
-        amount: 10
-      reward:
-      - type: MONSTER_EGG
-        meta:
-          ==: ItemMeta
-          meta-type: UNSPECIFIC
-          display-name: "TNT-Sheep"
-          lore:
-          - "Use the TNT-Sheep! It will"
-          - "walk towards your closest enemy"
-          - "and explode within 8 seconds!"
-          internal: H4sIAAAAAAAAAONiYOBi4HTNK8ksqQxJTOdgYMpMYWANzkhNLWBgAAABt1TGHQAAAA==
-    - price:
-      - type: IRON_INGOT
-        amount: 5
-      reward:
-      - type: COMPASS
-  drinks:
-    item: POTION
-    name: "Drinks"
-    order: 80
-    permission: bw.base
-    lore:
-    - "Not enough? Use these potions and you'll feel better!"
-    offers:
-    - price:
-      - type: IRON_INGOT
-        amount: 3
-      reward:
-      - type: POTION
-        meta:
-          ==: ItemMeta
-          meta-type: POTION
-          potion-type: healing
-    - price:
-      - type: IRON_INGOT
-        amount: 5
-      reward:
-      - type: POTION
-        meta:
-          ==: ItemMeta
-          meta-type: POTION
-          potion-type: strong_healing
-    - price:
-      - type: IRON_INGOT
-        amount: 7
-      reward:
-      - type: POTION
-        meta:
-          ==: ItemMeta
-          meta-type: POTION
-          potion-type: swiftness
-    - price:
-      - type: GOLD_INGOT
-      reward:
-      - type: POTION
-        meta:
-          ==: ItemMeta
-          meta-type: POTION
-          potion-type: strength
-    - price:
-      - type: GOLD_INGOT
-        amount: 3
-      reward:
-      - type: POTION
-        meta:
-          ==: ItemMeta
-          meta-type: POTION
-          potion-type: regeneration
+      - reward:
+          - type: GOLDEN_APPLE
+        price:
+          - type: GOLD_INGOT
+            amount: 3
+      - reward:
+          - type: SNOW_BALL
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              display-name: "§f蠹虫"
+        price:
+          - type: IRON_INGOT
+            amount: 40
+      - reward:
+          - type: MONSTER_EGG
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              display-name: "§f生成铁傀儡"
+        price:
+          - type: IRON_INGOT
+            amount: 120
+      - reward:
+          - type: FIREBALL
+        price:
+          - type: IRON_INGOT
+            amount: 50
+      - reward:
+          - type: TNT
+        price:
+          - type: GOLD_INGOT
+            amount: 8
+      - reward:
+          - type: ENDER_PEARL
+        price:
+          - type: EMERALD
+            amount: 4
+      - reward:
+          - type: WATER_BUCKET
+        price:
+          - type: EMERALD
+            amount: 1
+      - reward:
+          - type: EGG
+            meta:
+              ==: ItemMeta
+              meta-type: UNSPECIFIC
+              display-name: "§f搭桥蛋"
+        price:
+          - type: EMERALD
+            amount: 3
+      - reward:
+          - type: SPONGE
+        price:
+          - type: GOLD_INGOT
+            amount: 4
 schema-version: 1

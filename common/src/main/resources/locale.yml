@@ -120,8 +120,7 @@ ingame:
     name: "商店"
     newshop: "使用新商店"
     oldshop: "使用旧商店"
-    fullstackpershift: "按住Shift点击获取多组物品"
-    onestackpershift: "按住Shift点击获取一组物品"
+    
   player:
     left: "玩家 $player$ 离开了游戏!"
     died: "$player$死了!"

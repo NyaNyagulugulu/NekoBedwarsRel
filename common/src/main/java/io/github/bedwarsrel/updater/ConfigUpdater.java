@@ -42,7 +42,6 @@ public class ConfigUpdater {
 
     // <1.1.6>
     BedwarsRel.getInstance().getConfig().addDefault("global-messages", true);
-    BedwarsRel.getInstance().getConfig().addDefault("player-settings.one-stack-on-shift", false);
     // </1.1.6>
 
     // <1.1.8>

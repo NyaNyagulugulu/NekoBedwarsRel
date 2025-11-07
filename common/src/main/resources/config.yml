@@ -1283,11 +1283,6 @@ sign:
 # Configure player default settings  
 player-settings:
 
-  # shop: One Stack on shift click
-  # type: boolean
-  # Only one full stack when doing a shift click to buy items.
-  # Player can change that in shop, this is just a default
-  one-stack-on-shift: false
   
   # shop: Default shop on game start
   # type: boolean
@@ -1300,11 +1295,6 @@ player-settings:
 # Configure player default settings  
 player-settings:
 
-  # shop: One Stack on shift click
-  # type: boolean
-  # Only one full stack when doing a shift click to buy items.
-  # Player can change that in shop, this is just a default
-  one-stack-on-shift: false
   
   # shop: Default shop on game start
   # type: boolean

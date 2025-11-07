@@ -7,14 +7,11 @@ public class PlayerSettings {
 
   private Object hologram = null;
   private boolean isTeleporting = false;
-  private boolean oneStackPerShift = false;
   private Player player = null;
   private boolean useOldShop = false;
 
   public PlayerSettings(Player player) {
     this.player = player;
-    this.oneStackPerShift = BedwarsRel.getInstance()
-        .getBooleanConfig("player-settings.one-stack-on-shift", false);
     this.useOldShop = BedwarsRel.getInstance()
         .getBooleanConfig("player-settings.old-shop-as-default", false);
   }
@@ -39,13 +36,7 @@ public class PlayerSettings {
     this.isTeleporting = isTeleporting;
   }
 
-  public boolean oneStackPerShift() {
-    return this.oneStackPerShift;
-  }
-
-  public void setOneStackPerShift(boolean value) {
-    this.oneStackPerShift = value;
-  }
+  
 
   public void setUseOldShop(boolean value) {
     this.useOldShop = value;

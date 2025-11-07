@@ -492,6 +492,12 @@ public class NewItemShop {
           PlayerSettings playerSettings = game.getPlayerSettings(player);
           String itemIdentifier = playerSettings.getQuickBuyItem(slotIndex);
           if (ice.isShiftClick()) {
+            // 检查是否有权限修改扩展槽位（槽位9-17）
+            if (slotIndex >= 9 && !(player.hasPermission("bw.vip") || player.hasPermission("bw.mvp") || player.isOp())) {
+              player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "扩展快捷购买区域仅限VIP和MVP及以上权限玩家使用！"));
+              ice.setCancelled(true);
+              return;
+            }
             // Shift点击扩展槽位，移除该槽位设置
             playerSettings.setQuickBuyItem(slotIndex, null); // 清空该槽位
             // 更新界面显示为白色玻璃
@@ -627,17 +633,23 @@ public class NewItemShop {
             }
 
             if (emptySlot != -1) {
-              // 设置快捷购买
-              playerSettings.setQuickBuyItem(emptySlot, itemIdentifier);
-              // 更新界面显示
-              ItemStack quickBuyItem = this.toItemStack(trade, player, game);
-              int quickBuySlot = 36 + (emptySlot % 9); // 快捷购买行的槽位（第4行或第5行）
-              int quickBuyRow = emptySlot / 9; // 0表示第4行，1表示第5行
-              if (quickBuyRow == 1) {
-                quickBuySlot += 9; // 第5行需要额外加9
+              // 检查是否需要权限才能使用扩展槽位（槽位9-17）
+              if (emptySlot >= 9 && !(player.hasPermission("bw.vip") || player.hasPermission("bw.mvp") || player.isOp())) {
+                player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "扩展快捷购买区域仅限VIP和MVP及以上权限玩家使用！"));
+                player.sendMessage(ChatWriter.pluginMessage(ChatColor.YELLOW + "请购买VIP或MVP权限以解锁扩展快捷购买功能。"));
+              } else {
+                // 设置快捷购买
+                playerSettings.setQuickBuyItem(emptySlot, itemIdentifier);
+                // 更新界面显示
+                ItemStack quickBuyItem = this.toItemStack(trade, player, game);
+                int quickBuySlot = 36 + (emptySlot % 9); // 快捷购买行的槽位（第4行或第5行）
+                int quickBuyRow = emptySlot / 9; // 0表示第4行，1表示第5行
+                if (quickBuyRow == 1) {
+                  quickBuySlot += 9; // 第5行需要额外加9
+                }
+                ice.getInventory().setItem(quickBuySlot, quickBuyItem);
+                player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "已将物品设置到快捷购买栏第" + (emptySlot + 1) + "个位置"));
               }
-              ice.getInventory().setItem(quickBuySlot, quickBuyItem);
-              player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "已将物品设置到快捷购买栏第" + (emptySlot + 1) + "个位置"));
             } else {
               // 如果所有槽位都已占用，询问玩家是否替换某个槽位
               player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "所有快捷购买栏位都已占用，请Shift点击一个快捷购买槽位来替换"));
@@ -860,12 +872,23 @@ public class NewItemShop {
           buyInventory.setItem(45 + i, glassPane);
         }
       } else {
-        // 如果未设置物品（扩展槽位为null），显示白色玻璃并添加提示Lore
-        ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15); // 白色玻璃
+        // 如果未设置物品（扩展槽位为null），根据权限显示不同提示
+        ItemStack glassPane;
+        if (player.hasPermission("bw.vip") || player.hasPermission("bw.mvp") || player.isOp()) {
+          // 有权限的玩家看到正常界面
+          glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15); // 白色玻璃
+        } else {
+          // 无权限的玩家看到红色玻璃
+          glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14); // 红色玻璃
+        }
         ItemMeta meta = glassPane.getItemMeta();
         List<String> lore = new ArrayList<String>();
         lore.add(ChatColor.GRAY + "扩展快捷购买区域");
-        lore.add(ChatColor.GRAY + "按住Shift点击物品添加");
+        if (player.hasPermission("bw.vip") || player.hasPermission("bw.mvp") || player.isOp()) {
+          lore.add(ChatColor.GRAY + "按住Shift点击物品添加");
+        } else {
+          lore.add(ChatColor.RED + "需要VIP/MVP权限");
+        }
         meta.setLore(lore);
         meta.setDisplayName(" ");
         glassPane.setItemMeta(meta);

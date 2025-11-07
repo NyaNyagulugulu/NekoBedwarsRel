@@ -5,15 +5,15 @@ import org.bukkit.entity.Player;
 
 public class PlayerSettings {
 
-  private Object hologram = null;
-  private boolean isTeleporting = false;
-  private Player player = null;
-  private boolean useOldShop = false;
-
-  public PlayerSettings(Player player) {
-    this.player = player;
-    this.useOldShop = BedwarsRel.getInstance()
-        .getBooleanConfig("player-settings.old-shop-as-default", false);
+  private Object hologram = null;
+  private boolean isTeleporting = false;
+  private Player player = null;
+  private boolean useOldShop = false;
+
+  public PlayerSettings(Player player) {
+    this.player = player;
+    // 旧版商店已被移除，始终使用新版商店
+    this.useOldShop = false;
   }
 
   public Object getHologram() {
@@ -38,12 +38,11 @@ public class PlayerSettings {
 
   
 
-  public void setUseOldShop(boolean value) {
-    this.useOldShop = value;
-  }
+  
 
-  public boolean useOldShop() {
-    return this.useOldShop;
+  public boolean useOldShop() {
+    // 旧版商店已被移除，始终返回false
+    return false;
   }
 
 }

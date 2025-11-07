@@ -72,110 +72,200 @@ public class NewItemShop {
   }
 
   @SuppressWarnings("unchecked")
+
   private boolean buyItem(VillagerTrade trade, ItemStack item, Player player) {
+
     PlayerInventory inventory = player.getInventory();
+
     boolean success = true;
 
+
+
     int item1ToPay = trade.getItem1().getAmount();
+
     Iterator<?> stackIterator = inventory.all(trade.getItem1().getType()).entrySet().iterator();
 
+
+
     int firstItem1 = inventory.first(trade.getItem1());
+
     if (firstItem1 > -1) {
+
       inventory.clear(firstItem1);
+
     } else {
+
       // pay
+
       while (stackIterator.hasNext()) {
+
         Entry<Integer, ? extends ItemStack> entry =
+
             (Entry<Integer, ? extends ItemStack>) stackIterator.next();
+
         ItemStack stack = (ItemStack) entry.getValue();
 
+
+
         int endAmount = stack.getAmount() - item1ToPay;
+
         if (endAmount < 0) {
+
           endAmount = 0;
+
         }
+
+
 
         item1ToPay = item1ToPay - stack.getAmount();
+
         stack.setAmount(endAmount);
+
         inventory.setItem(entry.getKey(), stack);
 
+
+
         if (item1ToPay <= 0) {
+
           break;
+
         }
+
       }
+
     }
+
+
 
     if (trade.getItem2() != null) {
+
       int item2ToPay = trade.getItem2().getAmount();
+
       stackIterator = inventory.all(trade.getItem2().getType()).entrySet().iterator();
 
+
+
       int firstItem2 = inventory.first(trade.getItem2());
+
       if (firstItem2 > -1) {
+
         inventory.clear(firstItem2);
+
       } else {
+
         // pay item2
+
         while (stackIterator.hasNext()) {
+
           Entry<Integer, ? extends ItemStack> entry =
+
               (Entry<Integer, ? extends ItemStack>) stackIterator.next();
+
           ItemStack stack = (ItemStack) entry.getValue();
 
+
+
           int endAmount = stack.getAmount() - item2ToPay;
+
           if (endAmount < 0) {
+
             endAmount = 0;
+
           }
+
+
 
           item2ToPay = item2ToPay - stack.getAmount();
+
           stack.setAmount(endAmount);
+
           inventory.setItem(entry.getKey(), stack);
 
+
+
           if (item2ToPay <= 0) {
+
             break;
+
           }
+
         }
+
       }
+
     }
+
+
 
     ItemStack addingItem = item.clone();
+
     ItemMeta meta = addingItem.getItemMeta();
+
     List<String> lore = meta.getLore();
 
+
+
     if (lore.size() > 0) {
+
       lore.remove(lore.size() - 1);
+
       if (trade.getItem2() != null) {
+
         lore.remove(lore.size() - 1);
+
       }
+
     }
+
+
 
     meta.setLore(lore);
+
     addingItem.setItemMeta(meta);
 
+
+
     HashMap<Integer, ItemStack> notStored = inventory.addItem(addingItem);
+
     if (notStored.size() > 0) {
+
       ItemStack notAddedItem = notStored.get(0);
+
       int removingAmount = addingItem.getAmount() - notAddedItem.getAmount();
+
       addingItem.setAmount(removingAmount);
+
       inventory.removeItem(addingItem);
 
+
+
       // restore
+
       inventory.addItem(trade.getItem1());
+
       if (trade.getItem2() != null) {
+
         inventory.addItem(trade.getItem2());
+
       }
 
+
+
       success = false;
+
     }
 
+
+
     player.updateInventory();
+
     return success;
+
   }
 
-  private void changeToOldShop(Game game, Player player) {
-    game.getPlayerSettings(player).setUseOldShop(true);
-
-    player.playSound(player.getLocation(), SoundMachine.get("CLICK", "UI_BUTTON_CLICK"),
-        Float.valueOf("1.0"), Float.valueOf("1.0"));
-
-    // open old shop
-    MerchantCategory.openCategorySelection(player, game);
+  private void changeToOldShop(Game game, Player player) {
+    player.sendMessage("旧版商店已被移除");
+    player.closeInventory();
   }
 
   private int getBuyInventorySize(int sizeCategories, int sizeOffers) {
@@ -253,97 +343,217 @@ public class NewItemShop {
     return null;
   }
 
-  private void handleBuyInventoryClick(InventoryClickEvent ice, Game game, Player player) {
-
-    int sizeCategories = this.getCategoriesSize(player);
-    List<VillagerTrade> offers = this.currentCategory.getOffers();
-    int sizeItems = offers.size();
-    int totalSize = this.getBuyInventorySize(sizeCategories, sizeItems);
-
+  private void handleBuyInventoryClick(InventoryClickEvent ice, Game game, Player player) {
+
+
+
+    int sizeCategories = this.getCategoriesSize(player);
+
+    List<VillagerTrade> offers = this.currentCategory.getOffers();
+
+    int sizeItems = offers.size();
+
+    int totalSize = this.getBuyInventorySize(sizeCategories, sizeItems);
+
+
+
     ItemStack item = ice.getCurrentItem();
-
-    if (this.currentCategory == null) {
-      player.closeInventory();
-      return;
-    }
-
-    if (ice.getRawSlot() < sizeCategories) {
-      // is category click
-      ice.setCancelled(true);
-
-      if (item == null) {
-        return;
-      }
-
-      if (item.getType().equals(this.currentCategory.getMaterial())) {
-        // back to default category view
-        this.currentCategory = null;
-        this.openCategoryInventory(player);
-      } else {
-        // open the clicked buy inventory
-        this.handleCategoryInventoryClick(ice, game, player);
-      }
-    } else if (ice.getRawSlot() < totalSize) {
-      // its a buying item
-      ice.setCancelled(true);
-
-      if (item == null || item.getType() == Material.AIR) {
-        return;
-      }
-
-      MerchantCategory category = this.currentCategory;
-      VillagerTrade trade = this.getTradingItem(category, item, game, player);
-
-      if (trade == null) {
-        return;
-      }
-
-      player.playSound(player.getLocation(), SoundMachine.get("ITEM_PICKUP", "ENTITY_ITEM_PICKUP"),
-          Float.valueOf("1.0"), Float.valueOf("1.0"));
-
-      // enough ressources?
-      if (!this.hasEnoughRessource(player, trade)) {
-        player
-            .sendMessage(
-                ChatWriter.pluginMessage(ChatColor.RED + BedwarsRel
-                    ._l(player, "errors.notenoughress")));
-        return;
-      }
-
-      // 直接购买物品，不检查Shift点击
-      this.buyItem(trade, ice.getCurrentItem(), player);
-    } else {
-      ice.setCancelled(false);
-      return;
-    }
+    boolean cancel = false;
+    int bought = 0;
+    boolean oneStackPerShift = false; // 由于相关的配置和方法已被移除，设为false
+
+
+
+    if (this.currentCategory == null) {
+
+      player.closeInventory();
+
+      return;
+
+    }
+
+
+
+    if (ice.getRawSlot() < sizeCategories) {
+
+      // is category click
+
+      ice.setCancelled(true);
+
+
+
+      if (item == null) {
+
+        return;
+
+      }
+
+
+
+      if (item.getType().equals(this.currentCategory.getMaterial())) {
+
+        // back to default category view
+
+        this.currentCategory = null;
+
+        this.openCategoryInventory(player);
+
+      } else {
+
+        // open the clicked buy inventory
+
+        this.handleCategoryInventoryClick(ice, game, player);
+
+      }
+
+    } else if (ice.getRawSlot() < totalSize) {
+
+      // its a buying item
+
+      ice.setCancelled(true);
+
+
+
+      if (item == null || item.getType() == Material.AIR) {
+
+        return;
+
+      }
+
+
+
+      MerchantCategory category = this.currentCategory;
+
+      VillagerTrade trade = this.getTradingItem(category, item, game, player);
+
+
+
+      if (trade == null) {
+
+        return;
+
+      }
+
+
+
+      player.playSound(player.getLocation(), SoundMachine.get("ITEM_PICKUP", "ENTITY_ITEM_PICKUP"),
+
+          Float.valueOf("1.0"), Float.valueOf("1.0"));
+
+
+
+      // enough ressources?
+
+      if (!this.hasEnoughRessource(player, trade)) {
+
+        player
+
+            .sendMessage(
+
+                ChatWriter.pluginMessage(ChatColor.RED + BedwarsRel
+
+                    ._l(player, "errors.notenoughress")));
+
+        return;
+
+      }
+
+
+
+      if (ice.isShiftClick()) {
+
+        while (this.hasEnoughRessource(player, trade) && !cancel) {
+
+          cancel = !this.buyItem(trade, ice.getCurrentItem(), player);
+
+          // oneStackPerShift 已移除，现在总是执行购买限制逻辑
+          bought = bought + item.getAmount();
+          cancel = ((bought + item.getAmount()) > 64);
+
+        }
+
+
+
+        bought = 0;
+
+      } else {
+
+        this.buyItem(trade, ice.getCurrentItem(), player);
+
+      }
+
+    } else {
+
+      if (ice.isShiftClick()) {
+
+        ice.setCancelled(true);
+
+      } else {
+
+        ice.setCancelled(false);
+
+      }
+
+
+
+      return;
+
+    }
+
   }
 
-  private void handleCategoryInventoryClick(InventoryClickEvent ice, Game game, Player player) {
-
-    int catSize = this.getCategoriesSize(player);
-    int sizeCategories = this.getInventorySize(catSize) + 9;
-    int rawSlot = ice.getRawSlot();
-
-    if (rawSlot >= this.getInventorySize(catSize) && rawSlot < sizeCategories) {
-      ice.setCancelled(true);
-      if (ice.getCurrentItem().getType() == Material.SLIME_BALL) {
-        this.changeToOldShop(game, player);
-        return;
-      }
-    }
-
-    if (rawSlot >= sizeCategories) {
-      ice.setCancelled(false);
-      return;
-    }
-
-    MerchantCategory clickedCategory = this.getCategoryByMaterial(ice.getCurrentItem().getType());
-    if (clickedCategory == null) {
-      ice.setCancelled(false);
-      return;
-    }
-
-    this.openBuyInventory(clickedCategory, player, game);
+  private void handleCategoryInventoryClick(InventoryClickEvent ice, Game game, Player player) {
+
+
+
+    int catSize = this.getCategoriesSize(player);
+
+    int sizeCategories = this.getInventorySize(catSize) + 9;
+
+    int rawSlot = ice.getRawSlot();
+
+
+
+    if (rawSlot >= this.getInventorySize(catSize) && rawSlot < sizeCategories) {
+
+      ice.setCancelled(true);
+
+      if (ice.getCurrentItem().getType() == Material.SLIME_BALL) {
+
+        this.changeToOldShop(game, player);
+
+        return;
+
+      }
+
+    }
+
+
+
+    if (rawSlot >= sizeCategories) {
+
+      ice.setCancelled(false);
+
+      return;
+
+    }
+
+
+
+    MerchantCategory clickedCategory = this.getCategoryByMaterial(ice.getCurrentItem().getType());
+
+    if (clickedCategory == null) {
+
+      ice.setCancelled(false);
+
+      return;
+
+    }
+
+
+
+    this.openBuyInventory(clickedCategory, player, game);
+
   }
 
   public void handleInventoryClick(InventoryClickEvent ice, Game game, Player player) {
@@ -385,58 +595,108 @@ public class NewItemShop {
     return (this.currentCategory.equals(category));
   }
 
-  private void openBuyInventory(MerchantCategory category, Player player, Game game) {
+  public void openBuyInventory(MerchantCategory category, Player player, Game game) {
+
     List<VillagerTrade> offers = category.getOffers();
+
     int sizeCategories = this.getCategoriesSize(player);
+
     int sizeItems = offers.size();
+
     int invSize = this.getBuyInventorySize(sizeCategories, sizeItems);
 
+
+
     player.playSound(player.getLocation(), SoundMachine.get("CLICK", "UI_BUTTON_CLICK"),
+
         Float.valueOf("1.0"), Float.valueOf("1.0"));
 
+
+
     this.currentCategory = category;
+
     Inventory buyInventory = Bukkit
+
         .createInventory(player, invSize, BedwarsRel._l(player, "ingame.shop.name"));
+
     this.addCategoriesToInventory(buyInventory, player, game);
 
+
+
     for (int i = 0; i < offers.size(); i++) {
+
       VillagerTrade trade = offers.get(i);
+
       if (trade.getItem1().getType() == Material.AIR
+
           && trade.getRewardItem().getType() == Material.AIR) {
+
         continue;
+
       }
 
+
+
       int slot = (this.getInventorySize(sizeCategories)) + i;
+
       ItemStack tradeStack = this.toItemStack(trade, player, game);
 
+
+
       buyInventory.setItem(slot, tradeStack);
+
     }
 
+
+
     player.openInventory(buyInventory);
+
   }
 
-  public void openCategoryInventory(Player player) {
-    int catSize = this.getCategoriesSize(player);
-    int nom = (catSize % 9 == 0) ? 9 : (catSize % 9);
-    int size = (catSize + (9 - nom)) + 9;
-
-    Inventory inventory = Bukkit.createInventory(player, size, BedwarsRel
-        ._l(player, "ingame.shop.name"));
-
-    Game game = BedwarsRel.getInstance().getGameManager().getGameOfPlayer(player);
-
-    this.addCategoriesToInventory(inventory, player, game);
-
-    ItemStack slime = new ItemStack(Material.SLIME_BALL, 1);
-    ItemMeta slimeMeta = slime.getItemMeta();
-
-    slimeMeta.setDisplayName(BedwarsRel._l(player, "ingame.shop.oldshop"));
-    slimeMeta.setLore(new ArrayList<String>());
-    slime.setItemMeta(slimeMeta);
-
-    inventory.setItem(size - 5, slime);
-
-    player.openInventory(inventory);
+  public void openCategoryInventory(Player player) {
+
+    int catSize = this.getCategoriesSize(player);
+
+    int nom = (catSize % 9 == 0) ? 9 : (catSize % 9);
+
+    int size = (catSize + (9 - nom)) + 9;
+
+
+
+    Inventory inventory = Bukkit.createInventory(player, size, BedwarsRel
+
+        ._l(player, "ingame.shop.name"));
+
+
+
+    Game game = BedwarsRel.getInstance().getGameManager().getGameOfPlayer(player);
+
+
+
+    this.addCategoriesToInventory(inventory, player, game);
+
+
+
+    ItemStack slime = new ItemStack(Material.SLIME_BALL, 1);
+
+    ItemMeta slimeMeta = slime.getItemMeta();
+
+
+
+    slimeMeta.setDisplayName(BedwarsRel._l(player, "ingame.shop.oldshop"));
+
+    slimeMeta.setLore(new ArrayList<String>());
+
+    slime.setItemMeta(slimeMeta);
+
+
+
+    inventory.setItem(size - 5, slime);
+
+
+
+    player.openInventory(inventory);
+
   }
 
   public void setCurrentCategory(MerchantCategory category) {

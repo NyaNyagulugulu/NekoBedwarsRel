@@ -133,16 +133,35 @@ public class PlayerListener extends BaseListener {
       return;
     }
 
-    if (game.getPlayerSettings(player).useOldShop()) {
-      MerchantCategory.openCategorySelection(player, game);
-    } else {
-      NewItemShop itemShop = game.getNewItemShop(player);
-      if (itemShop == null) {
-        itemShop = game.openNewItemShop(player);
-      }
-
-      itemShop.setCurrentCategory(null);
-      itemShop.openCategoryInventory(player);
+    if (game.getPlayerSettings(player).useOldShop()) {
+      player.sendMessage("旧版商店已被移除");
+      NewItemShop itemShop = game.getNewItemShop(player);
+      if (itemShop == null) {
+        itemShop = game.openNewItemShop(player);
+      }
+      
+      // 默认打开第一个分类的购买界面
+      if (itemShop.getCategories().size() > 0) {
+        itemShop.setCurrentCategory(itemShop.getCategories().get(0));
+        itemShop.openBuyInventory(itemShop.getCategories().get(0), player, game);
+      } else {
+        player.sendMessage("没有可用的商店分类");
+        player.closeInventory();
+      }
+    } else {
+      NewItemShop itemShop = game.getNewItemShop(player);
+      if (itemShop == null) {
+        itemShop = game.openNewItemShop(player);
+      }
+
+      // 默认打开第一个分类的购买界面
+      if (itemShop.getCategories().size() > 0) {
+        itemShop.setCurrentCategory(itemShop.getCategories().get(0));
+        itemShop.openBuyInventory(itemShop.getCategories().get(0), player, game);
+      } else {
+        player.sendMessage("没有可用的商店分类");
+        player.closeInventory();
+      }
     }
   }
 
@@ -589,15 +608,13 @@ public class PlayerListener extends BaseListener {
     }
 
     if (game.getPlayerSettings(player).useOldShop()) {
-      try {
-        if (clickedStack.getType() == Material.SNOW_BALL) {
-          game.getPlayerSettings(player).setUseOldShop(false);
-
-          // open new shop
-          NewItemShop itemShop = game.openNewItemShop(player);
-          itemShop.setCurrentCategory(null);
-          itemShop.openCategoryInventory(player);
-          return;
+      try {
+        if (clickedStack.getType() == Material.SNOW_BALL) {
+          // 旧版商店已被移除，直接打开新版商店
+          NewItemShop itemShop = game.openNewItemShop(player);
+          itemShop.setCurrentCategory(null);
+          itemShop.openCategoryInventory(player);
+          return;
         }
 
         MerchantCategory cat = game.getItemShopCategories().get(clickedStack.getType());

@@ -411,159 +411,312 @@ public class NewItemShop {
         return;
       }
 
-      // 检查是否点击了快捷购买区域（第4行和第5行，槽位36-53）
-      int quickBuyStartSlot = 36; // 第4行开始
-      int quickBuyEndSlot = 53;   // 第5行结束
-      if (ice.getRawSlot() >= quickBuyStartSlot && ice.getRawSlot() <= quickBuyEndSlot) {
-        // 点击了快捷购买区域
-        // 如果点击的是第4行（36-44），处理快捷购买逻辑
-        if (ice.getRawSlot() >= 36 && ice.getRawSlot() <= 44) {
-          int slotIndex = ice.getRawSlot() - 36; // 获取槽位索引 (0-8)
-          PlayerSettings playerSettings = game.getPlayerSettings(player);
-          String itemIdentifier = playerSettings.getQuickBuyItem(slotIndex);
-          if (ice.isShiftClick()) {
-            // Shift点击快捷购买槽位，移除该槽位设置
-            playerSettings.setQuickBuyItem(slotIndex, null); // 清空该槽位
-            // 更新界面显示为灰色玻璃
-            ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
-            ItemMeta meta = glassPane.getItemMeta();
-            List<String> lore = new ArrayList<String>();
-            lore.add(ChatColor.GRAY + "按住Shift点击物品设置");
-            meta.setLore(lore);
-            meta.setDisplayName(" ");
-            glassPane.setItemMeta(meta);
-            ice.getInventory().setItem(ice.getRawSlot(), glassPane);
-            player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "已移除快捷购买栏第" + (slotIndex + 1) + "个位置的物品"));
-          } else if (itemIdentifier != null) { // 检查是否为null
-            // 如果该槽位有设置的物品，尝试购买该物品
-            ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
-            if (quickBuyItem != null) {
-              // 找到对应的分类和交易
-              String[] parts = itemIdentifier.split("_");
-              if (parts.length == 2) {
-                String categoryName = parts[0];
-                int tradeIndex;
-                try {
-                  tradeIndex = Integer.parseInt(parts[1]);
-                } catch (NumberFormatException e) {
-                  return;
-                }
-
-                // 查找分类
-                MerchantCategory category = null;
-                for (MerchantCategory cat : this.categories) {
-                  if (cat.getName().equals(categoryName)) {
-                    category = cat;
-                    break;
-                  }
-                }
-
-                if (category != null && tradeIndex >= 0 && tradeIndex < category.getOffers().size()) {
-                  VillagerTrade trade = category.getOffers().get(tradeIndex);
-                  if (trade != null && this.hasEnoughRessource(player, trade)) {
-                    boolean success = this.buyItem(trade, quickBuyItem, player);
-                    if (success) {
-                      // 发送购买成功消息
-                      ItemMeta meta = quickBuyItem.getItemMeta();
-                      String itemName;
-                      if (meta.hasDisplayName()) {
-                        itemName = meta.getDisplayName();
-                      } else {
-                        // 如果没有自定义名称，使用物品类型名称并格式化
-                        itemName = this.getItemDisplayName(quickBuyItem.getType());
-                      }
-                      player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
-                    }
-                  } else {
-                    player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "你没有足够的资源购买这个物品!"));
-                  }
-                }
-              }
-            }
-          } else {
-            // 点击了空的快捷购买槽位，不执行任何操作，但也不显示错误消息
-            // 这允许玩家以后通过Shift点击商店物品来设置这个槽位
-          }
-          ice.setCancelled(true);
-          return;
-        } else if (ice.getRawSlot() >= 45 && ice.getRawSlot() <= 53) {
-          // 如果点击的是第5行（45-53），处理扩展快捷购买逻辑
-          int slotIndex = ice.getRawSlot() - 45 + 9; // 获取扩展槽位索引 (9-17)
-          PlayerSettings playerSettings = game.getPlayerSettings(player);
-          String itemIdentifier = playerSettings.getQuickBuyItem(slotIndex);
-          if (ice.isShiftClick()) {
-            // 检查是否有权限修改扩展槽位（槽位9-17）
-            if (slotIndex >= 9 && !(player.hasPermission("bw.vip") || player.hasPermission("bw.mvp") || player.isOp())) {
-              player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "扩展快捷购买区域仅限VIP和MVP及以上权限玩家使用！"));
-              ice.setCancelled(true);
-              return;
-            }
-            // Shift点击扩展槽位，移除该槽位设置
-            playerSettings.setQuickBuyItem(slotIndex, null); // 清空该槽位
-            // 更新界面显示为白色玻璃
-            ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15); // 白色玻璃
-            ItemMeta meta = glassPane.getItemMeta();
-            List<String> lore = new ArrayList<String>();
-            lore.add(ChatColor.GRAY + "扩展快捷购买区域");
-            lore.add(ChatColor.GRAY + "按住Shift点击物品添加");
-            meta.setLore(lore);
-            meta.setDisplayName(" ");
-            glassPane.setItemMeta(meta);
-            ice.getInventory().setItem(ice.getRawSlot(), glassPane);
-            player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "已移除快捷购买栏第" + (slotIndex + 1) + "个位置的物品"));
-          } else if (itemIdentifier != null) { // 检查是否为null
-            // 如果该槽位有设置的物品，尝试购买该物品
-            ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
-            if (quickBuyItem != null) {
-              // 找到对应的分类和交易
-              String[] parts = itemIdentifier.split("_");
-              if (parts.length == 2) {
-                String categoryName = parts[0];
-                int tradeIndex;
-                try {
-                  tradeIndex = Integer.parseInt(parts[1]);
-                } catch (NumberFormatException e) {
-                  return;
-                }
-
-                // 查找分类
-                MerchantCategory category = null;
-                for (MerchantCategory cat : this.categories) {
-                  if (cat.getName().equals(categoryName)) {
-                    category = cat;
-                    break;
-                  }
-                }
-
-                if (category != null && tradeIndex >= 0 && tradeIndex < category.getOffers().size()) {
-                  VillagerTrade trade = category.getOffers().get(tradeIndex);
-                  if (trade != null && this.hasEnoughRessource(player, trade)) {
-                    boolean success = this.buyItem(trade, quickBuyItem, player);
-                    if (success) {
-                      // 发送购买成功消息
-                      ItemMeta meta = quickBuyItem.getItemMeta();
-                      String itemName;
-                      if (meta.hasDisplayName()) {
-                        itemName = meta.getDisplayName();
-                      } else {
-                        // 如果没有自定义名称，使用物品类型名称并格式化
-                        itemName = this.getItemDisplayName(quickBuyItem.getType());
-                      }
-                      player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
-                    }
-                  } else {
-                    player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "你没有足够的资源购买这个物品!"));
-                  }
-                }
-              }
-            }
-          } else {
-            // 点击了空的扩展快捷购买槽位，不执行任何操作，但也不显示错误消息
-            // 这允许玩家以后通过Shift点击商店物品来设置这个槽位
-          }
-          ice.setCancelled(true);
-          return;
-        }
+      // 检查是否点击了快捷购买区域（第4行和第5行，槽位36-53）
+
+      int quickBuyStartSlot = 36; // 第4行开始
+
+      int quickBuyEndSlot = 53;   // 第5行结束
+
+      if (ice.getRawSlot() >= quickBuyStartSlot && ice.getRawSlot() <= quickBuyEndSlot) {
+
+        // 点击了快捷购买区域
+
+        // 如果点击的是第4行（36-44），处理快捷购买逻辑
+
+        if (ice.getRawSlot() >= 36 && ice.getRawSlot() <= 44) {
+
+          int slotIndex = ice.getRawSlot() - 36; // 获取槽位索引 (0-8)
+
+          PlayerSettings playerSettings = game.getPlayerSettings(player);
+
+          String itemIdentifier = playerSettings.getQuickBuyItem(slotIndex);
+
+          if (ice.isShiftClick()) {
+
+            // Shift点击快捷购买槽位，移除该槽位设置
+
+            playerSettings.setQuickBuyItem(slotIndex, null); // 清空该槽位
+
+            // 更新界面显示为灰色玻璃
+
+            ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
+
+            ItemMeta meta = glassPane.getItemMeta();
+
+            List<String> lore = new ArrayList<String>();
+
+            lore.add(ChatColor.GRAY + "按住Shift点击物品设置");
+
+            meta.setLore(lore);
+
+            meta.setDisplayName(" ");
+
+            glassPane.setItemMeta(meta);
+
+            ice.getInventory().setItem(ice.getRawSlot(), glassPane);
+
+            player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "已移除快捷购买栏第" + (slotIndex + 1) + "个位置的物品"));
+
+          } else if (itemIdentifier != null) { // 检查是否为null
+
+            // 如果该槽位有设置的物品，尝试购买该物品
+
+            ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
+
+            if (quickBuyItem != null) {
+
+              // 找到对应的分类和交易
+
+              String[] parts = itemIdentifier.split("_");
+
+              if (parts.length == 2) {
+
+                String categoryName = parts[0];
+
+                int tradeIndex;
+
+                try {
+
+                  tradeIndex = Integer.parseInt(parts[1]);
+
+                } catch (NumberFormatException e) {
+
+                  return;
+
+                }
+
+
+
+                // 查找分类
+
+                MerchantCategory category = null;
+
+                for (MerchantCategory cat : this.categories) {
+
+                  if (cat.getName().equals(categoryName)) {
+
+                    category = cat;
+
+                    break;
+
+                  }
+
+                }
+
+
+
+                if (category != null && tradeIndex >= 0 && tradeIndex < category.getOffers().size()) {
+
+                  VillagerTrade trade = category.getOffers().get(tradeIndex);
+
+                  if (trade != null && this.hasEnoughRessource(player, trade)) {
+
+                    boolean success = this.buyItem(trade, quickBuyItem, player);
+
+                    if (success) {
+
+                      // 发送购买成功消息
+
+                      ItemMeta meta = quickBuyItem.getItemMeta();
+
+                      String itemName;
+
+                      if (meta.hasDisplayName()) {
+
+                        itemName = meta.getDisplayName();
+
+                      } else {
+
+                        // 如果没有自定义名称，使用物品类型名称并格式化
+
+                        itemName = this.getItemDisplayName(quickBuyItem.getType());
+
+                      }
+
+                      player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
+
+                    }
+
+                  } else {
+
+                    player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "你没有足够的资源购买这个物品!"));
+
+                  }
+
+                }
+
+              }
+
+            }
+
+          } else {
+
+            // 点击了空的快捷购买槽位，不执行任何操作，但也不显示错误消息
+
+            // 这允许玩家以后通过Shift点击商店物品来设置这个槽位
+
+          }
+
+          ice.setCancelled(true);
+
+          return;
+
+        } else if (ice.getRawSlot() >= 45 && ice.getRawSlot() <= 53) {
+
+          // 如果点击的是第5行（45-53），处理扩展快捷购买逻辑
+
+          int slotIndex = ice.getRawSlot() - 45 + 9; // 获取扩展槽位索引 (9-17)
+
+          PlayerSettings playerSettings = game.getPlayerSettings(player);
+
+          String itemIdentifier = playerSettings.getQuickBuyItem(slotIndex);
+
+          if (ice.isShiftClick()) {
+
+            // 检查是否有权限修改扩展槽位（槽位9-17）
+
+            if (slotIndex >= 9 && !(player.hasPermission("bw.vip") || player.hasPermission("bw.mvp") || player.isOp())) {
+
+              player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "扩展快捷购买区域仅限VIP和MVP及以上权限玩家使用！"));
+
+              ice.setCancelled(true);
+
+              return;
+
+            }
+
+            // Shift点击扩展槽位，移除该槽位设置
+
+            playerSettings.setQuickBuyItem(slotIndex, null); // 清空该槽位
+
+            // 更新界面显示为白色玻璃
+
+            ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15); // 白色玻璃
+
+            ItemMeta meta = glassPane.getItemMeta();
+
+            List<String> lore = new ArrayList<String>();
+
+            lore.add(ChatColor.GRAY + "扩展快捷购买区域");
+
+            lore.add(ChatColor.GRAY + "按住Shift点击物品添加");
+
+            meta.setLore(lore);
+
+            meta.setDisplayName(" ");
+
+            glassPane.setItemMeta(meta);
+
+            ice.getInventory().setItem(ice.getRawSlot(), glassPane);
+
+            player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "已移除快捷购买栏第" + (slotIndex + 1) + "个位置的物品"));
+
+          } else if (itemIdentifier != null) { // 检查是否为null
+
+            // 如果该槽位有设置的物品，尝试购买该物品
+
+            ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
+
+            if (quickBuyItem != null) {
+
+              // 找到对应的分类和交易
+
+              String[] parts = itemIdentifier.split("_");
+
+              if (parts.length == 2) {
+
+                String categoryName = parts[0];
+
+                int tradeIndex;
+
+                try {
+
+                  tradeIndex = Integer.parseInt(parts[1]);
+
+                } catch (NumberFormatException e) {
+
+                  return;
+
+                }
+
+
+
+                // 查找分类
+
+                MerchantCategory category = null;
+
+                for (MerchantCategory cat : this.categories) {
+
+                  if (cat.getName().equals(categoryName)) {
+
+                    category = cat;
+
+                    break;
+
+                  }
+
+                }
+
+
+
+                if (category != null && tradeIndex >= 0 && tradeIndex < category.getOffers().size()) {
+
+                  VillagerTrade trade = category.getOffers().get(tradeIndex);
+
+                  if (trade != null && this.hasEnoughRessource(player, trade)) {
+
+                    boolean success = this.buyItem(trade, quickBuyItem, player);
+
+                    if (success) {
+
+                      // 发送购买成功消息
+
+                      ItemMeta meta = quickBuyItem.getItemMeta();
+
+                      String itemName;
+
+                      if (meta.hasDisplayName()) {
+
+                        itemName = meta.getDisplayName();
+
+                      } else {
+
+                        // 如果没有自定义名称，使用物品类型名称并格式化
+
+                        itemName = this.getItemDisplayName(quickBuyItem.getType());
+
+                      }
+
+                      player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
+
+                    }
+
+                  } else {
+
+                    player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "你没有足够的资源购买这个物品!"));
+
+                  }
+
+                }
+
+              }
+
+            }
+
+          } else {
+
+            // 点击了空的扩展快捷购买槽位，不执行任何操作，但也不显示错误消息
+
+            // 这允许玩家以后通过Shift点击商店物品来设置这个槽位
+
+          }
+
+          ice.setCancelled(true);
+
+          return;
+
+        }
+
       }
 
       // 在新的布局中，物品区域在灰色分隔行之后和快捷购买行之后，需要重新判断物品槽位
@@ -606,55 +759,102 @@ public class NewItemShop {
             Float.valueOf("1.0"), Float.valueOf("1.0"));
 
 
-        // 如果按住shift键，设置为快捷购买
-        if (ice.isShiftClick()) {
-          // 计算该交易在分类中的索引
-          int tradeIndex = -1;
-          for (int i = 0; i < category.getOffers().size(); i++) {
-            if (category.getOffers().get(i).equals(trade)) {
-              tradeIndex = i;
-              break;
-            }
-          }
-
-          if (tradeIndex != -1) {
-            // 生成物品标识符
-            String itemIdentifier = this.generateItemIdentifier(category, tradeIndex);
-            // 获取玩家未设置快捷购买的第一个槽位（扩展到18个槽位）
-            PlayerSettings playerSettings = game.getPlayerSettings(player);
-            int emptySlot = -1;
-            for (int i = 0; i < 18; i++) { // 扩展到18个槽位
-              String slotItemIdentifier = playerSettings.getQuickBuyItem(i);
-              // 检查是否为null或无效值
-              if (slotItemIdentifier == null || slotItemIdentifier.isEmpty() || slotItemIdentifier.equals("null")) {
-                emptySlot = i;
-                break;
-              }
-            }
-
-            if (emptySlot != -1) {
-              // 检查是否需要权限才能使用扩展槽位（槽位9-17）
-              if (emptySlot >= 9 && !(player.hasPermission("bw.vip") || player.hasPermission("bw.mvp") || player.isOp())) {
-                player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "扩展快捷购买区域仅限VIP和MVP及以上权限玩家使用！"));
-                player.sendMessage(ChatWriter.pluginMessage(ChatColor.YELLOW + "请购买VIP或MVP权限以解锁扩展快捷购买功能。"));
-              } else {
-                // 设置快捷购买
-                playerSettings.setQuickBuyItem(emptySlot, itemIdentifier);
-                // 更新界面显示
-                ItemStack quickBuyItem = this.toItemStack(trade, player, game);
-                int quickBuySlot = 36 + (emptySlot % 9); // 快捷购买行的槽位（第4行或第5行）
-                int quickBuyRow = emptySlot / 9; // 0表示第4行，1表示第5行
-                if (quickBuyRow == 1) {
-                  quickBuySlot += 9; // 第5行需要额外加9
-                }
-                ice.getInventory().setItem(quickBuySlot, quickBuyItem);
-                player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "已将物品设置到快捷购买栏第" + (emptySlot + 1) + "个位置"));
-              }
-            } else {
-              // 如果所有槽位都已占用，询问玩家是否替换某个槽位
-              player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "所有快捷购买栏位都已占用，请Shift点击一个快捷购买槽位来替换"));
-            }
-          }
+        // 如果按住shift键，设置为快捷购买
+
+        if (ice.isShiftClick()) {
+
+          // 计算该交易在分类中的索引
+
+          int tradeIndex = -1;
+
+          for (int i = 0; i < category.getOffers().size(); i++) {
+
+            if (category.getOffers().get(i).equals(trade)) {
+
+              tradeIndex = i;
+
+              break;
+
+            }
+
+          }
+
+
+
+          if (tradeIndex != -1) {
+
+            // 生成物品标识符
+
+            String itemIdentifier = this.generateItemIdentifier(category, tradeIndex);
+
+            // 获取玩家未设置快捷购买的第一个槽位（扩展到18个槽位）
+
+            PlayerSettings playerSettings = game.getPlayerSettings(player);
+
+            int emptySlot = -1;
+
+            for (int i = 0; i < 18; i++) { // 扩展到18个槽位
+
+              String slotItemIdentifier = playerSettings.getQuickBuyItem(i);
+
+              // 检查是否为null或无效值
+
+              if (slotItemIdentifier == null || slotItemIdentifier.isEmpty() || slotItemIdentifier.equals("null")) {
+
+                emptySlot = i;
+
+                break;
+
+              }
+
+            }
+
+            if (emptySlot != -1) {
+
+              // 检查是否需要权限才能使用扩展槽位（槽位9-17）
+
+              if (emptySlot >= 9 && !(player.hasPermission("bw.vip") || player.hasPermission("bw.mvp") || player.isOp())) {
+
+                player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "扩展快捷购买区域仅限VIP和MVP及以上权限玩家使用！"));
+
+                player.sendMessage(ChatWriter.pluginMessage(ChatColor.YELLOW + "请购买VIP或MVP权限以解锁扩展快捷购买功能。"));
+
+              } else {
+
+                // 设置快捷购买
+
+                playerSettings.setQuickBuyItem(emptySlot, itemIdentifier);
+
+                // 更新界面显示
+
+                ItemStack quickBuyItem = this.toItemStack(trade, player, game);
+
+                int quickBuySlot = 36 + (emptySlot % 9); // 快捷购买行的槽位（第4行或第5行）
+
+                int quickBuyRow = emptySlot / 9; // 0表示第4行，1表示第5行
+
+                if (quickBuyRow == 1) {
+
+                  quickBuySlot += 9; // 第5行需要额外加9
+
+                }
+
+                ice.getInventory().setItem(quickBuySlot, quickBuyItem);
+
+                player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "已将物品设置到快捷购买栏第" + (emptySlot + 1) + "个位置"));
+
+              }
+
+            } else {
+
+              // 如果所有槽位都已占用，询问玩家是否替换某个槽位
+
+              player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "所有快捷购买栏位都已占用，请Shift点击一个快捷购买槽位来替换"));
+
+            }
+
+          }
+
         } else {
           // 购买物品
           // enough ressources?
@@ -818,82 +1018,158 @@ public class NewItemShop {
     // 分类区域结束位置
     int categoryEndSlot = categoryRows * 9;
 
-    // 添加快捷购买区域（第4行和第5行，槽位36-53）
-    PlayerSettings playerSettings = game.getPlayerSettings(player);
-    // 第4行（槽位36-44）- 主要快捷购买区域
-    for (int i = 0; i < 9; i++) {
-      String itemIdentifier = playerSettings.getQuickBuyItem(i);
-      if (itemIdentifier != null && !itemIdentifier.isEmpty() && !itemIdentifier.equals("null")) { // 检查是否为有效值
-        // 如果有设置的物品，显示该物品
-        ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
-        if (quickBuyItem != null) {
-          buyInventory.setItem(36 + i, quickBuyItem); // 第4行 (36-44)
-        } else {
-          // 如果物品不存在（数据库不为null但物品不存在），显示红色提示玻璃
-          ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14); // 红色玻璃
-          ItemMeta meta = glassPane.getItemMeta();
-          List<String> lore = new ArrayList<String>();
-          lore.add(ChatColor.RED + "物品不存在");
-          meta.setLore(lore);
-          meta.setDisplayName(" ");
-          glassPane.setItemMeta(meta);
-          buyInventory.setItem(36 + i, glassPane);
-        }
-      } else {
-        // 如果未设置物品（数据库中为null），显示灰色玻璃并添加提示Lore
-        ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
-        ItemMeta meta = glassPane.getItemMeta();
-        List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.GRAY + "按住Shift点击物品设置");
-        meta.setLore(lore);
-        meta.setDisplayName(" ");
-        glassPane.setItemMeta(meta);
-        buyInventory.setItem(36 + i, glassPane);
-      }
-    }
-    // 第5行（槽位45-53）- 扩展快捷购买区域
-    for (int i = 0; i < 9; i++) {
-      int slotIndex = i + 9; // 扩展槽位索引 (9-17)
-      String itemIdentifier = playerSettings.getQuickBuyItem(slotIndex);
-      if (itemIdentifier != null && !itemIdentifier.isEmpty() && !itemIdentifier.equals("null")) { // 检查是否为有效值
-        // 如果有设置的物品，显示该物品
-        ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
-        if (quickBuyItem != null) {
-          buyInventory.setItem(45 + i, quickBuyItem); // 第5行 (45-53)
-        } else {
-          // 如果物品不存在（扩展槽位不为null但物品不存在），显示红色提示玻璃
-          ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14); // 红色玻璃
-          ItemMeta meta = glassPane.getItemMeta();
-          List<String> lore = new ArrayList<String>();
-          lore.add(ChatColor.RED + "物品不存在");
-          meta.setLore(lore);
-          meta.setDisplayName(" ");
-          glassPane.setItemMeta(meta);
-          buyInventory.setItem(45 + i, glassPane);
-        }
-      } else {
-        // 如果未设置物品（扩展槽位为null），根据权限显示不同提示
-        ItemStack glassPane;
-        if (player.hasPermission("bw.vip") || player.hasPermission("bw.mvp") || player.isOp()) {
-          // 有权限的玩家看到正常界面
-          glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15); // 白色玻璃
-        } else {
-          // 无权限的玩家看到红色玻璃
-          glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14); // 红色玻璃
-        }
-        ItemMeta meta = glassPane.getItemMeta();
-        List<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.GRAY + "扩展快捷购买区域");
-        if (player.hasPermission("bw.vip") || player.hasPermission("bw.mvp") || player.isOp()) {
-          lore.add(ChatColor.GRAY + "按住Shift点击物品添加");
-        } else {
-          lore.add(ChatColor.RED + "需要VIP/MVP权限");
-        }
-        meta.setLore(lore);
-        meta.setDisplayName(" ");
-        glassPane.setItemMeta(meta);
-        buyInventory.setItem(45 + i, glassPane); // 第5行 (45-53)
-      }
+    // 添加快捷购买区域（第4行和第5行，槽位36-53）
+
+    PlayerSettings playerSettings = game.getPlayerSettings(player);
+
+    // 第4行（槽位36-44）- 主要快捷购买区域
+
+    for (int i = 0; i < 9; i++) {
+
+      String itemIdentifier = playerSettings.getQuickBuyItem(i);
+
+      if (itemIdentifier != null && !itemIdentifier.isEmpty() && !itemIdentifier.equals("null")) { // 检查是否为有效值
+
+        // 如果有设置的物品，显示该物品
+
+        ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
+
+        if (quickBuyItem != null) {
+
+          buyInventory.setItem(36 + i, quickBuyItem); // 第4行 (36-44)
+
+        } else {
+
+          // 如果物品不存在（数据库不为null但物品不存在），显示红色提示玻璃
+
+          ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14); // 红色玻璃
+
+          ItemMeta meta = glassPane.getItemMeta();
+
+          List<String> lore = new ArrayList<String>();
+
+          lore.add(ChatColor.RED + "物品不存在");
+
+          meta.setLore(lore);
+
+          meta.setDisplayName(" ");
+
+          glassPane.setItemMeta(meta);
+
+          buyInventory.setItem(36 + i, glassPane);
+
+        }
+
+      } else {
+
+        // 如果未设置物品（数据库中为null），显示灰色玻璃并添加提示Lore
+
+        ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
+
+        ItemMeta meta = glassPane.getItemMeta();
+
+        List<String> lore = new ArrayList<String>();
+
+        lore.add(ChatColor.GRAY + "按住Shift点击物品设置");
+
+        meta.setLore(lore);
+
+        meta.setDisplayName(" ");
+
+        glassPane.setItemMeta(meta);
+
+        buyInventory.setItem(36 + i, glassPane);
+
+      }
+
+    }
+
+    // 第5行（槽位45-53）- 扩展快捷购买区域
+
+    for (int i = 0; i < 9; i++) {
+
+      int slotIndex = i + 9; // 扩展槽位索引 (9-17)
+
+      String itemIdentifier = playerSettings.getQuickBuyItem(slotIndex);
+
+      if (itemIdentifier != null && !itemIdentifier.isEmpty() && !itemIdentifier.equals("null")) { // 检查是否为有效值
+
+        // 如果有设置的物品，显示该物品
+
+        ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
+
+        if (quickBuyItem != null) {
+
+          buyInventory.setItem(45 + i, quickBuyItem); // 第5行 (45-53)
+
+        } else {
+
+          // 如果物品不存在（扩展槽位不为null但物品不存在），显示红色提示玻璃
+
+          ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14); // 红色玻璃
+
+          ItemMeta meta = glassPane.getItemMeta();
+
+          List<String> lore = new ArrayList<String>();
+
+          lore.add(ChatColor.RED + "物品不存在");
+
+          meta.setLore(lore);
+
+          meta.setDisplayName(" ");
+
+          glassPane.setItemMeta(meta);
+
+          buyInventory.setItem(45 + i, glassPane);
+
+        }
+
+      } else {
+
+        // 如果未设置物品（扩展槽位为null），根据权限显示不同提示
+
+        ItemStack glassPane;
+
+        if (player.hasPermission("bw.vip") || player.hasPermission("bw.mvp") || player.isOp()) {
+
+          // 有权限的玩家看到正常界面
+
+          glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15); // 白色玻璃
+
+        } else {
+
+          // 无权限的玩家看到红色玻璃
+
+          glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14); // 红色玻璃
+
+        }
+
+        ItemMeta meta = glassPane.getItemMeta();
+
+        List<String> lore = new ArrayList<String>();
+
+        lore.add(ChatColor.GRAY + "扩展快捷购买区域");
+
+        if (player.hasPermission("bw.vip") || player.hasPermission("bw.mvp") || player.isOp()) {
+
+          lore.add(ChatColor.GRAY + "按住Shift点击物品添加");
+
+        } else {
+
+          lore.add(ChatColor.RED + "需要VIP/MVP权限");
+
+        }
+
+        meta.setLore(lore);
+
+        meta.setDisplayName(" ");
+
+        glassPane.setItemMeta(meta);
+
+        buyInventory.setItem(45 + i, glassPane); // 第5行 (45-53)
+
+      }
+
     }
 
     // 在类别和物品之间添加一排玻璃作为分隔符

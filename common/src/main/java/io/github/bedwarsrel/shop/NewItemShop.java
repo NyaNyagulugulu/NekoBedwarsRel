@@ -2,6 +2,7 @@ package io.github.bedwarsrel.shop;
 
 import io.github.bedwarsrel.BedwarsRel;
 import io.github.bedwarsrel.game.Game;
+import io.github.bedwarsrel.game.PlayerSettings;
 import io.github.bedwarsrel.utils.ChatWriter;
 import io.github.bedwarsrel.utils.SoundMachine;
 import io.github.bedwarsrel.utils.Utils;
@@ -356,7 +357,6 @@ public class NewItemShop {
     int totalSize = this.getBuyInventorySize(sizeCategories, sizeItems);
 
 
-
     ItemStack item = ice.getCurrentItem();
     boolean cancel = false;
     int bought = 0;
@@ -379,7 +379,6 @@ public class NewItemShop {
       // is category click
 
       ice.setCancelled(true);
-
 
 
       if (item == null) {
@@ -412,15 +411,74 @@ public class NewItemShop {
         return;
       }
 
-      // 在新的布局中，物品区域在灰色分隔行之后，需要重新判断物品槽位
+      // 检查是否点击了快捷购买区域（第4行，槽位36-44）
+      int quickBuyStartSlot = 36; // 第4行开始
+      int quickBuyEndSlot = 44;   // 第4行结束
+      if (ice.getRawSlot() >= quickBuyStartSlot && ice.getRawSlot() <= quickBuyEndSlot) {
+        // 点击了快捷购买区域
+        int slotIndex = ice.getRawSlot() - quickBuyStartSlot; // 获取槽位索引 (0-8)
+        PlayerSettings playerSettings = game.getPlayerSettings(player);
+        String itemIdentifier = playerSettings.getQuickBuyItem(slotIndex);
+        if (itemIdentifier != null && !itemIdentifier.isEmpty()) {
+          // 如果该槽位有设置的物品，尝试购买该物品
+          ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
+          if (quickBuyItem != null) {
+            // 找到对应的分类和交易
+            String[] parts = itemIdentifier.split("_");
+            if (parts.length == 2) {
+              String categoryName = parts[0];
+              int tradeIndex;
+              try {
+                tradeIndex = Integer.parseInt(parts[1]);
+              } catch (NumberFormatException e) {
+                return;
+              }
+
+              // 查找分类
+              MerchantCategory category = null;
+              for (MerchantCategory cat : this.categories) {
+                if (cat.getName().equals(categoryName)) {
+                  category = cat;
+                  break;
+                }
+              }
+
+              if (category != null && tradeIndex >= 0 && tradeIndex < category.getOffers().size()) {
+                VillagerTrade trade = category.getOffers().get(tradeIndex);
+                if (trade != null && this.hasEnoughRessource(player, trade)) {
+                  boolean success = this.buyItem(trade, quickBuyItem, player);
+                  if (success) {
+                    // 发送购买成功消息
+                    ItemMeta meta = quickBuyItem.getItemMeta();
+                    String itemName;
+                    if (meta.hasDisplayName()) {
+                      itemName = meta.getDisplayName();
+                    } else {
+                      // 如果没有自定义名称，使用物品类型名称并格式化
+                      itemName = this.getItemDisplayName(quickBuyItem.getType());
+                    }
+                    player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
+                  }
+                } else {
+                  player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "你没有足够的资源购买这个物品!"));
+                }
+              }
+            }
+          }
+        }
+        ice.setCancelled(true);
+        return;
+      }
+
+      // 在新的布局中，物品区域在灰色分隔行之后和快捷购买行之后，需要重新判断物品槽位
       // 计算分类区域所占的行数
       int categoryRowsCal = (sizeCategories + 8) / 9; // 分类占用的行数（向上取整）
       int separatorStartCal = categoryRowsCal * 9; // 分隔行开始位置
       int itemStartSlot = separatorStartCal + 9; // 物品区域开始位置（跳过分隔行）
-      
-      // 检查点击是否在物品区域内且该槽位确实有物品
-      if (ice.getRawSlot() >= itemStartSlot && ice.getRawSlot() < 54 // 54是固定6行界面大小
-          && item != null && item.getType() != Material.AIR) {
+
+      // 如果点击的是物品区域
+      if (ice.getRawSlot() >= itemStartSlot && ice.getRawSlot() < 36 // 36是快捷购买行的起始，物品区域不能覆盖快捷购买行
+          && ice.getRawSlot() < 54 && item != null && item.getType() != Material.AIR) {
         // 这是一个购买物品的点击
 
         ice.setCancelled(true);
@@ -452,39 +510,77 @@ public class NewItemShop {
             Float.valueOf("1.0"), Float.valueOf("1.0"));
 
 
-
-        // enough ressources?
-
-        if (!this.hasEnoughRessource(player, trade)) {
-
-          player
-
-              .sendMessage(
-
-                  ChatWriter.pluginMessage(ChatColor.RED + BedwarsRel
-
-                      ._l(player, "errors.notenoughress")));
-
-          return;
-
-        }
-
-
-
-        // 处理购买逻辑，移除了shift购买一组物品的功能
-        boolean success = this.buyItem(trade, ice.getCurrentItem(), player);
-        if (success) {
-          // 发送购买成功消息
-          ItemStack itemToBuy = this.toItemStack(trade, player, game);
-          ItemMeta meta = itemToBuy.getItemMeta();
-          String itemName;
-          if (meta.hasDisplayName()) {
-            itemName = meta.getDisplayName();
-          } else {
-            // 如果没有自定义名称，使用物品类型名称并格式化
-            itemName = this.getItemDisplayName(itemToBuy.getType());
+        // 如果按住shift键，设置为快捷购买
+        if (ice.isShiftClick()) {
+          // 计算该交易在分类中的索引
+          int tradeIndex = -1;
+          for (int i = 0; i < category.getOffers().size(); i++) {
+            if (category.getOffers().get(i).equals(trade)) {
+              tradeIndex = i;
+              break;
+            }
           }
-          player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
+
+          if (tradeIndex != -1) {
+            // 生成物品标识符
+            String itemIdentifier = this.generateItemIdentifier(category, tradeIndex);
+            // 获取玩家未设置快捷购买的第一个槽位
+            PlayerSettings playerSettings = game.getPlayerSettings(player);
+            int emptySlot = -1;
+            for (int i = 0; i < 9; i++) {
+              if (playerSettings.getQuickBuyItem(i) == null || playerSettings.getQuickBuyItem(i).isEmpty()) {
+                emptySlot = i;
+                break;
+              }
+            }
+
+            if (emptySlot != -1) {
+              // 设置快捷购买
+              playerSettings.setQuickBuyItem(emptySlot, itemIdentifier);
+              // 更新界面显示
+              ItemStack quickBuyItem = this.toItemStack(trade, player, game);
+              int quickBuySlot = 36 + emptySlot; // 快捷购买行的槽位
+              ice.getInventory().setItem(quickBuySlot, quickBuyItem);
+              player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "已将物品设置到快捷购买栏第" + (emptySlot + 1) + "个位置"));
+            } else {
+              player.sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "所有快捷购买栏位都已占用，请先清理一个位置"));
+            }
+          }
+        } else {
+          // 购买物品
+          // enough ressources?
+
+          if (!this.hasEnoughRessource(player, trade)) {
+
+            player
+
+                .sendMessage(
+
+                    ChatWriter.pluginMessage(ChatColor.RED + BedwarsRel
+
+                        ._l(player, "errors.notenoughress")));
+
+            return;
+
+          }
+
+
+
+          // 处理购买逻辑，移除了shift购买一组物品的功能
+          boolean success = this.buyItem(trade, ice.getCurrentItem(), player);
+          if (success) {
+            // 发送购买成功消息
+            ItemStack itemToBuy = this.toItemStack(trade, player, game);
+            ItemMeta meta = itemToBuy.getItemMeta();
+            String itemName;
+            if (meta.hasDisplayName()) {
+              itemName = meta.getDisplayName();
+            } else {
+              // 如果没有自定义名称，使用物品类型名称并格式化
+              itemName = this.getItemDisplayName(itemToBuy.getType());
+            }
+            player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
+          }
         }
 
       } else {
@@ -509,7 +605,6 @@ public class NewItemShop {
     int sizeCategories = this.getInventorySize(catSize) + 9;
 
     int rawSlot = ice.getRawSlot();
-
 
 
     if (rawSlot >= this.getInventorySize(catSize) && rawSlot < sizeCategories) {
@@ -547,6 +642,8 @@ public class NewItemShop {
       return;
 
     }
+
+
 
     this.openBuyInventory(clickedCategory, player, game);
 
@@ -612,6 +709,40 @@ public class NewItemShop {
     // 分类区域结束位置
     int categoryEndSlot = categoryRows * 9;
 
+    // 添加快捷购买区域（第4行，槽位36-44）
+    int quickBuyRowStart = 36; // 第4行开始位置
+    PlayerSettings playerSettings = game.getPlayerSettings(player);
+    for (int i = 0; i < 9; i++) {
+      String itemIdentifier = playerSettings.getQuickBuyItem(i);
+      if (itemIdentifier != null && !itemIdentifier.isEmpty()) {
+        // 如果有设置的物品，显示该物品
+        ItemStack quickBuyItem = this.getItemFromIdentifier(itemIdentifier, player, game);
+        if (quickBuyItem != null) {
+          buyInventory.setItem(quickBuyRowStart + i, quickBuyItem);
+        } else {
+          // 如果物品不存在，显示灰色玻璃
+          ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
+          ItemMeta meta = glassPane.getItemMeta();
+          List<String> lore = new ArrayList<String>();
+          lore.add(ChatColor.RED + "物品不存在");
+          meta.setLore(lore);
+          meta.setDisplayName(" ");
+          glassPane.setItemMeta(meta);
+          buyInventory.setItem(quickBuyRowStart + i, glassPane);
+        }
+      } else {
+        // 如果没有设置物品，显示灰色玻璃并添加提示Lore
+        ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
+        ItemMeta meta = glassPane.getItemMeta();
+        List<String> lore = new ArrayList<String>();
+        lore.add(ChatColor.GRAY + "按住Shift点击物品设置");
+        meta.setLore(lore);
+        meta.setDisplayName(" ");
+        glassPane.setItemMeta(meta);
+        buyInventory.setItem(quickBuyRowStart + i, glassPane);
+      }
+    }
+
     // 在类别和物品之间添加一排玻璃作为分隔符
     int separatorRowStart = categoryEndSlot; // 分隔符行的起始槽位
     for (int i = 0; i < 9; i++) {
@@ -667,7 +798,7 @@ public class NewItemShop {
 
 
 
-    // 添加物品到剩余空间（在分隔符之后）
+    // 添加物品到剩余空间（在分隔符之后，但不能覆盖快捷购买行）
     for (int i = 0; i < offers.size(); i++) {
       VillagerTrade trade = offers.get(i);
       if (trade.getItem1().getType() == Material.AIR
@@ -675,11 +806,16 @@ public class NewItemShop {
         continue;
       }
 
-      // 计算物品槽位：从分隔符行之后开始
+      // 计算物品槽位：从分隔符行之后开始，但跳过快捷购买行（36-44）
       int itemSlot = separatorRowStart + 9 + i; // +9 是跳过分隔符行
+      // 如果物品槽位与快捷购买行冲突，需要跳过
+      if (itemSlot >= 36 && itemSlot <= 44) {
+        // 如果物品槽位在快捷购买行范围内，移动到下一个可用位置
+        itemSlot = 45 + i; // 从第5行开始继续放置
+      }
 
-      // 确保物品不会覆盖分隔符或超出界面范围
-      if (itemSlot < invSize) {
+      // 确保物品不会覆盖分隔符或超出界面范围，并且不覆盖快捷购买行
+      if (itemSlot < invSize && (itemSlot < 36 || itemSlot > 44)) { // 确保不覆盖快捷购买行
         ItemStack tradeStack = this.toItemStack(trade, player, game);
         buyInventory.setItem(itemSlot, tradeStack);
       }
@@ -717,7 +853,6 @@ public class NewItemShop {
     ItemMeta slimeMeta = slime.getItemMeta();
 
 
-
     slimeMeta.setDisplayName(BedwarsRel._l(player, "ingame.shop.oldshop"));
 
     slimeMeta.setLore(new ArrayList<String>());
@@ -725,9 +860,7 @@ public class NewItemShop {
     slime.setItemMeta(slimeMeta);
 
 
-
     inventory.setItem(size - 5, slime);
-
 
 
     player.openInventory(inventory);
@@ -863,6 +996,61 @@ public class NewItemShop {
         }
         return sb.toString();
     }
+  }
+
+  /**
+   * 从物品标识符获取物品
+   * @param itemIdentifier 物品标识符
+   * @param player 玩家
+   * @param game 游戏
+   * @return 物品堆栈
+   */
+  private ItemStack getItemFromIdentifier(String itemIdentifier, Player player, Game game) {
+    // 解析物品标识符格式，例如 "categoryName_tradeIndex"，如 "swords_0" 表示swords分类的第0个物品
+    String[] parts = itemIdentifier.split("_");
+    if (parts.length != 2) {
+      return null;
+    }
+
+    String categoryName = parts[0];
+    int tradeIndex;
+    try {
+      tradeIndex = Integer.parseInt(parts[1]);
+    } catch (NumberFormatException e) {
+      return null;
+    }
+
+    // 查找对应分类
+    MerchantCategory category = null;
+    for (MerchantCategory cat : this.categories) {
+      if (cat.getName().equals(categoryName)) {
+        category = cat;
+        break;
+      }
+    }
+
+    if (category == null) {
+      return null;
+    }
+
+    // 获取对应索引的交易
+    List<VillagerTrade> offers = category.getOffers();
+    if (tradeIndex < 0 || tradeIndex >= offers.size()) {
+      return null;
+    }
+
+    VillagerTrade trade = offers.get(tradeIndex);
+    return this.toItemStack(trade, player, game);
+  }
+
+  /**
+   * 生成物品标识符
+   * @param category 分类
+   * @param tradeIndex 交易索引
+   * @return 物品标识符
+   */
+  private String generateItemIdentifier(MerchantCategory category, int tradeIndex) {
+    return category.getName() + "_" + tradeIndex;
   }
 
 }

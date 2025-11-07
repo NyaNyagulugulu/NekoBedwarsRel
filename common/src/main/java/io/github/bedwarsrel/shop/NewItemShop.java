@@ -471,40 +471,54 @@ public class NewItemShop {
 
 
 
-        if (ice.isShiftClick()) {
-
-          while (this.hasEnoughRessource(player, trade) && !cancel) {
-
-            boolean success = this.buyItem(trade, ice.getCurrentItem(), player);
-            if (success) {
-              // 发送购买成功消息
-              ItemStack itemToBuy = this.toItemStack(trade, player, game);
-              String itemName = itemToBuy.getItemMeta().getDisplayName();
-              player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
-            }
-
-            cancel = !success;
-
-            // oneStackPerShift 已移除，现在总是执行购买限制逻辑
-            bought = bought + item.getAmount();
-            cancel = ((bought + item.getAmount()) > 64);
-
-          }
-
-
-
-          bought = 0;
-
-        } else {
-
-          boolean success = this.buyItem(trade, ice.getCurrentItem(), player);
-          if (success) {
-            // 发送购买成功消息
-            ItemStack itemToBuy = this.toItemStack(trade, player, game);
-            String itemName = itemToBuy.getItemMeta().getDisplayName();
-            player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
-          }
-
+        if (ice.isShiftClick()) {
+
+          while (this.hasEnoughRessource(player, trade) && !cancel) {
+
+            boolean success = this.buyItem(trade, ice.getCurrentItem(), player);
+            if (success) {
+              // 发送购买成功消息
+              ItemStack itemToBuy = this.toItemStack(trade, player, game);
+              ItemMeta meta = itemToBuy.getItemMeta();
+              String itemName;
+              if (meta.hasDisplayName()) {
+                itemName = meta.getDisplayName();
+              } else {
+                // 如果没有自定义名称，使用物品类型名称并格式化
+                itemName = this.getItemDisplayName(itemToBuy.getType());
+              }
+              player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
+            }
+
+            cancel = !success;
+
+            // oneStackPerShift 已移除，现在总是执行购买限制逻辑
+            bought = bought + item.getAmount();
+            cancel = ((bought + item.getAmount()) > 64);
+
+          }
+
+
+
+          bought = 0;
+
+        } else {
+
+          boolean success = this.buyItem(trade, ice.getCurrentItem(), player);
+          if (success) {
+            // 发送购买成功消息
+            ItemStack itemToBuy = this.toItemStack(trade, player, game);
+            ItemMeta meta = itemToBuy.getItemMeta();
+            String itemName;
+            if (meta.hasDisplayName()) {
+              itemName = meta.getDisplayName();
+            } else {
+              // 如果没有自定义名称，使用物品类型名称并格式化
+              itemName = this.getItemDisplayName(itemToBuy.getType());
+            }
+            player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
+          }
+
         }
 
       } else {
@@ -567,8 +581,6 @@ public class NewItemShop {
       return;
 
     }
-
-
 
     this.openBuyInventory(clickedCategory, player, game);
 
@@ -751,4 +763,97 @@ public class NewItemShop {
     tradeStack.setItemMeta(meta);
     return tradeStack;
   }
+
+  private String getItemDisplayName(Material material) {
+    // 创建一个基础的物品名称映射，包含常用的Minecraft物品中文名称
+    switch (material) {
+      case DIAMOND: return "钻石";
+      case IRON_INGOT: return "铁锭";
+      case GOLD_INGOT: return "金锭";
+      case COBBLESTONE: return "圆石";
+      case WOOL: return "羊毛";
+      case LOG: return "原木";
+      case WOOD: return "木板";
+      case SANDSTONE: return "砂岩";
+      case STONE: return "石头";
+      case DIRT: return "泥土";
+      case CLAY: return "粘土";
+      case GLASS: return "玻璃";
+      case COAL: return "煤炭";
+      case EMERALD: return "绿宝石";
+      case BOW: return "弓";
+      case ARROW: return "箭";
+      case STONE_SWORD: return "石剑";
+      case IRON_SWORD: return "铁剑";
+      case DIAMOND_SWORD: return "钻石剑";
+      case STONE_AXE: return "石斧";
+      case IRON_AXE: return "铁斧";
+      case DIAMOND_AXE: return "钻石斧";
+      case STONE_PICKAXE: return "石镐";
+      case IRON_PICKAXE: return "铁镐";
+      case DIAMOND_PICKAXE: return "钻石镐";
+      case STONE_SPADE: return "石锹";
+      case IRON_SPADE: return "铁锹";
+      case DIAMOND_SPADE: return "钻石锹";
+      case LEATHER_CHESTPLATE: return "皮革胸甲";
+      case CHAINMAIL_CHESTPLATE: return "锁链胸甲";
+      case IRON_CHESTPLATE: return "铁胸甲";
+      case DIAMOND_CHESTPLATE: return "钻石胸甲";
+      case LEATHER_LEGGINGS: return "皮革护腿";
+      case CHAINMAIL_LEGGINGS: return "锁链护腿";
+      case IRON_LEGGINGS: return "铁护腿";
+      case DIAMOND_LEGGINGS: return "钻石护腿";
+      case LEATHER_BOOTS: return "皮革靴子";
+      case CHAINMAIL_BOOTS: return "锁链靴子";
+      case IRON_BOOTS: return "铁靴子";
+      case DIAMOND_BOOTS: return "钻石靴子";
+      case LEATHER_HELMET: return "皮革头盔";
+      case CHAINMAIL_HELMET: return "锁链头盔";
+      case IRON_HELMET: return "铁头盔";
+      case DIAMOND_HELMET: return "钻石头盔";
+      case WATER_BUCKET: return "水桶";
+      case LAVA_BUCKET: return "岩浆桶";
+      case BUCKET: return "桶";
+      case ENDER_PEARL: return "末影珍珠";
+      case SNOW_BALL: return "雪球";
+      case EGG: return "鸡蛋";
+      case APPLE: return "苹果";
+      case BREAD: return "面包";
+      case COOKED_BEEF: return "熟牛肉";
+      case COOKED_CHICKEN: return "熟鸡肉";
+      case MUSHROOM_SOUP: return "蘑菇汤";
+      case POTION: return "药水";
+      case SADDLE: return "鞍";
+      case TNT: return "TNT";
+      case REDSTONE: return "红石粉";
+      case LADDER: return "梯子";
+      case TORCH: return "火把";
+      case CHEST: return "箱子";
+      case FENCE: return "栅栏";
+      case WORKBENCH: return "工作台";
+      case FURNACE: return "熔炉";
+      case ENCHANTMENT_TABLE: return "附魔台";
+      case ANVIL: return "铁砧";
+      case BOOK: return "书";
+      case BOOK_AND_QUILL: return "书与笔";
+      case WRITTEN_BOOK: return "成书";
+      case COMPASS: return "指南针";
+      case WATCH: return "时钟";
+      case MONSTER_EGG: return "刷怪蛋";
+      default:
+        // 如果没有找到对应的中文名称，则使用英文名称格式
+        String name = material.name();
+        name = name.toLowerCase().replace('_', ' ');
+        String[] parts = name.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < parts.length; i++) {
+          if (i > 0) sb.append(" ");
+          if (parts[i].length() > 0) {
+            sb.append(parts[i].substring(0, 1).toUpperCase()).append(parts[i].substring(1));
+          }
+        }
+        return sb.toString();
+    }
+  }
+
 }

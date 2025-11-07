@@ -646,14 +646,57 @@ public class NewItemShop {
     // 分类区域结束位置
     int categoryEndSlot = categoryRows * 9;
 
-    // 在类别和物品之间添加一排灰色玻璃作为分隔符
-    int separatorRowStart = categoryEndSlot; // 分隔符行的起始槽位
-    for (int i = 0; i < 9; i++) {
-      ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
-      ItemMeta meta = glassPane.getItemMeta();
-      meta.setDisplayName(" "); // 空白名称
-      glassPane.setItemMeta(meta);
-      buyInventory.setItem(separatorRowStart + i, glassPane);
+    // 在类别和物品之间添加一排玻璃作为分隔符
+    int separatorRowStart = categoryEndSlot; // 分隔符行的起始槽位
+    for (int i = 0; i < 9; i++) {
+      // 默认使用灰色玻璃
+      ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7); // 灰色玻璃
+      
+      ItemMeta meta = glassPane.getItemMeta();
+      
+      // 显示类别和物品标识，分行显示（类别在上，物品在下）
+      List<String> lore = new ArrayList<String>();
+      lore.add(ChatColor.DARK_GRAY + "⬆ " + ChatColor.GRAY + "类别");
+      lore.add(ChatColor.DARK_GRAY + "⬇ " + ChatColor.GRAY + "物品");
+      meta.setLore(lore);
+      meta.setDisplayName(" "); // 空白名称
+      
+      glassPane.setItemMeta(meta);
+      buyInventory.setItem(separatorRowStart + i, glassPane);
+    }
+
+    // 如果当前有选中的分类，找到其在界面中的位置并将其下方的玻璃改为绿色
+    if (this.currentCategory != null && categoryRows > 0) {
+      // 找到当前分类在界面中的位置（在分类区域中的索引）
+      int categoryIndex = -1;
+      int tempIndex = 0;
+      for (MerchantCategory categoryCheck : this.categories) {
+        if (categoryCheck.getMaterial() == null || (player != null && !player.hasPermission(categoryCheck.getPermission()))) {
+          continue;
+        }
+
+        if (categoryCheck.equals(this.currentCategory)) {
+          categoryIndex = tempIndex;
+          break;
+        }
+        tempIndex++;
+      }
+
+      // 如果找到了当前分类的位置，将其下方的玻璃改为绿色
+      if (categoryIndex >= 0) {
+        int glassPosition = categoryEndSlot + (categoryIndex % 9); // 当前分类下方的槽位
+        if (glassPosition < 54) { // 确保索引在有效范围内
+          ItemStack greenGlass = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5); // 绿色玻璃
+          ItemMeta meta = greenGlass.getItemMeta();
+          List<String> lore = new ArrayList<String>();
+          lore.add(ChatColor.DARK_GRAY + "⬆ " + ChatColor.GRAY + "类别");
+          lore.add(ChatColor.DARK_GRAY + "⬇ " + ChatColor.GRAY + "物品");
+          meta.setLore(lore);
+          meta.setDisplayName(" "); // 空白名称
+          greenGlass.setItemMeta(meta);
+          buyInventory.setItem(glassPosition, greenGlass);
+        }
+      }
     }
 
 

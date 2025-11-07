@@ -15,9 +15,9 @@ public class PlayerSettings {
   private boolean isTeleporting = false;
   private Player player = null;
   private boolean useOldShop = false;
-  // 快捷购买设置，存储物品的标识符
-  private List<String> quickBuySettings = new ArrayList<String>();
-  // 用于追踪是否需要保存到数据库
+  // 快捷购买设置，存储物品的标识符（扩展支持18个槽位，但只保存前9个到数据库）
+  private List<String> quickBuySettings = new ArrayList<String>();
+  // 用于追踪是否需要保存到数据库
   private boolean quickBuySettingsModified = false;
   private QuickBuySettingsManager qbManager = null;
 
@@ -77,50 +77,50 @@ public class PlayerSettings {
     scheduleSaveToDatabase();
   }
 
-  /**
-   * 设置快捷购买槽位的物品
-   * @param slot 槽位索引 (0-8)
-   * @param itemIdentifier 物品标识符
-   */
-  public void setQuickBuyItem(int slot, String itemIdentifier) {
-    if (slot >= 0 && slot < 9) {
-      if (this.quickBuySettings.size() <= slot) {
-        // 确保列表大小足够
-        while (this.quickBuySettings.size() <= slot) {
-          this.quickBuySettings.add(null);
-        }
-      }
-      this.quickBuySettings.set(slot, itemIdentifier);
-      this.quickBuySettingsModified = true;
-      // 延迟保存到数据库，避免频繁写入
-      scheduleSaveToDatabase();
-    }
+  /**
+   * 设置快捷购买槽位的物品
+   * @param slot 槽位索引 (0-17)
+   * @param itemIdentifier 物品标识符
+   */
+  public void setQuickBuyItem(int slot, String itemIdentifier) {
+    if (slot >= 0 && slot < 18) { // 扩展支持18个槽位
+      if (this.quickBuySettings.size() <= slot) {
+        // 确保列表大小足够
+        while (this.quickBuySettings.size() <= slot) {
+          this.quickBuySettings.add(null);
+        }
+      }
+      this.quickBuySettings.set(slot, itemIdentifier);
+      this.quickBuySettingsModified = true;
+      // 延迟保存到数据库，避免频繁写入（保存所有槽位到数据库）
+      scheduleSaveToDatabase();
+    }
   }
 
-  /**
-   * 获取快捷购买槽位的物品
-   * @param slot 槽位索引 (0-8)
-   * @return 物品标识符
-   */
-  public String getQuickBuyItem(int slot) {
-    if (slot >= 0 && slot < this.quickBuySettings.size()) {
-      return this.quickBuySettings.get(slot);
-    }
-    return null;
+  /**
+   * 获取快捷购买槽位的物品
+   * @param slot 槽位索引 (0-17)
+   * @return 物品标识符
+   */
+  public String getQuickBuyItem(int slot) {
+    if (slot >= 0 && slot < this.quickBuySettings.size()) {
+      return this.quickBuySettings.get(slot);
+    }
+    return null;
   }
 
-  /**
-   * 从数据库加载快捷购买设置
-   */
-  private void loadQuickBuySettingsFromDatabase() {
-    if (this.qbManager != null) {
-      this.quickBuySettings = this.qbManager.loadQuickBuySettings(this.player.getUniqueId());
-    } else {
-      // 如果数据库未启用，初始化默认设置
-      for (int i = 0; i < 9; i++) {
-        this.quickBuySettings.add(null); // 默认为空
-      }
-    }
+    /**
+   * 从数据库加载快捷购买设置
+   */
+  private void loadQuickBuySettingsFromDatabase() {
+    if (this.qbManager != null) {
+      this.quickBuySettings = this.qbManager.loadQuickBuySettings(this.player.getUniqueId());
+    } else {
+      // 如果数据库未启用，初始化默认设置
+      for (int i = 0; i < 18; i++) { // 扩展到18个槽位
+        this.quickBuySettings.add(null); // 默认为空
+      }
+    }
   }
 
   /**

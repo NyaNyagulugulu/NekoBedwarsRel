@@ -31,7 +31,16 @@ public class QuickBuySettingsManager {
   }
 
   public void saveQuickBuySettings(UUID uuid, List<String> quickBuySettings) {
-    String settingsString = String.join(",", quickBuySettings);
+    // 保存所有18个槽位到数据库
+    List<String> dbSettings = new ArrayList<>();
+    for (int i = 0; i < 18; i++) {
+      if (i < quickBuySettings.size()) {
+        dbSettings.add(quickBuySettings.get(i));
+      } else {
+        dbSettings.add(null);
+      }
+    }
+    String settingsString = String.join(",", dbSettings);
     try (Connection connection = this.databaseManager.getConnection();
         PreparedStatement statement = connection.prepareStatement(
             "INSERT INTO `" + this.databaseManager.getTablePrefix()
@@ -47,8 +56,8 @@ public class QuickBuySettingsManager {
 
   public List<String> loadQuickBuySettings(UUID uuid) {
     List<String> quickBuySettings = new ArrayList<>();
-    // 初始化9个槽位为null
-    for (int i = 0; i < 9; i++) {
+    // 初始化18个槽位为null
+    for (int i = 0; i < 18; i++) {
       quickBuySettings.add(null);
     }
 
@@ -63,9 +72,14 @@ public class QuickBuySettingsManager {
         String settingsString = resultSet.getString("quick_buy_settings");
         if (settingsString != null && !settingsString.isEmpty()) {
           String[] settingsArray = settingsString.split(",");
-          for (int i = 0; i < Math.min(settingsArray.length, 9); i++) {
-            // 如果是空字符串，转换为null
-            quickBuySettings.set(i, settingsArray[i].isEmpty() ? null : settingsArray[i]);
+          for (int i = 0; i < Math.min(settingsArray.length, 18); i++) {
+            // 如果是空字符串或字符串内容是"null"，转换为null
+            String value = settingsArray[i];
+            if (value == null || value.isEmpty() || value.equals("null")) {
+              quickBuySettings.set(i, null);
+            } else {
+              quickBuySettings.set(i, value);
+            }
           }
         }
       }

@@ -471,26 +471,40 @@ public class NewItemShop {
 
 
 
-        if (ice.isShiftClick()) {
-
-          while (this.hasEnoughRessource(player, trade) && !cancel) {
-
-            cancel = !this.buyItem(trade, ice.getCurrentItem(), player);
-
-            // oneStackPerShift 已移除，现在总是执行购买限制逻辑
-            bought = bought + item.getAmount();
-            cancel = ((bought + item.getAmount()) > 64);
-
-          }
-
-
-
-          bought = 0;
-
-        } else {
-
-          this.buyItem(trade, ice.getCurrentItem(), player);
-
+        if (ice.isShiftClick()) {
+
+          while (this.hasEnoughRessource(player, trade) && !cancel) {
+
+            boolean success = this.buyItem(trade, ice.getCurrentItem(), player);
+            if (success) {
+              // 发送购买成功消息
+              ItemStack itemToBuy = this.toItemStack(trade, player, game);
+              String itemName = itemToBuy.getItemMeta().getDisplayName();
+              player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
+            }
+
+            cancel = !success;
+
+            // oneStackPerShift 已移除，现在总是执行购买限制逻辑
+            bought = bought + item.getAmount();
+            cancel = ((bought + item.getAmount()) > 64);
+
+          }
+
+
+
+          bought = 0;
+
+        } else {
+
+          boolean success = this.buyItem(trade, ice.getCurrentItem(), player);
+          if (success) {
+            // 发送购买成功消息
+            ItemStack itemToBuy = this.toItemStack(trade, player, game);
+            String itemName = itemToBuy.getItemMeta().getDisplayName();
+            player.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "你购买了" + ChatColor.GOLD + itemName + ChatColor.GREEN + "喵!"));
+          }
+
         }
 
       } else {

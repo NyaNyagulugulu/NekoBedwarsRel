@@ -52,18 +52,18 @@ public class DatabaseManager {
     return null;
   }
 
-  public String getCreateTableSql() {
-    return "CREATE TABLE IF NOT EXISTS `" + this.getTablePrefix()
-        + "stats_players` (`kills` int(11) NOT NULL DEFAULT '0', `wins` int(11) NOT NULL DEFAULT '0', `score` int(11) NOT NULL DEFAULT '0', `loses` int(11) NOT NULL DEFAULT '0', `name` varchar(255) NOT NULL, `destroyedBeds` int(11) NOT NULL DEFAULT '0', `uuid` varchar(255) NOT NULL, `deaths` int(11) NOT NULL DEFAULT '0', `quick_buy_settings` text DEFAULT NULL, PRIMARY KEY (`uuid`))";
-  }
-
-  public String getReadObjectSql() {
-    return "SELECT * FROM " + this.getTablePrefix()
-        + "stats_players WHERE uuid = ? LIMIT 1";
-  }
-
-  public String getWriteObjectSql() {
-    return "INSERT INTO " + this.getTablePrefix()
-        + "stats_players(uuid, name, deaths, destroyedBeds, kills, loses, score, wins, quick_buy_settings) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE uuid=VALUES(uuid),name=VALUES(name),deaths=deaths+VALUES(deaths),destroyedBeds=destroyedBeds+VALUES(destroyedBeds),kills=kills+VALUES(kills),loses=loses+VALUES(loses),score=score+VALUES(score),wins=wins+VALUES(wins),quick_buy_settings=VALUES(quick_buy_settings)";
+  public String getCreateTableSql() {
+    return "CREATE TABLE IF NOT EXISTS `" + this.getTablePrefix()
+        + "stats_players` (`kills` int(11) NOT NULL DEFAULT '0', `wins` int(11) NOT NULL DEFAULT '0', `score` int(11) NOT NULL DEFAULT '0', `loses` int(11) NOT NULL DEFAULT '0', `name` varchar(255) NOT NULL, `destroyedBeds` int(11) NOT NULL DEFAULT '0', `uuid` varchar(255) NOT NULL, `deaths` int(11) NOT NULL DEFAULT '0', `quick_buy_settings` text DEFAULT NULL, PRIMARY KEY (`uuid`))";
+  }
+
+  public String getReadObjectSql() {
+    return "SELECT * FROM " + this.getTablePrefix()
+        + "stats_players WHERE uuid = ? LIMIT 1";
+  }
+
+  public String getWriteObjectSql() {
+    return "INSERT INTO " + this.getTablePrefix()
+        + "stats_players(uuid, name, deaths, destroyedBeds, kills, loses, score, wins) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE uuid=VALUES(uuid),name=VALUES(name),deaths=deaths+VALUES(deaths),destroyedBeds=destroyedBeds+VALUES(destroyedBeds),kills=kills+VALUES(kills),loses=loses+VALUES(loses),score=score+VALUES(score),wins=wins+VALUES(wins)";
   }
 }

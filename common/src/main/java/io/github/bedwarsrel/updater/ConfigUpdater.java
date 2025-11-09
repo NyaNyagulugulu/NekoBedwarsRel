@@ -54,7 +54,7 @@ public class ConfigUpdater {
     // </1.1.9>
 
     // <1.1.11>
-    BedwarsRel.getInstance().getConfig().addDefault("specials.magnetshoe.probability", 75);
+    BedwarsRel.getInstance().getConfig().addDefault("specials.magnetshoe.probability", 0);
     BedwarsRel.getInstance().getConfig().addDefault("specials.magnetshoe.boots", "IRON_BOOTS");
     // </1.1.11>
 

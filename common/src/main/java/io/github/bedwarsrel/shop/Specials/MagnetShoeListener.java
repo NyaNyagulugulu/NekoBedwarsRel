@@ -50,11 +50,11 @@ public class MagnetShoeListener implements Listener {
     }
   }
 
-  private boolean rollKnockbackDice() {
-    int target = BedwarsRel.getInstance().getIntConfig("specials.magnetshoe.probability", 75);
-    int roll = Utils.randInt(0, 100);
-
-    return (roll <= target);
+  private boolean rollKnockbackDice() {
+    int target = BedwarsRel.getInstance().getIntConfig("specials.magnetshoe.probability", 0);
+    int roll = Utils.randInt(0, 100);
+
+    return (roll <= target);
   }
 
 }

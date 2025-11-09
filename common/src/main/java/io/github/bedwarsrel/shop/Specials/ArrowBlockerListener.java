@@ -31,6 +31,8 @@ public class ArrowBlockerListener implements Listener {
 
   @EventHandler(priority = EventPriority.HIGH)
   public void onDamage(EntityDamageEvent ev) {
+    // 击退保护功能已移除
+    /*
     if (!ev.getCause().equals(DamageCause.PROJECTILE)) {
       return;
     }
@@ -55,6 +57,7 @@ public class ArrowBlockerListener implements Listener {
     }
 
     ev.setCancelled(true);
+    */
   }
 
   @EventHandler

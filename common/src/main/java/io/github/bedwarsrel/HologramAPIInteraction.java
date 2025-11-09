@@ -40,7 +40,7 @@ public class HologramAPIInteraction implements IHologramInteraction {
     final PlayerStatistic statistic = new PlayerStatistic();
 
     lines.add(ChatColor.translateAlternateColorCodes('&', BedwarsRel.getInstance()
-        .getStringConfig("holographic-stats.head-line", "Your &eBEDWARS&f stats")));
+        .getStringConfig("holographic-stats.head-line", "你的 &eBEDWARS&f 统计")));
 
     for (Entry<String, Object> entry : statistic.serialize().entrySet()) {
       lines.add(ChatColor.GRAY + BedwarsRel._l("stats." + entry.getKey()) + ": " + ChatColor.YELLOW

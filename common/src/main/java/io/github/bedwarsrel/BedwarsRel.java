@@ -724,13 +724,9 @@ public class BedwarsRel extends JavaPlugin {
     if (this.getDescription().getVersion().contains("-SNAPSHOT")
         && System.getProperty("IReallyKnowWhatIAmDoingISwear") == null) {
       this.getServer().getConsoleSender().sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "*** 警告，您正在使用开发版本 ***"));
-
       this.getServer().getConsoleSender().sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "*** 您将无法获得关于此版本的支持 ***"));
-
       this.getServer().getConsoleSender().sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "*** 请从 https://github.com/BedwarsRel/BedwarsRel/releases 下载稳定版本 ***"));
-
       this.getServer().getConsoleSender().sendMessage(ChatWriter.pluginMessage(ChatColor.RED + "*** 服务器将在10秒后启动 ***"));
-
       try {
 
         Thread.sleep(TimeUnit.SECONDS.toMillis(10));

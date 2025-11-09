@@ -796,7 +796,7 @@ specials:
     # 击退概率
     # 类型: int
     # 击退被阻止的概率百分比
-    probability: 75
+    probability: 0
     
     # 击退靴子
     # 类型: item (仅限靴子!!!)

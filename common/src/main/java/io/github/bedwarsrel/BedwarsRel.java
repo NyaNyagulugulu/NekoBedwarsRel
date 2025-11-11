@@ -346,7 +346,7 @@ public class BedwarsRel extends JavaPlugin {
   }
 
   public String getFallbackLocale() {
-    return "en_US";
+    return "zh_CN";
   }
 
   public IHologramInteraction getHolographicInteractor() {

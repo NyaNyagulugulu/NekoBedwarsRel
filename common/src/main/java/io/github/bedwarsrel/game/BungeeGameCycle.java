@@ -5,6 +5,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import io.github.bedwarsrel.BedwarsRel;
 import io.github.bedwarsrel.events.BedwarsGameEndEvent;
+import io.github.bedwarsrel.statistics.PlayerStatistic;
 import io.github.bedwarsrel.utils.ChatWriter;
 import io.github.bedwarsrel.utils.Utils;
 import java.io.ByteArrayOutputStream;
@@ -94,8 +95,47 @@ public class BungeeGameCycle extends GameCycle {
       // Reset scoreboard first
       this.getGame().resetScoreboard();
 
-      // Kick all players
-      this.kickAllPlayers();
+      // 根据用户需求，游戏结束后玩家应保留在游戏地图中
+      // 但Bungee服务器仍需要踢出玩家
+      if (BedwarsRel.getInstance().isBungee()) {
+        this.kickAllPlayers();
+      } else {
+        // 对于非Bungee服务器，让玩家留在游戏地图中
+        for (Player player : this.getGame().getTeamPlayers()) {
+          // 处理统计和物品栏
+          if (BedwarsRel.getInstance().statisticsEnabled()) {
+            PlayerStatistic statistic =
+                BedwarsRel.getInstance().getPlayerStatisticManager().getStatistic(player);
+            BedwarsRel.getInstance().getPlayerStatisticManager().storeStatistic(statistic);
+
+            if (BedwarsRel.getInstance().getBooleanConfig("statistics.show-on-game-end", true)) {
+              BedwarsRel.getInstance().getServer().dispatchCommand(player, "bw stats");
+            }
+          }
+
+          this.getGame().setPlayerDamager(player, null);
+          PlayerStorage storage = this.getGame().getPlayerStorage(player);
+          storage.clean();
+        }
+
+        // 处理旁观者
+        for (Player freePlayer : this.getGame().getFreePlayersClone()) {
+          // 处理统计和物品栏
+          if (BedwarsRel.getInstance().statisticsEnabled()) {
+            PlayerStatistic statistic =
+                BedwarsRel.getInstance().getPlayerStatisticManager().getStatistic(freePlayer);
+            BedwarsRel.getInstance().getPlayerStatisticManager().storeStatistic(statistic);
+
+            if (BedwarsRel.getInstance().getBooleanConfig("statistics.show-on-game-end", true)) {
+              BedwarsRel.getInstance().getServer().dispatchCommand(freePlayer, "bw stats");
+            }
+          }
+
+          this.getGame().setPlayerDamager(freePlayer, null);
+          PlayerStorage storage = this.getGame().getPlayerStorage(freePlayer);
+          storage.clean();
+        }
+      }
 
       // reset countdown prevention breaks
       this.setEndGameRunning(false);
@@ -125,18 +165,23 @@ public class BungeeGameCycle extends GameCycle {
 
   @Override
   public void onGameOver(GameOverTask task) {
+    // 根据用户需求，游戏结束后玩家应保留在游戏地图中，而不是被传送到大厅
+    // 保留Bungee服务器的逻辑，但不传送玩家到大厅
     if (BedwarsRel.getInstance().getBooleanConfig("bungeecord.endgame-in-lobby", true)) {
       final ArrayList<Player> players = new ArrayList<Player>();
       final Game game = this.getGame();
       players.addAll(this.getGame().getTeamPlayers());
       players.addAll(this.getGame().getFreePlayers());
       for (Player player : players) {
+        // 根据用户需求，不再传送玩家到大厅
+        // if (!player.getWorld().equals(this.getGame().getLobby().getWorld())) {
+        //   game.getPlayerSettings(player).setTeleporting(true);
+        //   player.teleport(this.getGame().getLobby());
+        //   game.getPlayerStorage(player).clean();
+        // }
 
-        if (!player.getWorld().equals(this.getGame().getLobby().getWorld())) {
-          game.getPlayerSettings(player).setTeleporting(true);
-          player.teleport(this.getGame().getLobby());
-          game.getPlayerStorage(player).clean();
-        }
+        // 保持玩家在游戏地图中
+        game.getPlayerStorage(player).clean();
       }
 
       new BukkitRunnable() {
@@ -293,9 +338,13 @@ public class BungeeGameCycle extends GameCycle {
 
   @Override
   public void onPlayerLeave(Player player) {
-    if (player.isOnline() || player.isDead()) {
-      this.bungeeSendToServer(BedwarsRel.getInstance().getBungeeHub(), player, true);
+    // 根据用户需求，Bungee服务器传送逻辑保留，但非Bungee服务器玩家留在游戏地图中
+    if (BedwarsRel.getInstance().isBungee()) {
+      if (player.isOnline() || player.isDead()) {
+        this.bungeeSendToServer(BedwarsRel.getInstance().getBungeeHub(), player, true);
+      }
     }
+    // 非Bungee服务器：玩家留在游戏地图中，不进行任何传送
 
     if (this.getGame().getState() == GameState.RUNNING && !this.getGame().isStopping()) {
       this.checkGameOver();

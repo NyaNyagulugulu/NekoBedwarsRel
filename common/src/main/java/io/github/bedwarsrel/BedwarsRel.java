@@ -630,7 +630,7 @@ public class BedwarsRel extends JavaPlugin {
     }
 
     this.getServer().getConsoleSender()
-        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "Initialize database ..."));
+        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "初始化数据库 ..."));
 
     String host = this.getStringConfig("database.host", null);
     int port = this.getIntConfig("database.port", 3306);
@@ -647,10 +647,10 @@ public class BedwarsRel extends JavaPlugin {
     this.dbManager.initialize();
 
     this.getServer().getConsoleSender()
-        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "Update database ..."));
+        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "更新数据库 ..."));
 
     this.getServer().getConsoleSender()
-        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "Done."));
+        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "完成."));
   }
 
   private void loadLocalization(String locale) {

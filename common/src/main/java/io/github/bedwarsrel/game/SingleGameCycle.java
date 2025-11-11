@@ -22,25 +22,12 @@ public class SingleGameCycle extends GameCycle {
       player.showPlayer(freePlayer);
     }
 
-    if (wasSpectator && this.getGame().isFull()) {
-      this.getGame().playerLeave(player, false);
-      return;
-    }
-
-    if (BedwarsRel.getInstance().toMainLobby()) {
-      if (BedwarsRel.getInstance().allPlayersBackToMainLobby()) {
-        this.getGame().playerLeave(player, false);
-        return;
-      } else {
-        player.teleport(this.getGame().getLobby());
-      }
-    } else {
-      player.teleport(this.getGame().getLobby());
-    }
+    // 根据用户需求，游戏结束后玩家应保留在游戏地图中
+    // 不再传送玩家到大厅或主大厅
+    // 只处理统计和物品栏逻辑
 
     if (BedwarsRel.getInstance().isHologramsEnabled()
-        && BedwarsRel.getInstance().getHolographicInteractor() != null
-        && this.getGame().getLobby() == player.getWorld()) {
+        && BedwarsRel.getInstance().getHolographicInteractor() != null) {
       BedwarsRel.getInstance().getHolographicInteractor().updateHolograms(player);
     }
 
@@ -58,7 +45,8 @@ public class SingleGameCycle extends GameCycle {
 
     PlayerStorage storage = this.getGame().getPlayerStorage(player);
     storage.clean();
-    storage.loadLobbyInventory(this.getGame());
+    // 保持游戏结束时的物品栏状态，不加载大厅物品栏
+    // storage.loadLobbyInventory(this.getGame());
   }
 
   @Override
@@ -203,25 +191,14 @@ public class SingleGameCycle extends GameCycle {
 
   @Override
   public void onPlayerLeave(Player player) {
-    // teleport to join location
+    // 根据用户需求，玩家离开游戏时应保留在游戏地图中
+    // 不再传送玩家到大厅或主大厅
     PlayerStorage storage = this.getGame().getPlayerStorage(player);
 
-    if (BedwarsRel.getInstance().toMainLobby()) {
-      if (BedwarsRel.getInstance().isHologramsEnabled()
-          && BedwarsRel.getInstance().getHolographicInteractor() != null
-          && this.getGame().getMainLobby().getWorld() == player.getWorld()) {
-        BedwarsRel.getInstance().getHolographicInteractor().updateHolograms(player);
-      }
-
-      player.teleport(this.getGame().getMainLobby());
-    } else {
-      if (BedwarsRel.getInstance().isHologramsEnabled()
-          && BedwarsRel.getInstance().getHolographicInteractor() != null
-          && storage.getLeft() == player.getWorld()) {
-        BedwarsRel.getInstance().getHolographicInteractor().updateHolograms(player);
-      }
-
-      player.teleport(storage.getLeft());
+    // 更新全息显示（如果启用）
+    if (BedwarsRel.getInstance().isHologramsEnabled()
+        && BedwarsRel.getInstance().getHolographicInteractor() != null) {
+      BedwarsRel.getInstance().getHolographicInteractor().updateHolograms(player);
     }
 
     if (this.getGame().getState() == GameState.RUNNING && !this.getGame().isStopping()

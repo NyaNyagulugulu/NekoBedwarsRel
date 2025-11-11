@@ -242,30 +242,42 @@ public abstract class GameCycle {
 
         this.getGame().toSpectator(player);
       } else {
+        // 根据用户需求，游戏结束后玩家应保留在游戏地图中
+        // Bungee服务器保持原有逻辑
         if (this.game.getCycle() instanceof BungeeGameCycle) {
           this.getGame().playerLeave(player, false);
           return;
         }
 
-        if (!BedwarsRel.getInstance().toMainLobby()) {
-          if (storage != null) {
-            if (storage.getLeft() != null) {
-              pre.setRespawnLocation(storage.getLeft());
-            }
-          }
+        // 非Bungee服务器：玩家保留在游戏地图中，不传送至大厅
+        // 但需要处理玩家离开游戏的逻辑
+        if (this.getGame().getState() != GameState.RUNNING || this.isEndGameRunning()) {
+          // 游戏已经结束，根据用户需求，玩家保留在游戏地图中
+          // 设置重生位置为玩家当前游戏中的位置或团队重生点
+          pre.setRespawnLocation(team.getSpawnLocation());
+          this.getGame().playerLeave(player, false);
         } else {
-          if (this.getGame().getMainLobby() != null) {
-            pre.setRespawnLocation(this.getGame().getMainLobby());
-          } else {
+          // 游戏仍在进行中，但玩家的队伍已淘汰
+          if (!BedwarsRel.getInstance().toMainLobby()) {
             if (storage != null) {
               if (storage.getLeft() != null) {
                 pre.setRespawnLocation(storage.getLeft());
               }
             }
+          } else {
+            if (this.getGame().getMainLobby() != null) {
+              pre.setRespawnLocation(this.getGame().getMainLobby());
+            } else {
+              if (storage != null) {
+                if (storage.getLeft() != null) {
+                  pre.setRespawnLocation(storage.getLeft());
+                }
+              }
+            }
           }
-        }
 
-        this.getGame().playerLeave(player, false);
+          this.getGame().playerLeave(player, false);
+        }
       }
 
     } else {

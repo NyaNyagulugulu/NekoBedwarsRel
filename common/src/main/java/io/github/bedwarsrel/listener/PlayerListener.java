@@ -1092,8 +1092,18 @@ public class PlayerListener extends BaseListener {
       return;
     }
 
+    // 根据用户需求，游戏结束后玩家应保留在游戏地图中
+    // 不再传送玩家到大厅
     if (game.getState() == GameState.WAITING) {
-      pre.setRespawnLocation(game.getLobby());
+      // 保持玩家在游戏地图中，而不是传送到大厅
+      // 获取玩家的团队，如果有的话，使用团队重生点
+      Team team = game.getPlayerTeam(p);
+      if (team != null) {
+        pre.setRespawnLocation(team.getSpawnLocation());
+      } else {
+        // 如果玩家没有队伍，保持在当前位置附近
+        pre.setRespawnLocation(p.getLocation());
+      }
     }
   }
 

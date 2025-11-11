@@ -1709,13 +1709,13 @@ public class Game {
       for (Player aPlayer : BedwarsRel.getInstance().getServer().getOnlinePlayers()) {
         aPlayer.sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN
             + BedwarsRel._l(aPlayer, "ingame.gamestarted",
-            ImmutableMap.of("game", this.getRegion().getName()))));
+            ImmutableMap.of("game", this.name))));
       }
       BedwarsRel.getInstance().getServer().getConsoleSender()
           .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN
               + BedwarsRel
               ._l(BedwarsRel.getInstance().getServer().getConsoleSender(), "ingame.gamestarted",
-                  ImmutableMap.of("game", this.getRegion().getName()))));
+                  ImmutableMap.of("game", this.name))));
     }
 
     BedwarsGameStartedEvent startedEvent = new BedwarsGameStartedEvent(this);

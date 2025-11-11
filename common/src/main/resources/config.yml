@@ -612,7 +612,7 @@ bungeecord:
 ### 查看插件描述了解可用语言!
 ### 目前可用语言: https://github.com/BedwarsRel/BedwarsRel/tree/master/src/main/resources/locale
 ### 备用语言是en_US (英语)。
-locale: en_US
+locale: zh_CN
 
 # 资源配置
 resource:

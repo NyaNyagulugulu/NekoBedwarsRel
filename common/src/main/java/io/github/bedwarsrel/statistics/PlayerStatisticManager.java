@@ -157,7 +157,7 @@ public class PlayerStatisticManager {
 
   public void initializeDatabase() {
     BedwarsRel.getInstance().getServer().getConsoleSender().sendMessage(
-        ChatWriter.pluginMessage(ChatColor.GREEN + "Loading statistics from database ..."));
+        ChatWriter.pluginMessage(ChatColor.GREEN + "正在从数据库加载统计数据 ..."));
 
     try {
       Connection connection = BedwarsRel.getInstance().getDatabaseManager().getConnection();
@@ -252,7 +252,7 @@ public class PlayerStatisticManager {
   private void loadYml(File ymlFile) {
     try {
       BedwarsRel.getInstance().getServer().getConsoleSender().sendMessage(
-          ChatWriter.pluginMessage(ChatColor.GREEN + "Loading statistics from YAML-File ..."));
+          ChatWriter.pluginMessage(ChatColor.GREEN + "[警告]未启用数据库！正在从 YAML 文件加载统计数据 ..."));
 
       YamlConfiguration config = null;
       Map<OfflinePlayer, PlayerStatistic> map = new HashMap<>();
@@ -278,7 +278,7 @@ public class PlayerStatisticManager {
     }
 
     BedwarsRel.getInstance().getServer().getConsoleSender()
-        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "Done!"));
+        .sendMessage(ChatWriter.pluginMessage(ChatColor.GREEN + "完成!"));
   }
 
   private void storeDatabaseStatistic(PlayerStatistic playerStatistic) {
@@ -332,7 +332,7 @@ public class PlayerStatisticManager {
     } catch (Exception ex) {
       BedwarsRel.getInstance().getBugsnag().notify(ex);
       BedwarsRel.getInstance().getServer().getConsoleSender().sendMessage(ChatWriter.pluginMessage(
-          ChatColor.RED + "Couldn't store statistic data for player with uuid: " + statistic.getId()
+          ChatColor.RED + "无法为具有该 UUID 的玩家存储统计数据: " + statistic.getId()
               .toString()));
     }
   }

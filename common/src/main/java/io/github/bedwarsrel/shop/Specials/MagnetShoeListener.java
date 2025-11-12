@@ -44,17 +44,18 @@ public class MagnetShoeListener implements Listener {
       return;
     }
 
-    if (this.rollKnockbackDice()) {
-      ev.setCancelled(true);
-      player.damage(ev.getDamage());
-    }
+    // 移除了MagnetShoe的击退抵消功能
+    // 原代码:
+    // if (this.rollKnockbackDice()) {
+    //   ev.setCancelled(true);
+    //   player.damage(ev.getDamage());
+    // }
   }
 
-  private boolean rollKnockbackDice() {
-    int target = BedwarsRel.getInstance().getIntConfig("specials.magnetshoe.probability", 0);
-    int roll = Utils.randInt(0, 100);
-
-    return (roll <= target);
-  }
+  // private boolean rollKnockbackDice() {
+  //   int target = BedwarsRel.getInstance().getIntConfig("specials.magnetshoe.probability", 0);
+  //   int roll = Utils.randInt(0, 100);
+  //   return (roll <= target);
+  // }
 
 }

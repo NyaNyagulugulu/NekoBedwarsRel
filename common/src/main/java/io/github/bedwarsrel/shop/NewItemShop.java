@@ -515,6 +515,10 @@ public class NewItemShop {
 
                     if (success) {
 
+                      // 播放音效
+                      player.playSound(player.getLocation(), SoundMachine.get("ITEM_PICKUP", "ENTITY_ITEM_PICKUP"),
+                          Float.valueOf("1.0"), Float.valueOf("1.0"));
+
                       // 发送购买成功消息
 
                       ItemMeta meta = quickBuyItem.getItemMeta();
@@ -668,6 +672,10 @@ public class NewItemShop {
                     boolean success = this.buyItem(trade, quickBuyItem, player);
 
                     if (success) {
+
+                      // 播放音效
+                      player.playSound(player.getLocation(), SoundMachine.get("ITEM_PICKUP", "ENTITY_ITEM_PICKUP"),
+                          Float.valueOf("1.0"), Float.valueOf("1.0"));
 
                       // 发送购买成功消息
 

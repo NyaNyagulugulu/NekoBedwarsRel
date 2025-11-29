@@ -2,6 +2,8 @@ package io.github.bedwarsrel.com.v1_12_r1;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -44,10 +46,30 @@ public class CustomEntityRegistry extends RegistryMaterials {
       Field registryMaterialsField = EntityTypes.class.getDeclaredField("b");
       registryMaterialsField.setAccessible(true);
 
-      Field modifiersField = Field.class.getDeclaredField("modifiers");
-      modifiersField.setAccessible(true);
-      modifiersField.setInt(registryMaterialsField,
-          registryMaterialsField.getModifiers() & ~Modifier.FINAL);
+      // Use Unsafe to bypass modifier restrictions in Java 21+
+      try {
+        // Try the traditional approach first (works in some Java 21 setups)
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(registryMaterialsField,
+            registryMaterialsField.getModifiers() & ~Modifier.FINAL);
+      } catch (Exception e1) {
+        // If traditional approach fails, try VarHandle (for newer Java versions)
+        try {
+          VarHandle fieldHandle = MethodHandles.privateLookupIn(Field.class, MethodHandles.lookup())
+              .findVarHandle(Field.class, "modifiers", int.class);
+          int modifiers = (int) fieldHandle.get(registryMaterialsField);
+          fieldHandle.set(registryMaterialsField, modifiers & ~Modifier.FINAL);
+        } catch (Exception e2) {
+          // If both approaches fail, throw a more informative error
+          throw new RuntimeException("Unable to modify field modifiers for RegistryMaterials. " +
+              "This is required for custom entity registration in newer Java versions. " +
+              "Ensure your server is started with proper --add-opens flags: " +
+              "--add-opens java.base/java.lang=ALL-UNNAMED " +
+              "--add-opens java.base/java.lang.reflect=ALL-UNNAMED " +
+              "--add-opens java.base/java.lang.invoke=ALL-UNNAMED", e2);
+        }
+      }
 
       registryMaterialsField.set(null, instance);
     } catch (Exception e) {

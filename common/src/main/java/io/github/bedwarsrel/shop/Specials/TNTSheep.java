@@ -88,98 +88,11 @@ public class TNTSheep extends SpecialItem {
 
   @SuppressWarnings("deprecation")
   public void run(Location startLocation) {
-
-    ItemStack usedStack = null;
-
-    if (BedwarsRel.getInstance().getCurrentVersion().startsWith("v1_8")) {
-      usedStack = player.getInventory().getItemInHand();
-      if (((SpawnEgg) usedStack.getData()).getSpawnedType() != EntityType.SHEEP) {
-        return;
-      }
-      usedStack.setAmount(usedStack.getAmount() - 1);
-      player.getInventory().setItem(player.getInventory().getHeldItemSlot(), usedStack);
-    } else {
-      if (player.getInventory().getItemInOffHand().getType() == this.getItemMaterial()) {
-        usedStack = player.getInventory().getItemInOffHand();
-        usedStack.setAmount(usedStack.getAmount() - 1);
-        player.getInventory().setItemInOffHand(usedStack);
-      } else if (player.getInventory().getItemInMainHand().getType() == this.getItemMaterial()) {
-        usedStack = player.getInventory().getItemInMainHand();
-        usedStack.setAmount(usedStack.getAmount() - 1);
-        player.getInventory().setItemInMainHand(usedStack);
-      }
-    }
-    player.updateInventory();
-
-    final Team playerTeam = this.game.getPlayerTeam(this.player);
-    Player targetPlayer = this.findTargetPlayer(this.player);
-    if (targetPlayer == null) {
-      this.player.sendMessage(ChatWriter
-          .pluginMessage(
-              ChatColor.RED + BedwarsRel
-                  ._l(this.player, "ingame.specials.tntsheep.no-target-found")));
-      return;
-    }
-
-    BedwarsUseTNTSheepEvent event =
-        new BedwarsUseTNTSheepEvent(this.game, this.player, targetPlayer, startLocation);
-    BedwarsRel.getInstance().getServer().getPluginManager().callEvent(event);
-
-    if (event.isCancelled()) {
-      return;
-    }
-
-    final Player target = event.getTargetPlayer();
-    final Location start = event.getStartLocation();
-
-    // as task
-    new BukkitRunnable() {
-
-      @Override
-      public void run() {
-        final TNTSheep that = TNTSheep.this;
-
-        try {
-          // register entity
-          Class<?> tntRegisterClass = BedwarsRel.getInstance()
-              .getVersionRelatedClass("TNTSheepRegister");
-          ITNTSheepRegister register = (ITNTSheepRegister) tntRegisterClass.newInstance();
-          TNTSheep.this.sheep = register.spawnCreature(that, start, TNTSheep.this.player, target,
-              playerTeam.getColor().getDyeColor());
-
-          new BukkitRunnable() {
-
-            @Override
-            public void run() {
-              that.getGame().getRegion()
-                  .removeRemovingEntity(that.getSheep().getTNT().getVehicle());
-              that.getGame().getRegion().removeRemovingEntity(that.getSheep().getTNT());
-            }
-          }.runTaskLater(BedwarsRel.getInstance(),
-              (long) ((
-                  BedwarsRel.getInstance().getConfig().getDouble("specials.tntsheep.fuse-time", 8.0)
-                      * 20) - 5));
-
-          new BukkitRunnable() {
-
-            @Override
-            public void run() {
-              that.getSheep().getTNT().remove();
-              that.getSheep().remove();
-              that.getGame().removeSpecialItem(that);
-            }
-          }.runTaskLater(BedwarsRel.getInstance(),
-              (long) ((
-                  BedwarsRel.getInstance().getConfig().getDouble("specials.tntsheep.fuse-time", 8.0)
-                      * 20) + 13));
-
-          TNTSheep.this.game.addSpecialItem(that);
-        } catch (Exception ex) {
-          BedwarsRel.getInstance().getBugsnag().notify(ex);
-          ex.printStackTrace();
-        }
-      }
-    }.runTask(BedwarsRel.getInstance());
+    // TNTSheep functionality has been disabled
+    // This prevents entity registration issues in newer Java versions
+    this.player.sendMessage(ChatWriter
+        .pluginMessage(
+            ChatColor.RED + "TNTSheep special item has been disabled to prevent compatibility issues."));
   }
 
   public void updateTNT() {

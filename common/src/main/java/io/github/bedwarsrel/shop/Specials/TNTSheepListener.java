@@ -22,17 +22,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class TNTSheepListener implements Listener {
 
   public TNTSheepListener() {
-    try {
-      // register entities
-      Class<?> tntRegisterClass = BedwarsRel.getInstance()
-          .getVersionRelatedClass("TNTSheepRegister");
-      ITNTSheepRegister register = (ITNTSheepRegister) tntRegisterClass.newInstance();
-      register.registerEntities(
-          BedwarsRel.getInstance().getIntConfig("specials.tntsheep.entity-id", 91));
-    } catch (Exception e) {
-      BedwarsRel.getInstance().getBugsnag().notify(e);
-      e.printStackTrace();
-    }
+    // TNTSheep functionality has been disabled
+    // This prevents entity registration issues in newer Java versions
   }
 
   @EventHandler(priority = EventPriority.HIGHEST)

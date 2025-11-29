@@ -59,6 +59,31 @@
 - 可选：HolographicDisplays 用于全息显示
 - 可选：Multiverse-Core 用于多世界支持
 
+## Java 21 兼容性说明
+从版本 1.3.6 开始，插件已支持 Java 21。如果您的服务器使用 Java 21 或更高版本，启动时需要添加以下 JVM 参数以确保插件正常运行：
+
+```
+--add-opens java.base/java.lang.invoke=ALL-UNNAMED
+--add-opens java.base/java.lang.reflect=ALL-UNNAMED
+--add-opens java.base/java.lang=ALL-UNNAMED
+--add-opens java.base/java.util=ALL-UNNAMED
+--add-opens java.base/java.util.concurrent=ALL-UNNAMED
+--add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED
+--add-opens java.base/sun.nio.ch=ALL-UNNAMED
+--add-opens java.base/sun.nio.cs=ALL-UNNAMED
+--add-opens java.base/sun.security.action=ALL-UNNAMED
+--add-opens java.base/sun.util.calendar=ALL-UNNAMED
+--add-opens jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED
+--add-opens jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
+--add-opens jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+--add-opens jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+```
+
+java --add-opens java.base/java.lang.invoke=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.util.concurrent=ALL-UNNAMED --add-opens java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED --add-opens jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED --add-opens jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-opens jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED -Xms4G -Xmx4G -jar paper-1.12.2.jar nogui
+
+
+这些参数允许插件访问必要的内部 API，以确保自定义实体（如 TNT 羊）等功能正常工作。
+
 ## 版本信息
 - 当前版本：1.3.6
 - 兼容版本：Minecraft 1.12.2

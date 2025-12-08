@@ -1249,36 +1249,34 @@ public class PlayerListener extends BaseListener {
 
     // 检查玩家是否掉入虚空（Y坐标小于等于0）
     if (to.getY() <= 0) {
-      // 根据游戏状态决定重生位置
-      Location respawnLocation;
-      if (game.getState() == GameState.WAITING) {
-        // 等待阶段，重生到大厅
-        respawnLocation = game.getLobby();
-      } else if (game.getState() == GameState.RUNNING) {
-        // 游戏运行阶段，重生到队伍出生点
-        Team playerTeam = game.getPlayerTeam(player);
-        if (playerTeam != null) {
-          respawnLocation = playerTeam.getSpawnLocation();
-        } else {
-          // 如果没有队伍，重生到大厅
-          respawnLocation = game.getLobby();
-        }
+      if (game.getState() == GameState.RUNNING) {
+        // 游戏运行阶段：设置玩家死亡，触发死亡重生机制
+        player.setHealth(0); // 设置生命值为0，触发死亡
+      } else if (game.getState() == GameState.WAITING) {
+        // 等待阶段：直接传送回大厅
+        Bukkit.getScheduler().runTaskLater(BedwarsRel.getInstance(), () -> {
+          player.teleport(game.getLobby());
+          // 确保玩家状态正常
+          if (player.getHealth() <= 0) {
+            player.setHealth(player.getMaxHealth());
+          }
+          player.setFallDistance(0.0F);
+          player.setFireTicks(0);
+          player.setVelocity(player.getVelocity().multiply(0)); // 停止所有动量
+        }, 1L); // 延迟1个tick执行，确保移动事件处理完成
       } else {
-        // 其他状态，重生到大厅
-        respawnLocation = game.getLobby();
+        // 其他状态：传送回大厅
+        Bukkit.getScheduler().runTaskLater(BedwarsRel.getInstance(), () -> {
+          player.teleport(game.getLobby());
+          // 确保玩家状态正常
+          if (player.getHealth() <= 0) {
+            player.setHealth(player.getMaxHealth());
+          }
+          player.setFallDistance(0.0F);
+          player.setFireTicks(0);
+          player.setVelocity(player.getVelocity().multiply(0)); // 停止所有动量
+        }, 1L); // 延迟1个tick执行，确保移动事件处理完成
       }
-
-      // 立即传送玩家到重生点，绕过保护机制
-      Bukkit.getScheduler().runTaskLater(BedwarsRel.getInstance(), () -> {
-        player.teleport(respawnLocation);
-        // 确保玩家状态正常
-        if (player.getHealth() <= 0) {
-          player.setHealth(player.getMaxHealth());
-        }
-        player.setFallDistance(0.0F);
-        player.setFireTicks(0);
-        player.setVelocity(player.getVelocity().multiply(0)); // 停止所有动量
-      }, 1L); // 延迟1个tick执行，确保移动事件处理完成
     }
   }
 

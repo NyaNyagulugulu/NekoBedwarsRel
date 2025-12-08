@@ -1,22 +1,13 @@
 package io.github.bedwarsrel.shop.Specials;
 
-import io.github.bedwarsrel.BedwarsRel;
-import io.github.bedwarsrel.events.BedwarsUseTNTSheepEvent;
 import io.github.bedwarsrel.game.Game;
-import io.github.bedwarsrel.game.GameState;
 import io.github.bedwarsrel.game.Team;
 import io.github.bedwarsrel.utils.ChatWriter;
 import java.util.ArrayList;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.SpawnEgg;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class TNTSheep extends SpecialItem {
 
@@ -93,61 +84,6 @@ public class TNTSheep extends SpecialItem {
     this.player.sendMessage(ChatWriter
         .pluginMessage(
             ChatColor.RED + "TNTSheep special item has been disabled to prevent compatibility issues."));
-  }
-
-  public void updateTNT() {
-    new BukkitRunnable() {
-
-      @Override
-      public void run() {
-        final TNTSheep that = TNTSheep.this;
-
-        if (that.game.isStopping() || that.game.getState() != GameState.RUNNING) {
-          return;
-        }
-
-        if (that.sheep == null) {
-          return;
-        }
-
-        if (that.sheep.getTNT() == null) {
-          return;
-        }
-
-        TNTPrimed old = that.sheep.getTNT();
-        final int fuse = old.getFuseTicks();
-
-        if (fuse <= 0) {
-          return;
-        }
-
-        final Entity source = old.getSource();
-        final Location oldLoc = old.getLocation();
-        final float yield = old.getYield();
-        old.leaveVehicle();
-        old.remove();
-
-        new BukkitRunnable() {
-
-          @Override
-          public void run() {
-            TNTPrimed primed = (TNTPrimed) that.game.getRegion().getWorld().spawnEntity(oldLoc,
-                EntityType.PRIMED_TNT);
-            primed.setFuseTicks(fuse);
-            primed.setYield(yield);
-            primed.setIsIncendiary(false);
-            that.sheep.setPassenger(primed);
-            that.sheep.setTNT(primed);
-            that.sheep.setTNTSource(source);
-
-            if (primed.getFuseTicks() >= 60) {
-              that.updateTNT();
-            }
-          }
-        }.runTaskLater(BedwarsRel.getInstance(), 3L);
-      }
-
-    }.runTaskLater(BedwarsRel.getInstance(), 60L);
   }
 
 }

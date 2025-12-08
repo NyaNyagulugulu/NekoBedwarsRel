@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,6 +45,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -133,19 +135,19 @@ public class PlayerListener extends BaseListener {
       return;
     }
 
-    // 直接打开新版商店，不再检查旧版商店设置
-    NewItemShop itemShop = game.getNewItemShop(player);
-    if (itemShop == null) {
-      itemShop = game.openNewItemShop(player);
-    }
-
-    // 默认打开第一个分类的购买界面
-    if (itemShop.getCategories().size() > 0) {
-      itemShop.setCurrentCategory(itemShop.getCategories().get(0));
-      itemShop.openBuyInventory(itemShop.getCategories().get(0), player, game);
-    } else {
-      player.sendMessage("没有可用的商店分类");
-      player.closeInventory();
+    // 直接打开新版商店，不再检查旧版商店设置
+    NewItemShop itemShop = game.getNewItemShop(player);
+    if (itemShop == null) {
+      itemShop = game.openNewItemShop(player);
+    }
+
+    // 默认打开第一个分类的购买界面
+    if (itemShop.getCategories().size() > 0) {
+      itemShop.setCurrentCategory(itemShop.getCategories().get(0));
+      itemShop.openBuyInventory(itemShop.getCategories().get(0), player, game);
+    } else {
+      player.sendMessage("没有可用的商店分类");
+      player.closeInventory();
     }
   }
 
@@ -453,36 +455,36 @@ public class PlayerListener extends BaseListener {
 
           }
 
-          // 检查是否攻击的是村民（商店），如果是则打开商店界面而不是攻击
-
-          if (ede.getEntity().getType() == EntityType.VILLAGER && !g.isSpectator(damager)) {
-
-            ede.setCancelled(true);
-
-            // 直接执行与右键相同的商店打开逻辑，确保完全一致
-            BedwarsOpenShopEvent openShopEvent =
-                new BedwarsOpenShopEvent(g, damager, g.getItemShopCategories(), ede.getEntity());
-            BedwarsRel.getInstance().getServer().getPluginManager().callEvent(openShopEvent);
-
-            if (!openShopEvent.isCancelled()) {
-              // 直接打开新版商店，不再检查旧版商店设置
-              NewItemShop itemShop = g.getNewItemShop(damager);
-              if (itemShop == null) {
-                itemShop = g.openNewItemShop(damager);
-              }
-
-              // 默认打开第一个分类的购买界面
-              if (itemShop.getCategories().size() > 0) {
-                itemShop.setCurrentCategory(itemShop.getCategories().get(0));
-                itemShop.openBuyInventory(itemShop.getCategories().get(0), damager, g);
-              } else {
-                damager.sendMessage("没有可用的商店分类");
-                damager.closeInventory();
-              }
-            }
-
-            return;
-
+          // 检查是否攻击的是村民（商店），如果是则打开商店界面而不是攻击
+
+          if (ede.getEntity().getType() == EntityType.VILLAGER && !g.isSpectator(damager)) {
+
+            ede.setCancelled(true);
+
+            // 直接执行与右键相同的商店打开逻辑，确保完全一致
+            BedwarsOpenShopEvent openShopEvent =
+                new BedwarsOpenShopEvent(g, damager, g.getItemShopCategories(), ede.getEntity());
+            BedwarsRel.getInstance().getServer().getPluginManager().callEvent(openShopEvent);
+
+            if (!openShopEvent.isCancelled()) {
+              // 直接打开新版商店，不再检查旧版商店设置
+              NewItemShop itemShop = g.getNewItemShop(damager);
+              if (itemShop == null) {
+                itemShop = g.openNewItemShop(damager);
+              }
+
+              // 默认打开第一个分类的购买界面
+              if (itemShop.getCategories().size() > 0) {
+                itemShop.setCurrentCategory(itemShop.getCategories().get(0));
+                itemShop.openBuyInventory(itemShop.getCategories().get(0), damager, g);
+              } else {
+                damager.sendMessage("没有可用的商店分类");
+                damager.closeInventory();
+              }
+            }
+
+            return;
+
           }
 
           g.setPlayerDamager(p, damager);
@@ -513,14 +515,17 @@ public class PlayerListener extends BaseListener {
 
       }
 
-      if (!g.getCycle().isEndGameRunning()) {
+      if (ede.getCause() == DamageCause.VOID) {
+        // 虚空处理现在在PlayerMoveEvent中处理
+        // 防止虚空伤害事件导致的异常状态
+        ede.setCancelled(true);
         return;
-      } else if (ede.getCause() == DamageCause.VOID) {
-        p.teleport(g.getPlayerTeam(p).getSpawnLocation());
       }
     } else if (g.getState() == GameState.WAITING
         && ede.getCause() == EntityDamageEvent.DamageCause.VOID) {
-      p.teleport(g.getLobby());
+      // 在等待阶段，虚空伤害也通过PlayerMoveEvent处理
+      ede.setCancelled(true);
+      return;
     }
 
     ede.setCancelled(true);
@@ -1226,6 +1231,55 @@ public class PlayerListener extends BaseListener {
     }
 
     game.getRegion().addInventory(ioe.getInventory());
+  }
+
+  @EventHandler
+  public void onPlayerMove(PlayerMoveEvent event) {
+    Player player = event.getPlayer();
+    Location to = event.getTo();
+    
+    if (to == null) {
+      return;
+    }
+
+    Game game = BedwarsRel.getInstance().getGameManager().getGameOfPlayer(player);
+    if (game == null) {
+      return;
+    }
+
+    // 检查玩家是否掉入虚空（Y坐标小于等于0）
+    if (to.getY() <= 0) {
+      // 根据游戏状态决定重生位置
+      Location respawnLocation;
+      if (game.getState() == GameState.WAITING) {
+        // 等待阶段，重生到大厅
+        respawnLocation = game.getLobby();
+      } else if (game.getState() == GameState.RUNNING) {
+        // 游戏运行阶段，重生到队伍出生点
+        Team playerTeam = game.getPlayerTeam(player);
+        if (playerTeam != null) {
+          respawnLocation = playerTeam.getSpawnLocation();
+        } else {
+          // 如果没有队伍，重生到大厅
+          respawnLocation = game.getLobby();
+        }
+      } else {
+        // 其他状态，重生到大厅
+        respawnLocation = game.getLobby();
+      }
+
+      // 立即传送玩家到重生点，绕过保护机制
+      Bukkit.getScheduler().runTaskLater(BedwarsRel.getInstance(), () -> {
+        player.teleport(respawnLocation);
+        // 确保玩家状态正常
+        if (player.getHealth() <= 0) {
+          player.setHealth(player.getMaxHealth());
+        }
+        player.setFallDistance(0.0F);
+        player.setFireTicks(0);
+        player.setVelocity(player.getVelocity().multiply(0)); // 停止所有动量
+      }, 1L); // 延迟1个tick执行，确保移动事件处理完成
+    }
   }
 
 }

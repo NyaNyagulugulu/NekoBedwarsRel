@@ -1,21 +1,5 @@
-# ###############################
-# ####### 护床战争配置 #########
-# ##### 由 YANNICI 创建 ########
-# ###############################
-# ######## 配置说明 #############
-# ##### 每个配置项解释 ##########
-# ### 你可以在GitHub上找到 #####
-# ############ 帮助 ############
-# ###############################
-#
-# # 类型帮助 # #
-# int: 数字 (非小数)
-# string: 普通文本 (在大多数情况下你可以使用颜色代码，以§开头)
-# boolean: true 或 false (重要: 只能是 true 或 false)
-# list<?>: ?类型列表 (? 是列表项的类型)
-# byte: 整数，范围在 -128 ... 127
-# short: 整数，范围在 -32768 ... 32767
-# char: 单个字符
+# Config By 不穿胖次の小奶猫
+# website https://cnmsb.xin
 
 chat-prefix: '&7[&d★梦幻次元★&7]&f'
 plugin-metrics: true
@@ -31,7 +15,7 @@ holographic-stats:
   show-prefix: false
   name-color: '&7'
   value-color: '&e'
-  head-line: 你の &e起床战争&f 统计数据 ♡
+  head-line: 你の &e起床战争&f 统计数据
 teamname-on-tab: false
 teamname-in-chat: true
 hearts-on-death: true
@@ -59,49 +43,29 @@ jointeam-entity:
 # 标题
 lobby-scoreboard:
   enabled: true
-  title:
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&e&l起床战争'
-    - '&6&l起&e&l床战争'
-    - '&f&l起&6&l床&e&l战争'
-    - '&e&l起&f&l床&6&l战&e&l争'
-    - '&e&l起床&f&l战&6&l争'
-    - '&e&l起床战&f&l争'
-    - '&e&l起床战争'
-    - '&f&l起床战争'
-    - '&e&l起床战争'
-    - '&f&l起床战争'
+  title: '&e&l起床战争'
 
   # 内容
   content:
-    - §7{date}
+    - '§7{date}'
     - ''
-    - §f地图:§a$gamename$
-    - §f玩家:§a$players$&f/&2$maxplayers$
-    - §r
-    - §f等待中...
-    - §r§r
-    - §f版本:§7v1.2
-    - §r§r§r
-    - §e梦幻次元
+    - '§f地图:§a$gamename$'
+    - '§f玩家:§a$players$&f/&2$maxplayers$'
+    - '§r'
+    - '§f等待中...'
+    - '§r§r'
+    - '§f版本:§7v1.2'
+    - '§r§r§r'
+    - '§e梦幻次元'
+
+  #等待状态
+  state:
+
+    #等待
+    waiting: "&f等待中..."
+
+    #开始倒计时
+    countdown: "&F即将在&a{countdown}秒后开始"
 
   #变量 {you} 的值
   you: "&7(你)"
@@ -166,36 +130,34 @@ lobby-scoreboard:
   # {team_<team>_bed_status}  指定队伍床状态
   # {team_<team>_peoples}     指定队伍人数
   # {timer_<编号>}            自定义倒计时
-  lines:
 
-    #默认
-    default:
-      - "&7{date}"
-      - ""
-      - "&f{plan_plan_1} &f- &a{plan_plan_2}"
-      - ""
-      - "{team_status}"
-      - ""
-      - "&f击杀数: &a{kills}"
-      - "&f最终击杀: &a{finalkills}"
-      - "&f已破坏床数: &a{beds}"
-      - ""
-      - "&e梦幻次元"
 
-    #当8个队伍时
-    8:
-      - "&7{date}"
-      - ""
-      - "&f{plan_plan_1} &f- &a{plan_plan_2}"
-      - ""
-      - "{team_status}"
-      - ""
-      - "&e梦幻次元"
-
+# 游戏中计分板
 scoreboard:
-  format-bed-destroyed: '&c$status$ $team$'
-  format-bed-alive: '&a$status$ $team$'
-  format-title: '&e&l起床战争 ♡'
+  title: '&e&l起床战争'
+  #默认
+  default:
+    - "&7{date}"
+    - ""
+    - "&f{plan_plan_1} &f- &a{plan_plan_2}"
+    - ""
+    - "{team_status}"
+    - ""
+    - "&f击杀数: &a{kills}"
+    - "&f最终击杀: &a{finalkills}"
+    - "&f已破坏床数: &a{beds}"
+    - ""
+    - "&e梦幻次元"
+
+  #当8个队伍时
+  8:
+    - "&7{date}"
+    - ""
+    - "&f{plan_plan_1} &f- &a{plan_plan_2}"
+    - ""
+    - "{team_status}"
+    - ""
+    - "&e梦幻次元"
 titles:
   win:
     enabled: true

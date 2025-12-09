@@ -97,6 +97,9 @@ public class Game {
   private HashMap<String, Team> teams = null;
   private int time = 1000;
   private int timeLeft = 0;
+  private int lobbyTitleFrame = 0;
+  private BukkitTask scoreboardRefreshTask = null;
+  private long lastTitleUpdate = 0;
 
   public Game(String name) {
     super();
@@ -480,11 +483,25 @@ public class Game {
 
   private String formatLobbyScoreboardString(String str) {
     String finalStr = str;
-
+    
+    // 基础变量
     finalStr = finalStr.replace("$regionname$", this.region.getName());
     finalStr = finalStr.replace("$gamename$", this.name);
     finalStr = finalStr.replace("$players$", String.valueOf(this.getPlayerAmount()));
     finalStr = finalStr.replace("$maxplayers$", String.valueOf(this.getMaxPlayers()));
+    
+    // 日期和时间变量
+    java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MM/dd");
+    java.text.SimpleDateFormat timeFormat = new java.text.SimpleDateFormat("HH:mm");
+    finalStr = finalStr.replace("{date}", dateFormat.format(new java.util.Date()));
+    finalStr = finalStr.replace("{time}", timeFormat.format(new java.util.Date()));
+    finalStr = finalStr.replace("{formattime}", this.getFormattedTimeLeft());
+    finalStr = finalStr.replace("$time$", this.getFormattedTimeLeft());
+    
+    // 游戏变量
+    finalStr = finalStr.replace("{game}", this.region.getName());
+    finalStr = finalStr.replace("{online}", String.valueOf(this.getPlayerAmount()));
+    finalStr = finalStr.replace("$currentplayers$", String.valueOf(this.getPlayerAmount()));
 
     return ChatColor.translateAlternateColorCodes('&', finalStr);
   }
@@ -1771,7 +1788,9 @@ public class Game {
   private void startTimerCountdown() {
     this.timeLeft = BedwarsRel.getInstance().getMaxLength();
     this.length = BedwarsRel.getInstance().getMaxLength();
-    BukkitRunnable task = new BukkitRunnable() {
+    
+    // 每20个tick（1秒）更新一次游戏时间
+    BukkitRunnable timeTask = new BukkitRunnable() {
 
       @Override
       public void run() {
@@ -1787,7 +1806,7 @@ public class Game {
       }
     };
 
-    this.runningTasks.add(task.runTaskTimer(BedwarsRel.getInstance(), 0L, 20L));
+    this.runningTasks.add(timeTask.runTaskTimer(BedwarsRel.getInstance(), 0L, 20L));
   }
 
   public boolean stop() {
@@ -1914,39 +1933,43 @@ public class Game {
   }
 
   private void updateLobbyScoreboard() {
-    this.scoreboard.clearSlot(DisplaySlot.SIDEBAR);
+    // 为每个玩家单独创建和设置计分板以支持个性化内容
+    for (Player player : this.getPlayers()) {
+      Scoreboard playerScoreboard = BedwarsRel.getInstance().getScoreboardManager().getNewScoreboard();
 
-    Objective obj = this.scoreboard.getObjective("lobby");
-    if (obj != null) {
-      obj.unregister();
-    }
+      Objective obj = playerScoreboard.registerNewObjective("lobby", "dummy");
+      obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+      
+      // 使用静态标题配置（兼容新的配置格式）
+      String title = BedwarsRel.getInstance().getStringConfig("lobby-scoreboard.title", "&eBEDWARS");
+      
+      String formattedTitle = this.formatLobbyScoreboardString(title);
+      // 确保标题不超过32个字符（为变量留出空间）
+      if (formattedTitle.length() > 32) {
+        formattedTitle = formattedTitle.substring(0, 32);
+      }
+      obj.setDisplayName(formattedTitle);
 
-    obj = this.scoreboard.registerNewObjective("lobby", "dummy");
-    obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-    obj.setDisplayName(this.formatLobbyScoreboardString(
-        BedwarsRel.getInstance().getStringConfig("lobby-scoreboard.title", "&eBEDWARS")));
-
-    List<String> rows = BedwarsRel.getInstance().getConfig()
-        .getStringList("lobby-scoreboard.content");
-    int rowMax = rows.size();
-    if (rows == null || rows.isEmpty()) {
-      return;
-    }
-
-    for (String row : rows) {
-      if (row.trim().equals("")) {
-        for (int i = 0; i <= rowMax; i++) {
-          row = row + " ";
-        }
+      List<String> rows = BedwarsRel.getInstance().getConfig()
+          .getStringList("lobby-scoreboard.content");
+      int rowMax = rows.size();
+      if (rows == null || rows.isEmpty()) {
+        continue;
       }
 
-      Score score = obj.getScore(this.formatLobbyScoreboardString(row));
-      score.setScore(rowMax);
-      rowMax--;
-    }
+      for (String row : rows) {
+        if (row.trim().equals("")) {
+          for (int i = 0; i <= rowMax; i++) {
+            row = row + " ";
+          }
+        }
 
-    for (Player player : this.getPlayers()) {
-      player.setScoreboard(this.scoreboard);
+        Score score = obj.getScore(this.formatLobbyScoreboardString(row));
+        score.setScore(rowMax);
+        rowMax--;
+      }
+
+      player.setScoreboard(playerScoreboard);
     }
   }
 
@@ -1957,38 +1980,284 @@ public class Game {
       return;
     }
 
-    Objective obj = this.scoreboard.getObjective("display");
-    if (obj == null) {
-      obj = this.scoreboard.registerNewObjective("display", "dummy");
-    }
-
-    obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-    obj.setDisplayName(this.formatScoreboardTitle());
-
-    for (Team t : this.teams.values()) {
-      this.scoreboard.resetScores(this.formatScoreboardTeam(t, false));
-      this.scoreboard.resetScores(this.formatScoreboardTeam(t, true));
-
-      boolean teamDead = (t.isDead(this) && this.getState() == GameState.RUNNING) ? true : false;
-      Score score = obj.getScore(this.formatScoreboardTeam(t, teamDead));
-      score.setScore(t.getPlayers().size());
-    }
-
+    // 为每个玩家单独创建和设置计分板
     for (Player player : this.getPlayers()) {
-      player.setScoreboard(this.scoreboard);
+      Scoreboard playerScoreboard = BedwarsRel.getInstance().getScoreboardManager().getNewScoreboard();
+
+      Objective obj = playerScoreboard.registerNewObjective("display", "dummy");
+      obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+      
+      // 为游戏运行时使用配置的标题，如果没有则使用默认标题
+      String title = BedwarsRel.getInstance().getStringConfig("scoreboard.title", "&eBEDWARS");
+
+      // 格式化标题字符串中的变量
+      java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MM/dd");
+      java.text.SimpleDateFormat timeFormat = new java.text.SimpleDateFormat("HH:mm");
+      title = title.replace("{date}", dateFormat.format(new java.util.Date()));
+      title = title.replace("{time}", timeFormat.format(new java.util.Date()));
+      title = title.replace("{formattime}", this.getFormattedTimeLeft());
+      title = title.replace("$time$", this.getFormattedTimeLeft());
+      title = title.replace("$region$", this.getRegion().getName());
+      title = title.replace("$game$", this.name);
+      title = title.replace("{game}", this.getRegion().getName());
+      title = title.replace("{online}", String.valueOf(this.getPlayerAmount()));
+
+      // 确保标题不超过32个字符（为变量留出空间）
+      if (title.length() > 32) {
+        title = title.substring(0, 32);
+      }
+      obj.setDisplayName(ChatColor.translateAlternateColorCodes('&', title));
+
+      // 检查是否使用新配置格式的计分板内容
+      if (BedwarsRel.getInstance().getConfig().contains("scoreboard.default")) {
+        // 使用新配置格式显示计分板内容
+        this.updateScoreboardWithNewFormat(obj, player);
+      } else {
+        // 使用旧格式显示
+        for (Team t : this.teams.values()) {
+          playerScoreboard.resetScores(this.formatScoreboardTeam(t, false));
+          playerScoreboard.resetScores(this.formatScoreboardTeam(t, true));
+
+          boolean teamDead = (t.isDead(this) && this.getState() == GameState.RUNNING) ? true : false;
+          Score score = obj.getScore(this.formatScoreboardTeam(t, teamDead));
+          score.setScore(t.getPlayers().size());
+        }
+      }
+
+      player.setScoreboard(playerScoreboard);
     }
   }
 
-  private void updateScoreboardTimer() {
-    Objective obj = this.scoreboard.getObjective("display");
-    if (obj == null) {
-      obj = this.scoreboard.registerNewObjective("display", "dummy");
+  // 使用新的配置格式更新计分板内容
+  private void updateScoreboardWithNewFormat(Objective obj, Player player) {
+    // 根据队伍数量选择合适的行配置
+    int teamCount = this.teams.size();
+    String linesKey = "scoreboard." + teamCount;
+    List<String> rows;
+
+    if (BedwarsRel.getInstance().getConfig().contains(linesKey)) {
+      // 使用特定于队伍数量的配置
+      rows = BedwarsRel.getInstance().getConfig().getStringList(linesKey);
+    } else {
+      // 使用默认配置
+      rows = BedwarsRel.getInstance().getConfig().getStringList("scoreboard.default");
     }
 
-    obj.setDisplayName(this.formatScoreboardTitle());
+    if (rows == null || rows.isEmpty()) {
+      // 如果没有定义行配置，回退到旧格式
+      return;
+    }
 
-    for (Player player : this.getPlayers()) {
-      player.setScoreboard(this.scoreboard);
+    // 获取格式化后的行
+    int rowMax = rows.size();
+    for (String row : rows) {
+      // 检查是否包含 {team_status} 变量，如果是，则需要展开为多行
+      if (row.contains("{team_status}")) {
+        // 获取展开后的队伍状态行
+        String formattedRow = this.formatLobbyScoreboardStringWithTime(row, player);
+        // 分割包含队伍状态的行，但只替换 {team_status} 部分为单独的行
+        String baseRowBefore = row.substring(0, row.indexOf("{team_status}"));
+        String baseRowAfter = row.substring(row.indexOf("{team_status}") + "{team_status}".length());
+        
+        // 先添加非队伍状态的前部分（如果有）
+        if (!baseRowBefore.trim().isEmpty()) {
+          String formattedBefore = this.formatLobbyScoreboardStringWithTime(baseRowBefore, player);
+          if (formattedBefore.length() > 40) formattedBefore = formattedBefore.substring(0, 40);
+          Score score = obj.getScore(formattedBefore);
+          score.setScore(rowMax);
+          rowMax--;
+        }
+        
+        // 添加每个队伍的状态作为单独的行
+        for (Team t : this.teams.values()) {
+          String teamStatusRow = this.formatTeamStatusForPlayer(t, player, !t.isDead(this), t.isDead(this));
+          if (teamStatusRow.length() > 40) teamStatusRow = teamStatusRow.substring(0, 40);
+          Score score = obj.getScore(teamStatusRow);
+          score.setScore(rowMax);
+          rowMax--;
+        }
+        
+        // 添加非队伍状态的后部分（如果有）
+        if (!baseRowAfter.trim().isEmpty()) {
+          String formattedAfter = this.formatLobbyScoreboardStringWithTime(baseRowAfter, player);
+          if (formattedAfter.length() > 40) formattedAfter = formattedAfter.substring(0, 40);
+          Score score = obj.getScore(formattedAfter);
+          score.setScore(rowMax);
+          rowMax--;
+        }
+      } else {
+        if (row.trim().equals("")) {
+          for (int i = 0; i <= rowMax; i++) {
+            row = row + " ";
+          }
+        }
+
+        // 使用当前时间格式化每一行
+        String formattedRow = this.formatLobbyScoreboardStringWithTime(row, player);
+        // 确保计分板条目不超过40个字符
+        if (formattedRow.length() > 40) {
+          formattedRow = formattedRow.substring(0, 40);
+        }
+        Score score = obj.getScore(formattedRow);
+        score.setScore(rowMax);
+        rowMax--;
+      }
+    }
+  }
+
+  // 为行内容提供时间变量格式化方法
+  private String formatLobbyScoreboardStringWithTime(String str, Player player) {
+    String finalStr = str;
+    
+    // 基础变量
+    finalStr = finalStr.replace("$regionname$", this.region.getName());
+    finalStr = finalStr.replace("$gamename$", this.name);
+    finalStr = finalStr.replace("$players$", String.valueOf(this.getPlayerAmount()));
+    finalStr = finalStr.replace("$maxplayers$", String.valueOf(this.getMaxPlayers()));
+    
+    // 日期和时间变量
+    java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MM/dd");
+    java.text.SimpleDateFormat timeFormat = new java.text.SimpleDateFormat("HH:mm");
+    finalStr = finalStr.replace("{date}", dateFormat.format(new java.util.Date()));
+    finalStr = finalStr.replace("{time}", timeFormat.format(new java.util.Date()));
+    finalStr = finalStr.replace("{formattime}", this.getFormattedTimeLeft());
+    finalStr = finalStr.replace("$time$", this.getFormattedTimeLeft());
+    
+    // 游戏变量
+    finalStr = finalStr.replace("{game}", this.region.getName());
+    finalStr = finalStr.replace("{online}", String.valueOf(this.getPlayerAmount()));
+    finalStr = finalStr.replace("$currentplayers$", String.valueOf(this.getPlayerAmount()));
+    
+    // 个性化变量（如果需要为特定玩家格式化）
+    finalStr = finalStr.replace("{player_name}", player.getName());
+    finalStr = finalStr.replace("{team}", this.getPlayersTeam(player) != null ? this.getPlayersTeam(player).getName() : "未分配");
+    finalStr = finalStr.replace("{color}", this.getPlayersTeam(player) != null ? this.getPlayersTeam(player).getChatColor().toString() : "");
+    finalStr = finalStr.replace("{team_peoples}", this.getPlayersTeam(player) != null ? String.valueOf(this.getPlayersTeam(player).getPlayers().size()) : "0");
+    finalStr = finalStr.replace("{team_bed_status}", this.getPlayersTeam(player) != null ? (!this.getPlayersTeam(player).isDead(this) ? "存活" : "已摧毁") : "N/A");
+    finalStr = finalStr.replace("{team_status}", this.formatAllTeamStatusForPlayer(player)); // 格式化所有队伍状态，但标记特定玩家的队伍
+    
+    // 其他计分板变量
+    finalStr = finalStr.replace("{bowtime}", "N/A"); // 需要根据实际情况实现
+    finalStr = finalStr.replace("{sethealthtime_1}", "N/A"); // 需要根据实际情况实现
+    finalStr = finalStr.replace("{plan_plan_1}", "起床战争");
+    finalStr = finalStr.replace("{plan_plan_2}", "梦幻次元");
+    finalStr = finalStr.replace("{kills}", "0"); // 需要从玩家统计数据中获取
+    finalStr = finalStr.replace("{finalkills}", "0"); // 需要从玩家统计数据中获取
+    finalStr = finalStr.replace("{totalkills}", "0"); // 需要从玩家统计数据中获取
+    finalStr = finalStr.replace("{dies}", "0"); // 需要从玩家统计数据中获取
+    finalStr = finalStr.replace("{beds}", "0"); // 需要从玩家统计数据中获取
+    finalStr = finalStr.replace("{teams}", String.valueOf(this.teams.size())); // 队伍数量
+    finalStr = finalStr.replace("{remain_teams}", String.valueOf(this.getRemainingTeams())); // 未被消灭队伍数量
+    finalStr = finalStr.replace("{alive_teams}", String.valueOf(this.getAliveTeams())); // 床存在的队伍数量
+    finalStr = finalStr.replace("{alive_players}", String.valueOf(this.getAlivePlayersCount())); // 存活玩家数量
+    finalStr = finalStr.replace("{team_status}", this.formatAllTeamStatusForPlayer(player)); // 所有队伍状态
+    finalStr = finalStr.replace("{no_break_bed}", "N/A"); // 允许破坏床倒计时
+    finalStr = finalStr.replace("{resource_upgrade_1}", "N/A"); // 资源生成点升级时间
+    finalStr = finalStr.replace("{timer_1}", "N/A"); // 自定义倒计时
+
+    // 替换特定队伍变量 (示例替换)
+    for (Team team : this.teams.values()) {
+      finalStr = finalStr.replace("{team_" + team.getName() + "_status}", this.formatTeamStatusForPlayer(team, player, !team.isDead(this), team.isDead(this)));
+      finalStr = finalStr.replace("{team_" + team.getName() + "_bed_status}", team.isDead(this) ? "Destroyed" : "Alive");
+      finalStr = finalStr.replace("{team_" + team.getName() + "_peoples}", String.valueOf(team.getPlayers().size()));
+    }
+
+    return ChatColor.translateAlternateColorCodes('&', finalStr);
+  }
+
+  // 为特定玩家格式化所有团队状态
+  private String formatAllTeamStatusForPlayer(Player player) {
+    StringBuilder status = new StringBuilder();
+    for (Team t : this.teams.values()) {
+      if (status.length() > 0) {
+        status.append("\n"); // 添加换行符以分隔队伍
+      }
+      boolean isBedAlive = !t.isDead(this); // 如果队伍未死亡，则床存活
+      boolean isTeamDead = t.isDead(this); // 使用isDead方法判断队伍是否被消灭
+      status.append(this.formatTeamStatusForPlayer(t, player, isBedAlive, isTeamDead));
+    }
+    return status.toString();
+  }
+
+  // 为特定玩家格式化团队状态，支持"{you}"标记
+  private String formatTeamStatusForPlayer(Team team, Player player, boolean isBedAlive, boolean isTeamDead) {
+    String format = null;
+
+    if (team == null) {
+      return "";
+    }
+
+    if (isTeamDead) {
+      format = BedwarsRel.getInstance().getStringConfig("lobby-scoreboard.team_status_format.team_dead", 
+          "{color} {team} &c\u2718 &8(&f&l{players}&8) {you}");
+    } else if (!isBedAlive) {
+      format = BedwarsRel.getInstance().getStringConfig("lobby-scoreboard.team_status_format.bed_destroyed", 
+          "{color} {team} &c\u2718 &8(&f&l{players}&8) {you}");
+    } else {
+      format = BedwarsRel.getInstance().getStringConfig("lobby-scoreboard.team_status_format.bed_alive", 
+          "{color} {team} &a\u2714 &8(&f&l{players}&8) {you}");
+    }
+
+    // 替换变量
+    format = format.replace("{color}", team.getChatColor().toString());
+    format = format.replace("{color_name}", team.getChatColor().name());
+    format = format.replace("{color_initials}", String.valueOf(team.getChatColor().name().charAt(0)));
+    format = format.replace("{team}", team.getName());
+    format = format.replace("{team_initials}", team.getName().substring(0, 1));
+    format = format.replace("{players}", String.valueOf(team.getPlayers().size()));
+    format = format.replace("{bed_status}", isBedAlive ? "{bed_alive}" : "{bed_destroyed}");
+    format = format.replace("{bed_alive}", BedwarsRel.getInstance().getStringConfig("lobby-scoreboard.team_bed_status.bed_alive", "&a\u2714"));
+    format = format.replace("{bed_destroyed}", BedwarsRel.getInstance().getStringConfig("lobby-scoreboard.team_bed_status.bed_destroyed", "&c\u2718"));
+    format = format.replace("{you}", (player != null && team.getPlayers().contains(player)) ? BedwarsRel.getInstance().getStringConfig("lobby-scoreboard.you", "&7(你)") : "");
+
+    return ChatColor.translateAlternateColorCodes('&', format);
+  }
+
+  // 获取玩家所在队伍的辅助方法
+  private Team getPlayersTeam(Player player) {
+    for (Team team : this.teams.values()) {
+      if (team.getPlayers().contains(player)) {
+        return team;
+      }
+    }
+    return null;
+  }
+
+  private void updateScoreboardTimer() {
+    // 只在等待状态下更新大厅计分板，避免与游戏运行时的计分板冲突
+    if (this.state == GameState.WAITING && BedwarsRel.getInstance().getBooleanConfig("lobby-scoreboard.enabled", true)) {
+      // 为每个玩家单独创建和设置计分板
+      for (Player player : this.getPlayers()) {
+        Scoreboard playerScoreboard = BedwarsRel.getInstance().getScoreboardManager().getNewScoreboard();
+
+        Objective obj = playerScoreboard.registerNewObjective("display", "dummy");
+        
+        // 使用静态标题配置（兼容新的配置格式）
+        String title = BedwarsRel.getInstance().getStringConfig("lobby-scoreboard.title", "&eBEDWARS");
+
+        // 格式化标题字符串中的变量
+        java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MM/dd");
+        java.text.SimpleDateFormat timeFormat = new java.text.SimpleDateFormat("HH:mm");
+        title = title.replace("{date}", dateFormat.format(new java.util.Date()));
+        title = title.replace("{time}", timeFormat.format(new java.util.Date()));
+        title = title.replace("{formattime}", this.getFormattedTimeLeft());
+        title = title.replace("$time$", this.getFormattedTimeLeft());
+        title = title.replace("$region$", this.getRegion().getName());
+        title = title.replace("$game$", this.name);
+        title = title.replace("{game}", this.getRegion().getName());
+        title = title.replace("{online}", String.valueOf(this.getPlayerAmount()));
+
+        // 确保标题不超过32个字符（为变量留出空间）
+        if (title.length() > 32) {
+          title = title.substring(0, 32);
+        }
+        obj.setDisplayName(ChatColor.translateAlternateColorCodes('&', title));
+
+        player.setScoreboard(playerScoreboard);
+      }
+    } else if (this.state != GameState.WAITING) {
+      // 在非等待状态下，让updateScoreboard方法处理计分板显示
+      this.updateScoreboard();
     }
   }
 
@@ -2048,5 +2317,41 @@ public class Game {
     if (removedItem) {
       Game.this.updateSignConfig();
     }
+  }
+
+  // 获取未被消灭的队伍数量
+  public int getRemainingTeams() {
+    int count = 0;
+    for (Team team : this.teams.values()) {
+      if (!team.isDead(this)) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  // 获取床仍然存活的队伍数量
+  public int getAliveTeams() {
+    int count = 0;
+    for (Team team : this.teams.values()) {
+      if (!team.isDead(this)) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  // 获取存活玩家数量
+  public int getAlivePlayersCount() {
+    int count = 0;
+    for (Player player : this.getPlayers()) {
+      if (player != null && player.isOnline() && player.getGameMode() != org.bukkit.GameMode.SPECTATOR) {
+        Team playerTeam = this.getPlayerTeam(player);
+        if (playerTeam != null && !playerTeam.isDead(this)) {
+          count++;
+        }
+      }
+    }
+    return count;
   }
 }

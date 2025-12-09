@@ -374,3 +374,6 @@ motds:
   full: |
     游戏已满：$regionname$
     当前玩家：$currentplayers$/$maxplayers$
+# 快速重生
+quick-respawn:
+  enabled: true

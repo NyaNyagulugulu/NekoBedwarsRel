@@ -338,7 +338,9 @@ public class PlayerStatisticManager {
   }
 
   public void unloadStatistic(OfflinePlayer player) {
-    if (BedwarsRel.getInstance().getStatisticStorageType() != StorageType.YAML) {
+    if (this.playerStatistic.containsKey(player.getUniqueId())) {
+      PlayerStatistic statistic = this.playerStatistic.get(player.getUniqueId());
+      this.storeStatistic(statistic);
       this.playerStatistic.remove(player.getUniqueId());
     }
   }

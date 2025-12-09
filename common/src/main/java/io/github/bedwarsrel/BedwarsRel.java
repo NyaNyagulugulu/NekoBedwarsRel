@@ -27,9 +27,6 @@ import io.github.bedwarsrel.statistics.PlayerStatistic;
 import io.github.bedwarsrel.statistics.PlayerStatisticManager;
 import io.github.bedwarsrel.statistics.StorageType;
 import io.github.bedwarsrel.updater.ConfigUpdater;
-import io.github.bedwarsrel.updater.PluginUpdater;
-import io.github.bedwarsrel.updater.PluginUpdater.UpdateCallback;
-import io.github.bedwarsrel.updater.PluginUpdater.UpdateResult;
 import io.github.bedwarsrel.utils.BStatsMetrics;
 import io.github.bedwarsrel.utils.BedwarsCommandExecutor;
 import io.github.bedwarsrel.utils.ChatWriter;
@@ -146,38 +143,39 @@ public class BedwarsRel extends JavaPlugin {
 
   }
 
-  private void checkUpdates() {
-    try {
-      if (this.getBooleanConfig("check-updates", true)) {
-        this.updateChecker = new BukkitRunnable() {
-
-          @Override
-          public void run() {
-            final BukkitRunnable task = this;
-            UpdateCallback callback = new UpdateCallback() {
-
-              @Override
-              public void onFinish(PluginUpdater updater) {
-                if (updater.getResult() == UpdateResult.SUCCESS) {
-                  task.cancel();
-                }
-              }
-            };
-
-            new PluginUpdater(
-                BedwarsRel.getInstance(), BedwarsRel.PROJECT_ID, BedwarsRel.getInstance().getFile(),
-                PluginUpdater.UpdateType.DEFAULT, callback,
-                BedwarsRel.getInstance().getBooleanConfig("update-infos", true));
-          }
-
-        }.runTaskTimerAsynchronously(BedwarsRel.getInstance(), 40L, 36000L);
-      }
-    } catch (Exception ex) {
-      BedwarsRel.getInstance().getBugsnag().notify(ex);
-      this.getServer().getConsoleSender().sendMessage(
-          ChatWriter.pluginMessage(ChatColor.RED + "Check for updates not successful: Error!"));
-    }
-  }
+//  原作者都跑路了你更新你妈呢
+//  private void checkUpdates() {
+//    try {
+//      if (this.getBooleanConfig("check-updates", true)) {
+//        this.updateChecker = new BukkitRunnable() {
+//
+//          @Override
+//          public void run() {
+//            final BukkitRunnable task = this;
+//            UpdateCallback callback = new UpdateCallback() {
+//
+//              @Override
+//              public void onFinish(PluginUpdater updater) {
+//                if (updater.getResult() == UpdateResult.SUCCESS) {
+//                  task.cancel();
+//                }
+//              }
+//            };
+//
+//            new PluginUpdater(
+//                BedwarsRel.getInstance(), BedwarsRel.PROJECT_ID, BedwarsRel.getInstance().getFile(),
+//                PluginUpdater.UpdateType.DEFAULT, callback,
+//                BedwarsRel.getInstance().getBooleanConfig("update-infos", true));
+//          }
+//
+//        }.runTaskTimerAsynchronously(BedwarsRel.getInstance(), 40L, 36000L);
+//      }
+//    } catch (Exception ex) {
+//      BedwarsRel.getInstance().getBugsnag().notify(ex);
+//      this.getServer().getConsoleSender().sendMessage(
+//          ChatWriter.pluginMessage(ChatColor.RED + "Check for updates not successful: Error!"));
+//    }
+//  }
 
 
   private void disableBugsnag() {
@@ -783,7 +781,7 @@ public class BedwarsRel extends JavaPlugin {
     this.loadStatistics();
     this.loadLocalization(this.getConfig().getString("locale"));
 
-    this.checkUpdates();
+//    this.checkUpdates();
 
     // Loading
     this.scoreboardManager = Bukkit.getScoreboardManager();

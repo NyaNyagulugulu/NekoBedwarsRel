@@ -112,30 +112,22 @@ public abstract class GameCycle {
     if (BedwarsRel.getInstance().statisticsEnabled()) {
       diePlayer = BedwarsRel.getInstance().getPlayerStatisticManager().getStatistic(player);
 
-      boolean onlyOnBedDestroy =
-          BedwarsRel.getInstance().getBooleanConfig("statistics.bed-destroyed-kills", false);
-      boolean teamIsDead = deathTeam.isDead(this.getGame());
-
-      if ((onlyOnBedDestroy && teamIsDead) || !onlyOnBedDestroy) {
-        diePlayer.setCurrentDeaths(diePlayer.getCurrentDeaths() + 1);
-        diePlayer.setCurrentScore(diePlayer.getCurrentScore() + BedwarsRel
-            .getInstance().getIntConfig("statistics.scores.die", 0));
-      }
+      // 任何情况下都统计死亡数
+      diePlayer.setCurrentDeaths(diePlayer.getCurrentDeaths() + 1);
+      diePlayer.setCurrentScore(diePlayer.getCurrentScore() + BedwarsRel
+          .getInstance().getIntConfig("statistics.scores.die", 0));
 
       if (killer != null) {
-        if ((onlyOnBedDestroy && teamIsDead) || !onlyOnBedDestroy) {
-          killerPlayer = BedwarsRel.getInstance().getPlayerStatisticManager().getStatistic(killer);
-          if (killerPlayer != null) {
-            killerPlayer.setCurrentKills(killerPlayer.getCurrentKills() + 1);
-            killerPlayer.setCurrentScore(killerPlayer.getCurrentScore() + BedwarsRel
-                .getInstance().getIntConfig("statistics.scores.kill", 10));
-          }
+        killerPlayer = BedwarsRel.getInstance().getPlayerStatisticManager().getStatistic(killer);
+        if (killerPlayer != null) {
+          killerPlayer.setCurrentKills(killerPlayer.getCurrentKills() + 1);
+          killerPlayer.setCurrentScore(killerPlayer.getCurrentScore() + BedwarsRel
+              .getInstance().getIntConfig("statistics.scores.kill", 10));
         }
       }
 
       // dispatch reward commands directly
-      if (BedwarsRel.getInstance().getBooleanConfig("rewards.enabled", false) && killer != null
-          && ((onlyOnBedDestroy && teamIsDead) || !onlyOnBedDestroy)) {
+      if (BedwarsRel.getInstance().getBooleanConfig("rewards.enabled", false) && killer != null) {
         List<String> commands = BedwarsRel.getInstance().getConfig()
             .getStringList("rewards.player-kill");
         BedwarsRel.getInstance().dispatchRewardCommands(commands,

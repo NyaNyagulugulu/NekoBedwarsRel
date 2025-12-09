@@ -144,7 +144,7 @@ scoreboard:
     - "{team_status}"
     - ""
     - "&f击杀数: &a{kills}"
-    - "&f最终击杀: &a{finalkills}"
+    - "&f死亡数: &a{dies}"
     - "&f已破坏床数: &a{beds}"
     - ""
     - "&e梦幻次元"

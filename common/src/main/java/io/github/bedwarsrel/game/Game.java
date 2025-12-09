@@ -2146,11 +2146,28 @@ public class Game {
     finalStr = finalStr.replace("{sethealthtime_1}", "N/A"); // 需要根据实际情况实现
     finalStr = finalStr.replace("{plan_plan_1}", "起床战争");
     finalStr = finalStr.replace("{plan_plan_2}", "梦幻次元");
-    finalStr = finalStr.replace("{kills}", "0"); // 需要从玩家统计数据中获取
-    finalStr = finalStr.replace("{finalkills}", "0"); // 需要从玩家统计数据中获取
-    finalStr = finalStr.replace("{totalkills}", "0"); // 需要从玩家统计数据中获取
-    finalStr = finalStr.replace("{dies}", "0"); // 需要从玩家统计数据中获取
-    finalStr = finalStr.replace("{beds}", "0"); // 需要从玩家统计数据中获取
+    if (BedwarsRel.getInstance().statisticsEnabled()) {
+      PlayerStatistic statistic = BedwarsRel.getInstance().getPlayerStatisticManager().getStatistic(player);
+      if (statistic != null) {
+        finalStr = finalStr.replace("{kills}", String.valueOf(statistic.getCurrentKills()));
+        finalStr = finalStr.replace("{finalkills}", String.valueOf(statistic.getCurrentKills()));
+        finalStr = finalStr.replace("{totalkills}", String.valueOf(statistic.getCurrentKills()));
+        finalStr = finalStr.replace("{dies}", String.valueOf(statistic.getCurrentDeaths()));
+        finalStr = finalStr.replace("{beds}", String.valueOf(statistic.getCurrentDestroyedBeds()));
+      } else {
+        finalStr = finalStr.replace("{kills}", "0");
+        finalStr = finalStr.replace("{finalkills}", "0");
+        finalStr = finalStr.replace("{totalkills}", "0");
+        finalStr = finalStr.replace("{dies}", "0");
+        finalStr = finalStr.replace("{beds}", "0");
+      }
+    } else {
+      finalStr = finalStr.replace("{kills}", "0");
+      finalStr = finalStr.replace("{finalkills}", "0");
+      finalStr = finalStr.replace("{totalkills}", "0");
+      finalStr = finalStr.replace("{dies}", "0");
+      finalStr = finalStr.replace("{beds}", "0");
+    }
     finalStr = finalStr.replace("{teams}", String.valueOf(this.teams.size())); // 队伍数量
     finalStr = finalStr.replace("{remain_teams}", String.valueOf(this.getRemainingTeams())); // 未被消灭队伍数量
     finalStr = finalStr.replace("{alive_teams}", String.valueOf(this.getAliveTeams())); // 床存在的队伍数量

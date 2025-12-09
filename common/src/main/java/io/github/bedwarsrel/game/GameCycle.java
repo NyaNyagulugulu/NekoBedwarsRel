@@ -195,9 +195,9 @@ public abstract class GameCycle {
         aPlayer.sendMessage(
             ChatWriter.pluginMessage(ChatColor.GOLD + BedwarsRel._l(aPlayer, "ingame.player.killed",
                 ImmutableMap.of("killer",
-                    Game.getPlayerWithTeamString(killer, killerTeam, ChatColor.GOLD, hearts),
+                    Game.getPlayerNameOnly(killer, ChatColor.GOLD, hearts),
                     "player",
-                    Game.getPlayerWithTeamString(player, deathTeam, ChatColor.GOLD)))));
+                    Game.getPlayerNameOnly(player, ChatColor.GOLD, "")))));
       }
     }
 

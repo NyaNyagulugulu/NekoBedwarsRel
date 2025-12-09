@@ -171,6 +171,11 @@ public class Game {
     return player.getDisplayName() + before + playerAdding + before;
   }
 
+  public static String getPlayerNameOnly(Player player, ChatColor before,
+      String playerAdding) {
+    return player.getDisplayName() + before + playerAdding + before;
+  }
+
   /*
    * PUBLIC
    */

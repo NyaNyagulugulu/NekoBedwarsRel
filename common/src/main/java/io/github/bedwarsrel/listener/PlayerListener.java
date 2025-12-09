@@ -521,6 +521,8 @@ public class PlayerListener extends BaseListener {
         ede.setCancelled(true);
         return;
       }
+      // 在游戏运行状态中，如果不满足上述取消条件，则允许伤害发生
+      return;
     } else if (g.getState() == GameState.WAITING
         && ede.getCause() == EntityDamageEvent.DamageCause.VOID) {
       // 在等待阶段，虚空伤害也通过PlayerMoveEvent处理

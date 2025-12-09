@@ -840,6 +840,9 @@ public class PlayerListener extends BaseListener {
         pde.getDrops().clear();
       }
 
+      // 检查是否启用快速重生
+      boolean isQuickRespawn = BedwarsRel.getInstance().getBooleanConfig("quick-respawn.enabled", false);
+      
       try {
         if (!BedwarsRel.getInstance().isSpigot()) {
           Class<?> clazz = null;
@@ -855,7 +858,7 @@ public class PlayerListener extends BaseListener {
 
           BukkitRunnable respawnRunnable =
               (BukkitRunnable) clazz.getDeclaredConstructor(Player.class).newInstance(player);
-          respawnRunnable.runTaskLater(BedwarsRel.getInstance(), 20L);
+          respawnRunnable.runTaskLater(BedwarsRel.getInstance(), isQuickRespawn ? 1L : 20L);
         } else {
           new BukkitRunnable() {
 
@@ -863,7 +866,7 @@ public class PlayerListener extends BaseListener {
             public void run() {
               player.spigot().respawn();
             }
-          }.runTaskLater(BedwarsRel.getInstance(), 20L);
+          }.runTaskLater(BedwarsRel.getInstance(), isQuickRespawn ? 1L : 20L);
         }
 
       } catch (Exception e) {

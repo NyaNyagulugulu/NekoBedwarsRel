@@ -280,5 +280,9 @@ public class ConfigUpdater {
       }
     }
     // </1.3.5>
+    
+    // <quick-respawn>
+    BedwarsRel.getInstance().getConfig().addDefault("quick-respawn.enabled", false);
+    // </quick-respawn>
   }
 }
